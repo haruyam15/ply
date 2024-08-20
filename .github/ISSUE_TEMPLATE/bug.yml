@@ -1,7 +1,7 @@
 name: 🐞 bug
 description: 버그가 발생했나요?
-title: "[Bug] "
-labels: ["🐞 BugFix"]
+title: '[bug] '
+labels: ['🐞 bugFix']
 projects: []
 assignees:
   -
