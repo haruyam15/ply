@@ -1,3 +1,7 @@
 export default Test = () => {
-	return <></>
+	return (
+		<>
+			<div></div>
+		</>
+	)
 }
