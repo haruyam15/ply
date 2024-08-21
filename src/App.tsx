@@ -1,10 +1,21 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
+import axios from 'axios'
 import './App.css'
 
 function App() {
 	const [count, setCount] = useState(0)
+	const [userName, setUserName] = useState(null)
+
+	useEffect(() => {
+		const fetchUserData = async () => {
+			const res = await axios.get('/api/users')
+			const userNames = res.data.map((item: { name: string }) => item.name)
+			setUserName(userNames)
+		}
+		fetchUserData()
+	}, [])
 
 	return (
 		<>
@@ -24,6 +35,7 @@ function App() {
 				</p>
 			</div>
 			<p className="read-the-docs">Click on the Vite and React logos to learn more</p>
+			<p>{userName}</p>
 		</>
 	)
 }

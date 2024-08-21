@@ -30,7 +30,12 @@ export default [
 			'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
 			'@typescript-eslint/explicit-function-return-type': 'off',
 			'@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
-			'prettier/prettier': 'error',
+			'prettier/prettier': [
+				'error',
+				{
+					endOfLine: 'auto',
+				},
+			],
 		},
 	},
 ]
