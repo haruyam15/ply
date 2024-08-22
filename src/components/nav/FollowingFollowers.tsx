@@ -80,7 +80,7 @@ function FollowingFollowers() {
 							<li>
 								<User
 									profileImage={TESTURL}
-									nickName="하루얌"
+									nickName="하루"
 									userId="haruyam15"
 									isExpand={isExpand}
 								/>
