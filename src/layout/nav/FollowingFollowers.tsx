@@ -1,5 +1,6 @@
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react'
 import { colors } from '@/styles/colors'
-import styled from '@emotion/styled'
 import useNavStore from '@/stores/useNavStore'
 import React, { useState } from 'react'
 import { If } from '@/components/IfElse'
@@ -17,7 +18,7 @@ function FollowingFollowers() {
 	}
 
 	return (
-		<Wrapper isExpand={isExpand}>
+		<div css={tabWrap}>
 			<If test={isExpand}>
 				<If.Then>
 					<ul className="tab">
@@ -45,17 +46,18 @@ function FollowingFollowers() {
 					</div>
 				</If.Else>
 			</If>
-		</Wrapper>
+		</div>
 	)
 }
 
 export default FollowingFollowers
 
-const Wrapper = styled.div<{ isExpand: boolean }>`
+const tabWrap = css`
 	position: relative;
 	padding: 18px;
 	min-height: 370px;
 	box-sizing: border-box;
+
 	&::before {
 		background-color: ${colors.darkestGray};
 		content: '';
@@ -65,57 +67,45 @@ const Wrapper = styled.div<{ isExpand: boolean }>`
 		right: 21px;
 		top: 0;
 	}
+	.tab {
+		margin: 0 auto 22px;
+		display: flex;
+		justify-content: space-between;
+		text-align: center;
 
-	${(props) =>
-		props.isExpand &&
-		`
-    .tab {
-			margin: 0 auto 22px;
-			display: flex;
-			justify-content: space-between;
-			text-align: center;
-
-				li {
-					flex: 1;
-					position: relative;
-				}
-				li:hover {
-					background: rgba(255, 255, 255, 0.1);
-					border-radius: 6px;
-					cursor: pointer;
-				}
-				button {
-					width: 100%;
-					display: block;
-					padding: 10px 10px 13px;
-					color: ${colors.gray};
-				}
-				button:hover {
-					color: ${colors.lightestGray};
-				}
-				button[aria-selected='true'] {
-					color: ${colors.lightestGray};
-				}
-				button[aria-selected='true']::after {
-					content: '';
-					height: 3px;
-					position: absolute;
-					left: 10px;
-					right: 10px;
-					bottom: 1px;
-					background-color: ${colors.white};
-					border-radius: 2px;
-					box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
-				}
+		li {
+			flex: 1;
+			position: relative;
 		}
-
-		.f-list {
-			padding-bottom:5px;
-				li {
-					margin-bottom:5px;
-				}
+		li:hover {
+			background: rgba(255, 255, 255, 0.1);
+			border-radius: 6px;
+			cursor: pointer;
 		}
-  `}
+		button {
+			width: 100%;
+			display: block;
+			padding: 10px 10px 13px;
+			color: ${colors.gray};
+		}
+		button:hover {
+			color: ${colors.lightestGray};
+		}
+		button[aria-selected='true'] {
+			color: ${colors.lightestGray};
+		}
+		button[aria-selected='true']::after {
+			content: '';
+			height: 3px;
+			position: absolute;
+			left: 10px;
+			right: 10px;
+			bottom: 1px;
+			background-color: ${colors.white};
+			border-radius: 2px;
+			box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
+		}
+	}
 
 	.f-wrap {
 		position: relative;
@@ -139,14 +129,6 @@ const Wrapper = styled.div<{ isExpand: boolean }>`
 		p {
 			margin-bottom: 10px;
 			font-size: 10px;
-		}
-	}
-
-	.f-list {
-		li:hover {
-			cursor: pointer;
-			background: rgba(255, 255, 255, 0.1);
-			border-radius: 6px;
 		}
 	}
 `

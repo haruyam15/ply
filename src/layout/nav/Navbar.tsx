@@ -1,18 +1,19 @@
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react'
 import NavList from '@/layout/nav/NavList'
-import styled from '@emotion/styled'
 import FollowingFollowers from '@/layout/nav/FollowingFollowers'
 import useNavStore from '@/stores/useNavStore'
 import Banner from '@/layout/nav/Banner'
-import NavToggle from '@/layout/nav/NavToggle'
 import Logout from '@/layout/nav/Logout'
+import NavTop from '@/layout/nav/NavTop'
 
 function Navbar() {
 	const { isExpand } = useNavStore()
 
 	return (
-		<Nav isExpand={isExpand}>
+		<nav css={nav(isExpand)}>
 			<div className="nav-inner">
-				<NavToggle />
+				<NavTop />
 				<div className="scroll-area">
 					<NavList />
 					<FollowingFollowers />
@@ -20,19 +21,19 @@ function Navbar() {
 					<Logout />
 				</div>
 			</div>
-		</Nav>
+		</nav>
 	)
 }
 
 export default Navbar
 
-const Nav = styled.nav<{ isExpand: boolean }>`
+const nav = (isExpand: boolean) => css`
 	position: fixed;
 	left: 0;
 	bottom: 0;
 	top: 0;
 	box-sizing: content-box;
-	width: ${({ isExpand }) => (isExpand ? '240px' : '78px')};
+	width: ${isExpand ? '240px' : '78px'};
 	z-index: 12000;
 
 	.nav-inner {

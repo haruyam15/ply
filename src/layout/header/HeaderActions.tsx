@@ -1,9 +1,10 @@
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react'
 import Button from '@/components/Button'
 import Signin from '@/components/sign/Signin'
 import Signup from '@/components/sign/Signup'
 import User from '@/layout/nav/User'
 import useSignModalStore from '@/store/useSignModalStore'
-import styled from '@emotion/styled'
 import { Link } from 'react-router-dom'
 const TESTURL = [
 	'https://avatars.githubusercontent.com/u/131119152?s=64&v=4',
@@ -55,7 +56,7 @@ function HeaderActions() {
 	const openSigninModal = useSignModalStore((state) => state.openModal)
 	return (
 		<>
-			<Wrapper>
+			<div css={headerActions}>
 				<Link to={'/profile'}>
 					<div className="user-info">
 						<User profileImage={profileImage} nickName={nickName} userId={userId} />
@@ -66,14 +67,14 @@ function HeaderActions() {
 				</div>
 				<Signin />
 				<Signup />
-			</Wrapper>
+			</div>
 		</>
 	)
 }
 
 export default HeaderActions
 
-const Wrapper = styled.div`
+const headerActions = css`
 	width: 100%;
 	height: 100%;
 	display: flex;

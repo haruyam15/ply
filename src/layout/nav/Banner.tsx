@@ -1,16 +1,17 @@
-import styled from '@emotion/styled'
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react'
 
 function Banner() {
 	return (
-		<Wrapper>
+		<div css={banner}>
 			<img src="./assets/banner.png" alt="" />
-		</Wrapper>
+		</div>
 	)
 }
 
 export default Banner
 
-const Wrapper = styled.div`
+const banner = css`
 	padding: 30px 18px 18px;
 	position: relative;
 	&::before {
