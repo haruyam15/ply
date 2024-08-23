@@ -3,7 +3,7 @@ import styled from '@emotion/styled'
 function Banner() {
 	return (
 		<Wrapper>
-			<img src="./src/assets/banner.png" alt="" />
+			<img src="./assets/banner.png" alt="" />
 		</Wrapper>
 	)
 }

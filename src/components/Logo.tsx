@@ -4,7 +4,7 @@ function Logo() {
 	return (
 		<>
 			<H1>
-				<img src="./src/assets/logo.png" />
+				<img src="./assets/logo.png" />
 			</H1>
 		</>
 	)
