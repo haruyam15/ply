@@ -1,26 +1,14 @@
 /* eslint-disable react-refresh/only-export-components */
 /** @jsxImportSource @emotion/react */
-import React, { useEffect, useState } from 'react'
-import axios from 'axios'
+import React from 'react'
 import { css } from '@emotion/react'
 import { colors } from '@/styles/colors'
 import Modal from '@/components/Modal'
 import useSignModalStore from '@/store/useSignModalStore'
 
 const Signin: React.FC = () => {
-	const [userName, setUserName] = useState(null)
-
 	const signinModal = useSignModalStore((state) => state.signModals)
 	const openSigninModal = useSignModalStore((state) => state.openModal)
-
-	useEffect(() => {
-		const fetchUserData = async () => {
-			const res = await axios.get('/api/users')
-			const userNames = res.data.map((item: { name: string }) => item.name)
-			setUserName(userNames)
-		}
-		fetchUserData()
-	}, [])
 
 	const children: React.ReactNode = (
 		<>
