@@ -1,10 +1,10 @@
 import './styles/global.css'
-import Layout from '@/layout/Layout'
-
+import { RouterProvider } from 'react-router-dom'
+import { router } from '@/routes/router'
 function App() {
 	return (
 		<>
-			<Layout />
+			<RouterProvider router={router} />
 		</>
 	)
 }

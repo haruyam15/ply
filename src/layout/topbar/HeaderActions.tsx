@@ -4,6 +4,7 @@ import Signup from '@/components/sign/Signup'
 import User from '@/layout/nav/User'
 import useSignModalStore from '@/store/useSignModalStore'
 import styled from '@emotion/styled'
+import { Link } from 'react-router-dom'
 const TESTURL = [
 	'https://avatars.githubusercontent.com/u/131119152?s=64&v=4',
 	'https://avatars.githubusercontent.com/u/143858798?s=64&v=4',
@@ -55,9 +56,11 @@ function HeaderActions() {
 	return (
 		<>
 			<Wrapper>
-				<div className="user-info">
-					<User profileImage={profileImage} nickName={nickName} userId={userId} />
-				</div>
+				<Link to={'/profile'}>
+					<div className="user-info">
+						<User profileImage={profileImage} nickName={nickName} userId={userId} />
+					</div>
+				</Link>
 				<div onClick={() => openSigninModal('signin')}>
 					<Button>로그인</Button>
 				</div>

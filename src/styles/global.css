@@ -156,3 +156,7 @@ body {
 	background-color: #141517;
 	color: #fff;
 }
+
+a {
+	text-decoration: none;
+}
