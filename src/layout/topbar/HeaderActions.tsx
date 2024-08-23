@@ -1,5 +1,8 @@
 import Button from '@/components/Button'
+import Signin from '@/components/sign/Signin'
+import Signup from '@/components/sign/Signup'
 import User from '@/layout/nav/User'
+import useSignModalStore from '@/store/useSignModalStore'
 import styled from '@emotion/styled'
 const TESTURL = [
 	'https://avatars.githubusercontent.com/u/131119152?s=64&v=4',
@@ -48,13 +51,18 @@ const user: UserData = {
 
 function HeaderActions() {
 	const { profileImage, nickName, userId } = user.information
+	const openSigninModal = useSignModalStore((state) => state.openModal)
 	return (
 		<>
 			<Wrapper>
 				<div className="user-info">
 					<User profileImage={profileImage} nickName={nickName} userId={userId} />
 				</div>
-				<Button>로그인</Button>
+				<div onClick={() => openSigninModal('signin')}>
+					<Button>로그인</Button>
+				</div>
+				<Signin />
+				<Signup />
 			</Wrapper>
 		</>
 	)
