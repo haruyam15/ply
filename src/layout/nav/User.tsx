@@ -1,20 +1,24 @@
 import { If } from '@/components/IfElse'
 import { colors } from '@/styles/colors'
 import styled from '@emotion/styled'
-function User({ profileImage, nickName, userId, isExpand }: UserProps) {
-	console.log(isExpand)
+function User({ profileImage, nickName, userId, onlyImage = false }: UserProps) {
 	return (
 		<Wrapper>
-			<div className="profile">
-				<img width="26" height="26" src={profileImage} alt="" />
-			</div>
-			<If test={isExpand}>
+			<If test={onlyImage}>
 				<If.Then>
+					<div className="profile">
+						<img width="26" height="26" src={profileImage} alt="" />
+					</div>
+				</If.Then>
+				<If.Else>
+					<div className="profile">
+						<img width="26" height="26" src={profileImage} alt="" />
+					</div>
 					<div className="user-info">
 						<p>{nickName}</p>
 						<span>{userId}</span>
 					</div>
-				</If.Then>
+				</If.Else>
 			</If>
 		</Wrapper>
 	)
@@ -66,5 +70,5 @@ interface UserProps {
 	profileImage: string
 	nickName: string
 	userId: string
-	isExpand: boolean
+	onlyImage?: boolean
 }

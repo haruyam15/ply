@@ -24,7 +24,7 @@ function Search() {
 					onChange={handleChange}
 				/>
 				<button type="submit">
-					<LucideSearch size="20" />
+					<LucideSearch size="18" />
 				</button>
 			</div>
 		</SearchWrap>
@@ -50,7 +50,7 @@ const SearchWrap = styled.div<{ isFocus: boolean }>`
 	.inner {
 		display: flex;
 		height: 38px;
-		padding: 0 8px 0 14px;
+		padding: 0 12px 0 14px;
 		border: 1px solid
 			${({ isFocus }) => (isFocus ? `rgba(0, 255, 163, 0.5)` : `rgba(255, 255, 255, 0.12)`)};
 		border-radius: 20px;

@@ -3,19 +3,17 @@ import styled from '@emotion/styled'
 import useNavStore from '@/stores/useNavStore'
 import React, { useState } from 'react'
 import { If } from '@/components/IfElse'
-import User from '@/components/nav/User'
+import FList from '@/layout/nav/FList'
 
-const FOLLOWING = 'Following'
-const FOLLOWERS = 'Followers'
-const TESTURL =
-	'https://nng-phinf.pstatic.net/MjAyNDA1MThfODcg/MDAxNzE1OTU4MjMwMzgx.JivAuuhZuV6HsMcpc-CLRAwiBdPlr27TO2BLkkAYdTYg.17f1NyoSdVRtrLsg00f1X7sa0dhAF-prsz7npZjPQBog.JPEG/%EB%8C%80%EC%83%81_%ED%9B%84%ED%9E%88021.jpg?type=f120_120_na'
+const FOLLOWING = 'following'
+const FOLLOWERS = 'followers'
 
 function FollowingFollowers() {
 	const isExpand = useNavStore((state) => state.isExpand)
-	const [selected, setSelected] = useState('Following')
+	const [selected, setSelected] = useState<Tab>(FOLLOWERS)
 	const handleTab = (e: React.MouseEvent<HTMLButtonElement>) => {
 		const target = e.target as HTMLButtonElement
-		setSelected(target.innerText)
+		setSelected(target.innerText.toLowerCase() as Tab)
 	}
 
 	return (
@@ -24,68 +22,26 @@ function FollowingFollowers() {
 				<If.Then>
 					<ul className="tab">
 						<li>
-							<button onClick={handleTab} aria-selected={selected === FOLLOWING}>
-								Following
-							</button>
-						</li>
-						<li>
 							<button onClick={handleTab} aria-selected={selected === FOLLOWERS}>
 								Followers
 							</button>
 						</li>
+						<li>
+							<button onClick={handleTab} aria-selected={selected === FOLLOWING}>
+								Following
+							</button>
+						</li>
 					</ul>
-					{selected === FOLLOWING && (
-						<ul className="f-list">
-							<li>
-								<User
-									profileImage={TESTURL}
-									nickName="하루얌"
-									userId="haruyam15"
-									isExpand={isExpand}
-								/>
-							</li>
-						</ul>
-					)}
-
-					{selected === FOLLOWERS && (
-						<ul className="f-list">
-							<li>
-								<User
-									profileImage={TESTURL}
-									nickName="하루얌"
-									userId="haruyam15"
-									isExpand={isExpand}
-								/>
-							</li>
-						</ul>
-					)}
+					<FList tab={selected} />
 				</If.Then>
 				<If.Else>
 					<div className="f-wrap">
 						<p>Following</p>
-						<ul className="f-list">
-							<li>
-								<User
-									profileImage={TESTURL}
-									nickName="하루얌"
-									userId="haruyam15"
-									isExpand={isExpand}
-								/>
-							</li>
-						</ul>
+						<FList tab={selected} />
 					</div>
 					<div className="f-wrap">
 						<p>Followers</p>
-						<ul className="f-list">
-							<li>
-								<User
-									profileImage={TESTURL}
-									nickName="하루"
-									userId="haruyam15"
-									isExpand={isExpand}
-								/>
-							</li>
-						</ul>
+						<FList tab={selected} />
 					</div>
 				</If.Else>
 			</If>
@@ -127,15 +83,6 @@ const Wrapper = styled.div<{ isExpand: boolean }>`
 					background: rgba(255, 255, 255, 0.1);
 					border-radius: 6px;
 					cursor: pointer;
-				}
-				li:last-child::before {
-					content: '';
-					width: 1px;
-					height: 15px;
-					border-left: 1px solid #fff;
-					position: absolute;
-					left: 0;
-					top: 10px;
 				}
 				button {
 					width: 100%;
@@ -203,3 +150,5 @@ const Wrapper = styled.div<{ isExpand: boolean }>`
 		}
 	}
 `
+
+type Tab = 'following' | 'followers'

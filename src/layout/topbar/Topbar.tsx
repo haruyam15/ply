@@ -1,13 +1,13 @@
 import styled from '@emotion/styled'
 import { colors } from '@/styles/colors'
-import Search from '@/components/topbar/Search'
-import Btns from '@/components/topbar/Btns'
+import Search from '@/layout/topbar/Search'
+import HeaderActions from '@/layout/topbar/HeaderActions'
 
 function Topbar() {
 	return (
 		<Header>
 			<Search />
-			<Btns />
+			<HeaderActions />
 		</Header>
 	)
 }
