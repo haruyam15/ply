@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import React from 'react'
 import { colors } from '@/styles/colors'
-import SignModal from '@/components/sign/SignModal'
+import Modal from '@/components/Modal'
 import useSignModalStore from '@/store/useSignModalStore'
 import {
 	submitBtn,
@@ -15,9 +15,9 @@ const Signup: React.FC = () => {
 	const closeSigninModal = useSignModalStore((state) => state.closeModal)
 	const openSigninModal = useSignModalStore((state) => state.openModal)
 
-	const jsx: React.ReactNode = (
+	const children: React.ReactNode = (
 		<>
-			<h2 css={{ marginTop: '40px' }}>Sign Up</h2>
+			<h2 css={{ margin: '50px 0 20px', fontSize: '28px' }}>Sign Up</h2>
 			<form css={{ width: '330px' }}>
 				<div css={idAndPasswordArea}>
 					<input css={idAndPassword} type="text" required />
@@ -55,7 +55,7 @@ const Signup: React.FC = () => {
 	return (
 		<>
 			{signinModal.modalName === 'signup' && signinModal.modalState ? (
-				<SignModal jsx={jsx} modalName="signup" />
+				<Modal children={children} modalName="signup" />
 			) : null}
 		</>
 	)

@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { css } from '@emotion/react'
 import { colors } from '@/styles/colors'
-import SignModal from '@/components/sign/SignModal'
+import Modal from '@/components/Modal'
 import useSignModalStore from '@/store/useSignModalStore'
 
 const Signin: React.FC = () => {
@@ -22,9 +22,9 @@ const Signin: React.FC = () => {
 		fetchUserData()
 	}, [])
 
-	const jsx: React.ReactNode = (
+	const children: React.ReactNode = (
 		<>
-			<h2 css={{ marginTop: '40px' }}>Login</h2>
+			<h2 css={{ margin: '40px 0 20px', fontSize: '28px' }}>Login</h2>
 			<form css={{ width: '330px' }}>
 				<div css={idAndPasswordArea}>
 					<input css={idAndPassword} type="text" required />
@@ -65,7 +65,7 @@ const Signin: React.FC = () => {
 	return (
 		<>
 			{signinModal.modalName === 'signin' && signinModal.modalState ? (
-				<SignModal jsx={jsx} modalName="signin" />
+				<Modal children={children} modalName="signin" />
 			) : null}
 		</>
 	)
@@ -77,14 +77,14 @@ export const idAndPasswordArea = css`
 	position: relative;
 	label {
 		position: absolute;
-		top: 22px;
+		top: 30px;
 		left: 10px;
 		color: #888;
 		transition: all 0.3s ease;
 	}
 	input:focus + label,
 	input:valid + label {
-		top: -10px;
+		top: -5px;
 		color: #fff;
 		font-size: 14px;
 	}
@@ -94,12 +94,14 @@ export const idAndPassword = css`
 	height: 40px;
 	border: none;
 	border-radius: 10px;
-	margin: 10px 0 20px;
+	margin: 15px 0 20px;
 	outline: none;
 	padding: 0 10px;
 	box-sizing: border-box;
+	background-color: ${colors.white};
 `
 export const modalMovementBtn = css`
+	margin-left: 5px;
 	background-color: transparent;
 	border: none;
 	cursor: pointer;
@@ -108,7 +110,7 @@ export const modalMovementBtn = css`
 export const submitBtn = css`
 	width: 100%;
 	height: 40px;
-	margin: 5px 0 10px;
+	margin: 5px 0 25px;
 	border: none;
 	border-radius: 10px;
 	background-color: ${colors.primaryGreen};

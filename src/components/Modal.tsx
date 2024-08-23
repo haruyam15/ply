@@ -6,11 +6,11 @@ import { X } from 'lucide-react'
 import useSignModalStore from '@/store/useSignModalStore'
 
 interface SignModalProps {
-	jsx: React.ReactNode
+	children: React.ReactNode
 	modalName: string
 }
 
-const SignModal = ({ jsx, modalName }: SignModalProps) => {
+const SignModal = ({ children, modalName }: SignModalProps) => {
 	const closeSignModal = useSignModalStore((state) => state.closeModal)
 
 	return (
@@ -19,7 +19,7 @@ const SignModal = ({ jsx, modalName }: SignModalProps) => {
 				<button css={closeBtn} onClick={() => closeSignModal(modalName)}>
 					<X css={{ color: '#888' }} />
 				</button>
-				{jsx}
+				{children}
 			</div>
 		</div>
 	)
