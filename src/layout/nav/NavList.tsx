@@ -1,13 +1,14 @@
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react'
 import { colors } from '@/styles/colors'
 import { Heart, History, House, Video } from 'lucide-react'
-import styled from '@emotion/styled'
 import useNavStore from '@/stores/useNavStore'
 import { Link } from 'react-router-dom'
 
 function NavList() {
 	const isExpand = useNavStore((state) => state.isExpand)
 	return (
-		<Ul isExpand={isExpand}>
+		<ul css={navList(isExpand)}>
 			<li>
 				<Link to={'/'}>
 					<House />
@@ -32,13 +33,13 @@ function NavList() {
 					<span>Like</span>
 				</Link>
 			</li>
-		</Ul>
+		</ul>
 	)
 }
 
 export default NavList
 
-const Ul = styled.ul<{ isExpand: boolean }>`
+const navList = (isExpand: boolean) => css`
 	padding: 18px;
 	li {
 		a {
@@ -59,9 +60,8 @@ const Ul = styled.ul<{ isExpand: boolean }>`
 			padding-left: 3px;
 		}
 
-		${({ isExpand }) =>
-			!isExpand &&
-			`
+		${!isExpand &&
+		`
       a {
 			padding-left: 0;
 			display: block;
@@ -70,6 +70,9 @@ const Ul = styled.ul<{ isExpand: boolean }>`
 			padding: 6px 0 4px;
 			text-align: center;
 			box-sizing: border-box;
+			span{
+				margin-left:0
+			}
       }
     `}
 	}

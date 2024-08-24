@@ -1,5 +1,7 @@
+/** @jsxImportSource @emotion/react */
 import User from '@/layout/nav/User'
 import useNavStore from '@/stores/useNavStore'
+import { css } from '@emotion/react'
 
 const TESTURL = [
 	'https://avatars.githubusercontent.com/u/131119152?s=64&v=4',
@@ -49,7 +51,7 @@ const user: UserData = {
 function FList({ tab }: FListProps) {
 	const isExpand = useNavStore((state) => state.isExpand)
 	return (
-		<ul className="f-list">
+		<ul css={fList(isExpand)}>
 			{user[tab].map((f, i) => (
 				<li key={i}>
 					<User
@@ -65,6 +67,23 @@ function FList({ tab }: FListProps) {
 }
 
 export default FList
+
+const fList = (isExpand: boolean) => css`
+	padding-bottom: 5px;
+	${!isExpand &&
+	`
+	.f-list {
+		li:hover {
+			cursor: pointer;
+			background: rgba(255, 255, 255, 0.1);
+			border-radius: 6px;
+		}
+	}
+  `}
+	li {
+		margin-bottom: 5px;
+	}
+`
 
 interface FListProps {
 	tab: 'following' | 'followers'
