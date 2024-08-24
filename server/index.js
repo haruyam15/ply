@@ -1,12 +1,11 @@
 import express from 'express'
-import bodyParser from 'body-parser'
 import dotenv from 'dotenv'
 import cors from 'cors'
 import { MongoClient } from 'mongodb'
 const app = express()
 
 app.use(cors())
-app.use(bodyParser.json())
+app.use(express.json())
 dotenv.config()
 const PORT = process.env.PORT || 3000
 const MONGOURL = process.env.MONGO_URL
