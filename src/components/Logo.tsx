@@ -1,18 +1,17 @@
-import styled from '@emotion/styled'
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react'
 
 function Logo() {
 	return (
-		<>
-			<H1>
-				<img src="./assets/logo.png" />
-			</H1>
-		</>
+		<h1 css={logo}>
+			<img src="./assets/logo.png" />
+		</h1>
 	)
 }
 
 export default Logo
 
-const H1 = styled.h1`
+const logo = css`
 	position: fixed;
 	top: 0;
 	left: 63px;

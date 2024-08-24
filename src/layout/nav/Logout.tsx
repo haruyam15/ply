@@ -1,6 +1,7 @@
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react'
 import useNavStore from '@/stores/useNavStore'
 import { colors } from '@/styles/colors'
-import styled from '@emotion/styled'
 import { LogOut } from 'lucide-react'
 function Logout() {
 	const isExpand = useNavStore((state) => state.isExpand)
@@ -8,17 +9,17 @@ function Logout() {
 		console.log('logout!')
 	}
 	return (
-		<Wrapper isExpand={isExpand}>
+		<div css={logout(isExpand)}>
 			<button className="btn-logout" onClick={handleClick}>
 				<LogOut />
 				<span>Logout</span>
 			</button>
-		</Wrapper>
+		</div>
 	)
 }
 export default Logout
 
-const Wrapper = styled.div<{ isExpand: boolean }>`
+const logout = (isExpand: boolean) => css`
 	display: flex;
 	justify-content: center;
 	text-align: center;
@@ -52,15 +53,14 @@ const Wrapper = styled.div<{ isExpand: boolean }>`
 		border-radius: 6px;
 	}
 
-	${({ isExpand }) =>
-		!isExpand &&
-		`
-      .btn-logout {
-        flex-direction: column;
-          span{
-            margin-left:0;
-            font-size:10px;
-          }
-      }
-    `}
+	${!isExpand &&
+	`
+	.btn-logout {
+		flex-direction: column;
+		span{
+			margin-left:0;
+			font-size:10px;
+		}
+	}
+  `}
 `

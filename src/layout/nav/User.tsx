@@ -1,9 +1,11 @@
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react'
 import { If } from '@/components/IfElse'
 import { colors } from '@/styles/colors'
-import styled from '@emotion/styled'
+
 function User({ profileImage, nickName, userId, onlyImage = false }: UserProps) {
 	return (
-		<Wrapper>
+		<div css={userWrap}>
 			<If test={onlyImage}>
 				<If.Then>
 					<div className="profile">
@@ -20,12 +22,12 @@ function User({ profileImage, nickName, userId, onlyImage = false }: UserProps) 
 					</div>
 				</If.Else>
 			</If>
-		</Wrapper>
+		</div>
 	)
 }
 export default User
 
-const Wrapper = styled.div`
+const userWrap = css`
 	width: 100%;
 	display: flex;
 	position: relative;

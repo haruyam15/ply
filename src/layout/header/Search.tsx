@@ -1,5 +1,6 @@
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react'
 import { colors } from '@/styles/colors'
-import styled from '@emotion/styled'
 import React, { useState } from 'react'
 import { Search as LucideSearch } from 'lucide-react'
 
@@ -14,7 +15,7 @@ function Search() {
 	}
 
 	return (
-		<SearchWrap isFocus={isFocus}>
+		<div css={search(isFocus)}>
 			<div className="inner">
 				<input
 					title="검색어"
@@ -27,13 +28,13 @@ function Search() {
 					<LucideSearch size="18" />
 				</button>
 			</div>
-		</SearchWrap>
+		</div>
 	)
 }
 
 export default Search
 
-const SearchWrap = styled.div<{ isFocus: boolean }>`
+const search = (isFocus: boolean) => css`
 	width: calc(100% - 660px);
 	left: 50%;
 	max-width: 400px;
@@ -51,8 +52,7 @@ const SearchWrap = styled.div<{ isFocus: boolean }>`
 		display: flex;
 		height: 38px;
 		padding: 0 12px 0 14px;
-		border: 1px solid
-			${({ isFocus }) => (isFocus ? `rgba(0, 255, 163, 0.5)` : `rgba(255, 255, 255, 0.12)`)};
+		border: 1px solid ${isFocus ? `rgba(0, 255, 163, 0.5)` : `rgba(255, 255, 255, 0.12)`};
 		border-radius: 20px;
 		align-items: center;
 	}
