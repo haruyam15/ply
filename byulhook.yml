@@ -3,7 +3,7 @@
 #   commands:
 #     command name:
 #       A user-defined name for the command. This can be any descriptive name you choose.
-#       run: "command to run"
+#       run: 'command to run'
 #       The shell command or script that will be executed when the hook is triggered.
 #
 # Example:
@@ -11,7 +11,7 @@
 # pre-commit:
 #   commands:
 #     lint:
-#       run: "npm run lint"
+#       run: 'npm run lint'
 
 pre-commit:
   commands:
