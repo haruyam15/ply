@@ -203,3 +203,64 @@ app.post('/api/update-profile', async (req, res) => {
 		res.status(500).send({ message: 'Failed to update user profile', error })
 	}
 })
+
+// curl -X POST -H "Content-Type: application/json" -d '{"title": "Playlist 1", "userid": "user3", "comment": "Amazing selection!"}' http://localhost:8080/api/add-comment
+
+app.post('/api/add-comment', async (req, res) => {
+	const { title, userid, comment } = req.body
+
+	try {
+		// 주어진 제목으로 플레이리스트를 찾음
+		const playlist = await database.collection('playListData').findOne({ title })
+		if (!playlist) {
+			return res.status(404).send({ message: '플레이리스트를 찾을 수 없습니다.' })
+		}
+
+		// 댓글 추가
+		const updatedComments = {
+			...playlist.comments,
+			[userid]: comment,
+		}
+
+		// 플레이리스트의 comments 필드 업데이트
+		await database
+			.collection('playListData')
+			.updateOne({ title }, { $set: { comments: updatedComments } })
+
+		res.status(200).send({ message: '댓글이 성공적으로 추가되었습니다.' })
+	} catch (error) {
+		res.status(500).send({ message: '댓글 추가에 실패했습니다.', error })
+	}
+})
+
+// curl -X POST -H "Content-Type: application/json" -d '{"title": "Playlist 1", "userid": "user3"}' http://localhost:8080/api/add-like
+
+app.post('/api/add-like', async (req, res) => {
+	const { title, userid } = req.body
+
+	try {
+		// 주어진 제목으로 플레이리스트를 찾음
+		const playlist = await database.collection('playListData').findOne({ title })
+		if (!playlist) {
+			return res.status(404).send({ message: '플레이리스트를 찾을 수 없습니다.' })
+		}
+
+		// 사용자가 이미 이 플레이리스트를 좋아요한 경우를 확인
+		if (playlist.like.includes(userid)) {
+			return res.status(400).send({ message: '사용자가 이미 이 플레이리스트를 좋아요했습니다.' })
+		}
+
+		// 좋아요 배열에 새로운 사용자 ID를 추가하고 좋아요 수를 증가시킴
+		const updatedLikes = [...playlist.like, userid]
+		const updatedNumOfLike = playlist.numOfLike + 1
+
+		// 플레이리스트 문서를 새로운 좋아요와 좋아요 수로 업데이트
+		await database
+			.collection('playListData')
+			.updateOne({ title }, { $set: { like: updatedLikes, numOfLike: updatedNumOfLike } })
+
+		res.status(200).send({ message: '좋아요가 성공적으로 추가되었습니다.' })
+	} catch (error) {
+		res.status(500).send({ message: '좋아요 추가에 실패했습니다.', error })
+	}
+})
