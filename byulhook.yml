@@ -17,6 +17,8 @@ pre-commit:
   commands:
     Lint:
       run: 'npm run lint'
+    prettier:
+      run: 'npm run prettier --write'
 
 commit-msg:
   commands:

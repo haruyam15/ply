@@ -10,7 +10,7 @@
 		"preview": "vite preview",
 		"format": "prettier --cache --write .",
 		"lint": "eslint --cache .",
-		"prettier": "prettier --write ."
+		"prettier": "prettier --write"
 	},
 	"dependencies": {
 		"@emotion/react": "^11.13.3",
