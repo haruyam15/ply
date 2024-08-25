@@ -13,16 +13,12 @@
 #     lint:
 #       run: "npm run lint"
 
-
 pre-commit:
   commands:
     Lint:
-      run: "npm run lint"
-    Prettier:
-      run: "npm run prettier -- --write"
-
+      run: 'npm run lint'
 
 commit-msg:
   commands:
     byulFormat:
-      run: "node ./node_modules/byul/dist/index.js .git/COMMIT_EDITMSG"
+      run: 'node ./node_modules/byul/dist/index.js .git/COMMIT_EDITMSG'
