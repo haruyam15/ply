@@ -148,7 +148,7 @@ app.get('/api/playlists/ids', async (req, res) => {
 // curl -X GET "http://localhost:8080/api/playlists/ids" ( 모든 플리 탐색에서 씀 )
 
 app.post('/api/update-profile', async (req, res) => {
-	const { userid, newUserid, password, profileimage, nickname } = req.body
+	const { userid, password, profileimage, nickname } = req.body
 
 	try {
 		// 기존 사용자 확인
