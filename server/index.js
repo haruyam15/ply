@@ -42,6 +42,23 @@ app.get('/api/login', async (req, res) => {
 // 로그인 성공 curl -X GET "http://localhost:8080/api/login?userid=johndoe&password=john1234"
 // 로그인 실패 curl -X GET "http://localhost:8080/api/login?userid=invaliduser&password=invalidpass"
 
+app.post('/api/register', async (req, res) => {
+  const { userid, password, profileimage, nickname } = req.body;
+  try {
+    const newUser = {
+      userid,
+      password,
+      profileimage,
+      nickname
+    };
+    const result = await database.collection('information').insertOne(newUser);
+    res.status(201).send({ message: 'User registered successfully', userId: result.insertedId });
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+// curl -X POST "http://localhost:8080/api/register" -H "Content-Type: application/json" -d '{"userid":"johndoe","password":"john1234","profileimage":"","nickname":"Johnny"}' ( 회원가입 )
+
 app.get('/api/followers', async (req, res) => {
   const { userid } = req.query;
   try {
@@ -55,7 +72,7 @@ app.get('/api/followers', async (req, res) => {
     res.status(500).send(error);
   }
 });
-//curl -X GET "http://localhost:8080/api/followers?userid=johndoe"
+//curl -X GET "http://localhost:8080/api/followers?userid=johndoe" ( 해당 유저의 팔로워 목록 )
 
 app.get('/api/following', async (req, res) => {
   const { userid } = req.query;
@@ -70,7 +87,7 @@ app.get('/api/following', async (req, res) => {
     res.status(500).send(error);
   }
 });
-// curl -X GET "http://localhost:8080/api/following?userid=johndoe"
+// curl -X GET "http://localhost:8080/api/following?userid=johndoe" ( 해당 유저가 팔로잉하는 유저들 )
 
 app.get('/api/likes', async (req, res) => {
   const { userid } = req.query;
@@ -85,4 +102,46 @@ app.get('/api/likes', async (req, res) => {
     res.status(500).send(error);
   }
 });
-// curl -X GET "http://localhost:8080/api/likes?userid=johndoe"
+// curl -X GET "http://localhost:8080/api/likes?userid=johndoe" ( 해당 유저가 좋아요한 플리 )
+
+
+app.get('/api/myPlayList', async (req, res) => {
+  const { userid } = req.query;
+  try {
+    const user = await database.collection('users').findOne({ "information.userid": userid });
+    if (user) {
+      res.status(200).send({ myPlayList: user.myPlayList });
+    } else {
+      res.status(404).send({ message: 'User not found' });
+    }
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+// curl -X GET "http://localhost:8080/api/myPlayList?userid=johndoe" ( 해당 유저가 만든 플레이리스트 )
+
+app.get('/api/playlist', async (req, res) => {
+  const { title } = req.query;
+  try {
+    const playlist = await database.collection('playListData').findOne({ title });
+    if (playlist) {
+      res.status(200).send(playlist);
+    } else {
+      res.status(404).send({ message: 'Playlist not found' });
+    }
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+// curl -X GET "http://localhost:8080/api/playlist?title=Playlist%201" ( 플레이 리스트 상세 )
+
+app.get('/api/playlists/ids', async (req, res) => {
+  try {
+    const playlists = await database.collection('playListData').find({}, { projection: { _id: 1 } }).toArray();
+    res.status(200).send(playlists);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+// curl -X GET "http://localhost:8080/api/playlists/ids" ( 모든 플리 탐색에서 씀 )
+
