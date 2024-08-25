@@ -148,58 +148,33 @@ app.get('/api/playlists/ids', async (req, res) => {
 // curl -X GET "http://localhost:8080/api/playlists/ids" ( 모든 플리 탐색에서 씀 )
 
 app.post('/api/update-profile', async (req, res) => {
-	const { userid, newUserid, password, profileimage, nickname } = req.body
+  const { userid, password, profileimage, nickname } = req.body;
 
-	try {
-		// 기존 사용자 확인
-		const user = await database.collection('information').findOne({ userid })
-		if (!user) {
-			return res.status(404).send({ message: 'User not found' })
-		}
+  try {
+    // 1. 유저 ID로 유저 정보 조회
+    const user = await database.collection('information').findOne({ userid });
+    if (!user) {
+      return res.status(404).send({ message: 'User not found' });
+    }
 
-		// newUserid가 이미 존재하는지 확인
-		if (newUserid && newUserid !== userid) {
-			const existingUser = await database.collection('information').findOne({ userid: newUserid })
-			if (existingUser) {
-				return res.status(409).send({ message: 'New userId already exists' })
-			}
-		}
+    // 2. 유저 정보 수정
+    const updatedUser = {
+      ...(password && { password }),
+      ...(profileimage && { profileimage }),
+      ...(nickname && { nickname }),
+    };
 
-		// 사용자 정보 업데이트 (userId 변경 포함)
-		const updatedUser = {
-			userid: newUserid || userid, // 새로운 userId가 있으면 변경, 없으면 기존 userId 유지
-			...(password && { password }),
-			...(profileimage && { profileimage }),
-			...(nickname && { nickname }),
-		}
+    // 3. 수정사항 적용
+    await database.collection('information').updateOne({ userid }, { $set: updatedUser });
 
-		// userId가 변경된 경우 처리
-		if (newUserid && newUserid !== userid) {
-			// 새 userId로 새로운 문서를 생성하고, 기존 문서 삭제
-			await database.collection('information').insertOne(updatedUser)
-			await database.collection('information').deleteOne({ userid })
+    await database.collection('users').updateOne(
+      { 'information.userid': userid },
+      { $set: { 'information.password': password, 'information.profileimage': profileimage, 'information.nickname': nickname } }
+    );
 
-			// users 컬렉션에서도 동일하게 처리
-			const userDocument = await database
-				.collection('users')
-				.findOne({ 'information.userid': userid })
-			if (userDocument) {
-				userDocument.information = updatedUser
-				userDocument.id = newUserid
-				await database.collection('users').insertOne(userDocument)
-				await database.collection('users').deleteOne({ 'information.userid': userid })
-			}
-		} else {
-			// userId가 변경되지 않은 경우, 기존 문서만 업데이트
-			await database.collection('information').updateOne({ userid }, { $set: updatedUser })
-
-			await database
-				.collection('users')
-				.updateOne({ 'information.userid': userid }, { $set: { information: updatedUser } })
-		}
-
-		res.status(200).send({ message: 'User profile updated successfully' })
-	} catch (error) {
-		res.status(500).send({ message: 'Failed to update user profile', error })
-	}
-})
+    res.status(200).send({ message: 'User profile updated successfully' });
+  } catch (error) {
+    res.status(500).send({ message: 'Failed to update user profile', error });
+  }
+});
+// curl -X POST "http://localhost:8080/api/update-profile" -H "Content-Type: application/json" -d '{"userid":"johnnew","password":"sword123","profileimage":"mage.jpg","nickname":"JoedNew"}' ( 프로필 수정 )
