@@ -53,7 +53,7 @@ const titleStyle = css`
   margin: 0;
   font-size: 16px;
   font-weight: bold;
-  color: ${colors.black};
+  color: ${colors.gray};
 `;
 
 const userStyle = css`

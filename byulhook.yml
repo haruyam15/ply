@@ -17,10 +17,11 @@ pre-commit:
   commands:
     eslint:
       glob: '*.{js,ts,jsx,tsx}'
-      run: npm run eslint {staged_files} --fix
+      run: npm run eslint "src/**/*.js" --fix
+
     prettier:
       glob: '*.{js,ts,jsx,tsx,json,yaml,md}'
-      run: npm run prettier {staged_files}
+      run: npm run prettier "src/**/*.js" --write
 
 commit-msg:
   commands:
