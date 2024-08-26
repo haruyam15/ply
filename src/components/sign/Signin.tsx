@@ -1,111 +1,116 @@
 /** @jsxImportSource @emotion/react */
-import React, { useEffect, useRef, useState } from 'react'
-import { css } from '@emotion/react'
-import { colors } from '@/styles/colors'
-import Modal from '@/components/Modal'
-import useSignModalStore from '@/stores/useSignModalStore'
-import axios from 'axios'
-import useUserStore from '@/stores/useUserStore'
+import { useEffect, useRef, useState } from 'react';
+
+import { css } from '@emotion/react';
+import axios from 'axios';
+
+import Modal from '@/components/Modal';
+import useSignModalStore from '@/stores/useSignModalStore';
+import useUserStore from '@/stores/useUserStore';
+import { colors } from '@/styles/colors';
 
 interface LoginData {
-	userid: string | null
-  password: string | null
+  userid: string | null;
+  password: string | null;
 }
 
 const Signin: React.FC = () => {
-	const signinModal = useSignModalStore((state) => state.signModals)
-	const openSigninModal = useSignModalStore((state) => state.openModal)
-	const closeSigninModal = useSignModalStore((state) => state.closeModal)
-	const setUserData = useUserStore((state) => state.setUser)
-	const idRef = useRef<HTMLInputElement>(null)
-	const passwordRef = useRef<HTMLInputElement>(null)
-	const [loginData, setLoginData] = useState<LoginData>({userid: null, password: null})
-	
-	const onLogin = (e: React.FormEvent<HTMLFormElement>) => {
-		e.preventDefault()
-		const userid = idRef.current?.value ?? null
-		const password = passwordRef.current?.value ?? null
-		setLoginData({userid, password})
-	}
+  const signinModal = useSignModalStore((state) => state.signModals);
+  const openSigninModal = useSignModalStore((state) => state.openModal);
+  const closeSigninModal = useSignModalStore((state) => state.closeModal);
+  const setUserData = useUserStore((state) => state.setUser);
+  const idRef = useRef<HTMLInputElement>(null);
+  const passwordRef = useRef<HTMLInputElement>(null);
+  const [loginData, setLoginData] = useState<LoginData>({ userid: null, password: null });
 
-	useEffect(() => {
-		const fetchUserData = async () => {
-			try {
-				const res = await axios.post('/api/login', {
-					userid: loginData.userid,
-					password: loginData.password
-				})
-				const userData = res.data.user
-				console.log(userData)
-				if(userData.information.userid){
-					setUserData(userData)
-					localStorage.setItem('userInformation', JSON.stringify({
-						userid: userData.information.userid,
-						password: userData.information.password,
-						profileImage: userData.information.profileimage,
-						nickname: userData.information.nickname,
-						followers: userData.followers,
-						following: userData.following
-					}))
-					closeSigninModal('signin')
-				}
-			} catch (error) {
-				console.error(error)
-			}
-		}
-		fetchUserData()
-	}, [loginData])
+  const onLogin = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const userid = idRef.current?.value ?? null;
+    const password = passwordRef.current?.value ?? null;
+    setLoginData({ userid, password });
+  };
 
+  useEffect(() => {
+    if (loginData.userid && loginData.password) {
+      const fetchUserData = async () => {
+        try {
+          const res = await axios.post('/api/login', {
+            userid: loginData.userid,
+            password: loginData.password,
+          });
+          const userData = res.data.user;
+          console.log(userData);
+          if (userData.information.userid) {
+            setUserData(userData);
+            localStorage.setItem(
+              'userInformation',
+              JSON.stringify({
+                userid: userData.information.userid,
+                password: userData.information.password,
+                profileimage: userData.information.profileimage,
+                nickname: userData.information.nickname,
+                followers: userData.followers,
+                following: userData.following,
+              }),
+            );
+            closeSigninModal('signin');
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      };
+      fetchUserData();
+    }
+  }, [loginData, setUserData, closeSigninModal]);
 
-
-	const children: React.ReactNode = (
-		<>
-			<h2 css={{ margin: '40px 0 20px', fontSize: '28px' }}>Login</h2>
-			<form css={{ width: '330px' }} onSubmit={(e) => onLogin(e)}>
-				<div css={idAndPasswordArea}>
-					<input css={idAndPassword} ref={idRef} type="text" required />
-					<label>ID</label>
-				</div>
-				<div css={idAndPasswordArea}>
-					<input css={idAndPassword} ref={passwordRef} type="password" required />
-					<label>Password</label>
-				</div>
-				<div css={{ fontSize: '14px' }}>
-					<label
-						css={{ cursor: 'pointer', accentColor: `${colors.primaryGreen}` }}
-						htmlFor="remember"
-					>
-						<input css={{ cursor: 'pointer' }} type="checkBox" id="remember" defaultChecked />
-						Remember me
-					</label>
-				</div>
-				<div>
-					<button css={submitBtn} type="submit">
-						Login
-					</button>
-				</div>
-			</form>
-			<p css={{ fontSize: '14px', marginBottom: '40px' }}>
-				Don't have an account?
-				<button
-					css={modalMovementBtn}
-					onClick={() => {
-						openSigninModal('signup')
-					}}
-				>
-					Sign Up now
-				</button>
-			</p>
-		</>
-	)
-	return (
-		<>
-			{signinModal.modalName === 'signin' && signinModal.modalState ? (
-				<Modal children={children} modalName="signin" />
-			) : null}
-		</>
-	)
-}
+  const children: React.ReactNode = (
+    <>
+      <h2 css={{ margin: '40px 0 20px', fontSize: '28px' }}>Login</h2>
+      <form css={{ width: '330px' }} onSubmit={(e) => onLogin(e)}>
+        <div css={idAndPasswordArea}>
+          <input css={idAndPassword} ref={idRef} type="text" required />
+          <label>ID</label>
+        </div>
+        <div css={idAndPasswordArea}>
+          <input css={idAndPassword} ref={passwordRef} type="password" required />
+          <label>Password</label>
+        </div>
+        <div css={{ fontSize: '14px' }}>
+          <label
+            css={{ cursor: 'pointer', accentColor: `${colors.primaryGreen}` }}
+            htmlFor="remember"
+          >
+            <input css={{ cursor: 'pointer' }} type="checkBox" id="remember" defaultChecked />
+            Remember me
+          </label>
+        </div>
+        <div>
+          <button css={submitBtn} type="submit">
+            Login
+          </button>
+        </div>
+      </form>
+      <p css={{ fontSize: '14px', marginBottom: '40px' }}>
+        Don't have an account?
+        <button
+          css={modalMovementBtn}
+          onClick={() => {
+            openSigninModal('signup');
+          }}
+        >
+          Sign Up now
+        </button>
+      </p>
+    </>
+  );
+  return (
+    <>
+      {signinModal.modalName === 'signin' && signinModal.modalState ? (
+        <Modal children={children} modalName="signin" />
+      ) : null}
+    </>
+  );
+};
 
 export default Signin;
 

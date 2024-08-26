@@ -12,40 +12,40 @@ const TESTURL = [
   'https://avatars.githubusercontent.com/u/110523397?v=4',
 ];
 const user: UserData = {
-  information: { userId: 'haruyam15', profileImage: TESTURL[4], nickName: '하루얌' },
+  information: { userId: 'haruyam15', profileimage: TESTURL[4], nickName: '하루얌' },
   subscription: ['playlist1', 'playlist2'],
   following: [
     {
       userId: 'Sonseongoh',
       nickName: '성오',
-      profileImage: TESTURL[0],
+      profileimage: TESTURL[0],
     },
     {
       userId: 'dhkim511',
       nickName: '도형',
-      profileImage: TESTURL[1],
+      profileimage: TESTURL[1],
     },
     {
       userId: 'love1ace',
       nickName: '동영',
-      profileImage: TESTURL[2],
+      profileimage: TESTURL[2],
     },
     {
       userId: 'ssumanlife',
       nickName: '수민',
-      profileImage: TESTURL[3],
+      profileimage: TESTURL[3],
     },
     {
       userId: 'abcde',
       nickName: 'hahaha',
-      profileImage: TESTURL[4],
+      profileimage: TESTURL[4],
     },
   ],
   followers: [
-    { userId: 'Sonseongoh', nickName: '성오', profileImage: TESTURL[0] },
-    { userId: 'dhkim511', nickName: '도형', profileImage: TESTURL[1] },
-    { userId: 'love1ace', nickName: '동영', profileImage: TESTURL[2] },
-    { userId: 'ssumanlife', nickName: '수민', profileImage: TESTURL[3] },
+    { userId: 'Sonseongoh', nickName: '성오', profileimage: TESTURL[0] },
+    { userId: 'dhkim511', nickName: '도형', profileimage: TESTURL[1] },
+    { userId: 'love1ace', nickName: '동영', profileimage: TESTURL[2] },
+    { userId: 'ssumanlife', nickName: '수민', profileimage: TESTURL[3] },
   ],
 };
 
@@ -56,8 +56,8 @@ function FList({ tab }: FListProps) {
       {user[tab].map((f, i) => (
         <li key={i}>
           <User
-            profileImage={f.profileImage}
-            nickName={f.nickName}
+            profileimage={f.profileimage}
+            nickname={f.nickName}
             userId={f.userId}
             onlyImage={!isExpand}
           />
@@ -99,6 +99,6 @@ interface UserData {
 
 interface UserInformation {
   userId: string;
-  profileImage: string;
+  profileimage: string;
   nickName: string;
 }
