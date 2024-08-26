@@ -1,13 +1,21 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { LogOut } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 import useNavStore from '@/stores/useNavStore';
+import useUserStore from '@/stores/useUserStore';
 import { colors } from '@/styles/colors';
+
 function Logout() {
   const isExpand = useNavStore((state) => state.isExpand);
+  const clearUserData = useUserStore((state) => state.clearUser);
+  const navigate = useNavigate();
+
   const handleClick = () => {
-    console.log('logout!');
+    clearUserData();
+    localStorage.removeItem('userInformation');
+    navigate('/');
   };
   return (
     <div css={logout(isExpand)}>

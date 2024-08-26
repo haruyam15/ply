@@ -1,5 +1,5 @@
 const Follow = () => {
-	return <div>Follow</div>
-}
+  return <div>Follow</div>;
+};
 
-export default Follow
+export default Follow;
