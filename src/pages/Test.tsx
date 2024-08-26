@@ -1,4 +1,4 @@
 const Test = () => {
-	return <></>
-}
-export default Test
+  return <></>;
+};
+export default Test;

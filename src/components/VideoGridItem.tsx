@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
-import React from 'react';
+
 import { css } from '@emotion/react';
+
 import { colors } from '@/styles/colors';
 
 interface VideoGridItemProps {
@@ -10,7 +11,7 @@ interface VideoGridItemProps {
   thumbnail: string; // 썸네일 이미지 추가
 }
 
-const VideoGridItem: React.FC<VideoGridItemProps> = ({ src, title, user, thumbnail }) => {
+const VideoGridItem: React.FC<VideoGridItemProps> = ({ title, user, thumbnail }) => {
   return (
     <div css={gridItemStyle}>
       <img src={thumbnail} alt={title} css={thumbnailStyle} /> {/* 썸네일 이미지 */}

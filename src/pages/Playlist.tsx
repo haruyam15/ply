@@ -1,5 +1,5 @@
 function Playlist() {
-	return <>Playlist</>
+  return <>Playlist</>;
 }
 
-export default Playlist
+export default Playlist;
