@@ -3,7 +3,7 @@ import ErrorPage from '@/pages/ErrorPage'
 import Timeline from '@/pages/Timeline'
 import Playlist from '@/pages/Playlist'
 import Like from '@/pages/Like'
-import Profile from '@/pages/Profile'
+import Profile from '@/pages/MyPage'
 import Layout from '@/layout/Layout'
 import Home from '@/pages/Home'
 
@@ -31,7 +31,11 @@ export const router = createBrowserRouter([
 			},
 			{
 				path: '/profile',
-				element: <Profile />,
+				element: <MyPage />,
+			},
+			{
+				path: '/follow',
+				element: <Follow />,
 			},
 		],
 	},
