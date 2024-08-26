@@ -3,6 +3,7 @@
 import { css } from '@emotion/react';
 
 import { colors } from '@/styles/colors';
+import User from '@/layout/nav/User';
 
 interface VideoGridItemProps {
   src: string;
@@ -11,13 +12,31 @@ interface VideoGridItemProps {
   thumbnail: string; // 썸네일 이미지 추가
 }
 
+// const VideoGridItem: React.FC<VideoGridItemProps> = ({ title, user, thumbnail }) => {
+//   return (
+//     <div css={gridItemStyle}>
+//       <img src={thumbnail} alt={title} css={thumbnailStyle} /> {/* 썸네일 이미지 */}
+//       <div css={infoStyle}>
+//         <h3 css={titleStyle}>{title}</h3>
+//         <p css={userStyle}>{user}</p>
+//       </div>
+//       <div css={tagGroupStyle}>
+//         <div css={tagStyle}>게임</div>
+//         <div css={tagStyle}>게임</div>
+//         <div css={tagStyle}>게임</div>
+//         <div css={tagStyle}>게임</div>
+//       </div>
+//     </div>
+//   );
+// };
+
 const VideoGridItem: React.FC<VideoGridItemProps> = ({ title, user, thumbnail }) => {
   return (
     <div css={gridItemStyle}>
       <img src={thumbnail} alt={title} css={thumbnailStyle} /> {/* 썸네일 이미지 */}
       <div css={infoStyle}>
         <h3 css={titleStyle}>{title}</h3>
-        <p css={userStyle}>{user}</p>
+        <User profileImage="없음" nickName="손성오" userId="son" onlyImage={false} />
       </div>
       <div css={tagGroupStyle}>
         <div css={tagStyle}>게임</div>
