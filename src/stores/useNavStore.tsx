@@ -1,12 +1,12 @@
-import { create } from 'zustand'
+import { create } from 'zustand';
 
 const useNavStore = create<useNavState>((set) => ({
-	isExpand: true,
-	toggleExpand: (newState) => set(() => ({ isExpand: newState })),
-}))
+  isExpand: true,
+  toggleExpand: (newState) => set(() => ({ isExpand: newState })),
+}));
 
-export default useNavStore
+export default useNavStore;
 interface useNavState {
-	isExpand: boolean
-	toggleExpand: (newState: boolean) => void
+  isExpand: boolean;
+  toggleExpand: (newState: boolean) => void;
 }

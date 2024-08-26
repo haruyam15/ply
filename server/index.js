@@ -26,10 +26,10 @@ async function connectToDB() {
 }
 connectToDB()
 
-app.get('/api/login', async (req, res) => {
-	const { userid, password } = req.query
+app.post('/api/login', async (req, res) => {
+	const { userid, password } = req.body
 	try {
-		const user = await database.collection('information').findOne({ userid, password })
+		const user = await database.collection('users').findOne({ 'information.userid': userid , 'information.password': password  })
 		if (user) {
 			res.status(200).send({ message: 'Login successful', user })
 		} else {
@@ -59,8 +59,8 @@ app.post('/api/register', async (req, res) => {
 })
 // curl -X POST "http://localhost:8080/api/register" -H "Content-Type: application/json" -d '{"userid":"johndoe","password":"john1234","profileimage":"","nickname":"Johnny"}' ( 회원가입 )
 
-app.get('/api/followers', async (req, res) => {
-	const { userid } = req.query
+app.post('/api/followers', async (req, res) => {
+	const { userid } = req.body
 	try {
 		const user = await database.collection('users').findOne({ 'information.userid': userid })
 		if (user) {

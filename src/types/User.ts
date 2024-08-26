@@ -1,18 +1,18 @@
-import { Playlist } from './Playlist'
+import { Playlist } from '@/types/Playlist';
 
 export interface UserData {
-	information: UserInformation
-	like: string[]
-	following: FollowingFollowers[]
-	followers: FollowingFollowers[]
-	myPlayList: Playlist[]
+  information: UserInformation;
+  like: string[];
+  following: FollowingFollowers[];
+  followers: FollowingFollowers[];
+  myPlayList: Playlist[];
 }
 
 export interface UserInformation {
-	userId: string
-	password: string
-	profileImage: string
-	nickName: string
+  userId: string;
+  password: string;
+  profileImage: string;
+  nickName: string;
 }
 
-type FollowingFollowers = Omit<UserInformation, 'password'>
+type FollowingFollowers = Omit<UserInformation, 'password'>;
