@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import React from 'react'
 import { css } from '@emotion/react'
+import { colors } from '@/styles/colors'
 
 interface VideoGridItemProps {
 	src: string
@@ -17,11 +18,11 @@ const VideoGridItem: React.FC<VideoGridItemProps> = ({ src, title, user, thumbna
 				<h3 css={titleStyle}>{title}</h3>
 				<p css={userStyle}>{user}</p>
 			</div>
-			<div css={buttonGroupStyle}>
-				<button css={buttonStyle}>게임</button>
-				<button css={buttonStyle}>게임</button>
-				<button css={buttonStyle}>게임</button>
-				<button css={buttonStyle}>게임</button>
+			<div css={tagGroupStyle}>
+				<div css={tagStyle}>게임</div>
+				<div css={tagStyle}>게임</div>
+				<div css={tagStyle}>게임</div>
+				<div css={tagStyle}>게임</div>
 			</div>
 		</div>
 	)
@@ -52,6 +53,7 @@ const titleStyle = css`
 	margin: 0;
 	font-size: 16px;
 	font-weight: bold;
+	color: ${colors.};
 `
 
 const userStyle = css`
@@ -60,21 +62,21 @@ const userStyle = css`
 	font-size: 14px;
 `
 
-const buttonGroupStyle = css`
+const tagGroupStyle = css`
 	display: flex;
 	justify-content: space-between;
 	padding: 10px;
 `
 
-const buttonStyle = css`
+const tagStyle = css`
 	flex: 1;
 	margin: 0 5px;
 	padding: 8px;
 	background-color: transparent;
 	border: 1px solid #ddd;
 	border-radius: 4px;
-	cursor: pointer;
-	font-size: 14px;
+	text-align: center;
+	font-size: 12px;
 	color: #333;
 
 	&:hover {

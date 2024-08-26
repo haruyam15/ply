@@ -117,12 +117,12 @@ const slickArrowStyle = css`
 	.slick-prev,
 	.slick-next {
 		display: block !important; /* 화살표 버튼을 항상 표시 */
-		background-color: rgba(0, 0, 0, 0.5); /* 버튼 배경 색상 */
+
 		color: white;
 		border-radius: 50%;
 		width: 30px;
 		height: 30px;
-		z-index: 2; /* 버튼이 다른 요소 위에 오도록 설정 */
+		z-index: 2;
 	}
 
 	.slick-prev {

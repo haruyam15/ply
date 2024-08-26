@@ -1,0 +1,32 @@
+# hook name:
+#   This is the name of the Git hook, such as 'pre-commit', 'commit-msg', etc.
+#   commands:
+#     command name:
+#       A user-defined name for the command. This can be any descriptive name you choose.
+#       run: 'command to run'
+#       The shell command or script that will be executed when the hook is triggered.
+#
+# Example:
+#
+# pre-commit:
+#   commands:
+#     lint:
+#       run: 'npm run lint'
+pre-commit:
+  parallel: true
+  commands:
+    eslint:
+      glob: '*.{js,ts,jsx,tsx}'
+      run: npm run eslint {staged_files} --fix
+    prettier:
+      glob: '*.{js,ts,jsx,tsx,json,yaml,md}'
+      run: npm run prettier {staged_files}
+    type-check:
+      run: npm run type-check
+    audit-check:
+      run: npm audit
+
+commit-msg:
+  commands:
+    byulFormat:
+      run: 'node ./node_modules/byul/dist/index.js .git/COMMIT_EDITMSG'
