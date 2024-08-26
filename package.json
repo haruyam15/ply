@@ -8,16 +8,16 @@
 		"server": "node server/index.js",
 		"build": "tsc -b && vite build",
 		"preview": "vite preview",
-		"postinstall": "husky install",
 		"format": "prettier --cache --write .",
 		"lint": "eslint --cache .",
-		"prepare": "husky"
+		"prettier": "prettier --write 'src/**/*.{js,jsx,ts,tsx,css,html}'"
 	},
 	"dependencies": {
 		"@emotion/react": "^11.13.3",
 		"@emotion/styled": "^11.13.0",
 		"axios": "^1.7.4",
 		"byul": "^1.2.9",
+		"byulhook": "^0.1.5",
 		"cors": "^2.8.5",
 		"dotenv": "^16.4.5",
 		"express": "^4.19.2",
@@ -41,7 +41,6 @@
 		"eslint-plugin-react-hooks": "^5.1.0-rc.0",
 		"eslint-plugin-react-refresh": "^0.4.9",
 		"globals": "^15.9.0",
-		"husky": "^9.1.4",
 		"lint-staged": "^15.2.9",
 		"prettier": "^3.3.3",
 		"typescript": "^5.5.3",
