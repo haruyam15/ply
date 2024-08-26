@@ -14,5 +14,6 @@
   "requirePragma": false,
   "insertPragma": false,
   "proseWrap": "preserve",
-  "htmlWhitespaceSensitivity": "css"
+  "htmlWhitespaceSensitivity": "css",
+  "parser": "typescript"
 }
