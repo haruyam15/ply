@@ -4,27 +4,27 @@ import { css } from '@emotion/react';
 import { If } from '@/components/IfElse';
 import { colors } from '@/styles/colors';
 
-function User({ profileImage, nickName, userId, onlyImage = false }: UserProps) {
-  return (
-    <div css={userWrap}>
-      <If test={onlyImage}>
-        <If.Then>
-          <div className="profile">
-            <img width="26" height="26" src={profileImage} alt="" />
-          </div>
-        </If.Then>
-        <If.Else>
-          <div className="profile">
-            <img width="26" height="26" src={profileImage} alt="" />
-          </div>
-          <div className="user-info">
-            <p>{nickName}</p>
-            <span>{userId}</span>
-          </div>
-        </If.Else>
-      </If>
-    </div>
-  );
+function User({ profileImage, nickname, userId, onlyImage = false }: UserProps) {
+	return (
+		<div css={userWrap}>
+			<If test={onlyImage}>
+				<If.Then>
+					<div className="profile">
+						<img width="26" height="26" src={profileImage} alt="" />
+					</div>
+				</If.Then>
+				<If.Else>
+					<div className="profile">
+						<img width="26" height="26" src={profileImage} alt="" />
+					</div>
+					<div className="user-info">
+						<p>{nickname}</p>
+						<span>{userId}</span>
+					</div>
+				</If.Else>
+			</If>
+		</div>
+	)
 }
 export default User;
 
@@ -70,8 +70,8 @@ const userWrap = css`
 `;
 
 interface UserProps {
-  profileImage: string;
-  nickName: string;
-  userId: string;
-  onlyImage?: boolean;
+	profileImage: string
+	nickname: string
+	userId: string
+	onlyImage?: boolean
 }

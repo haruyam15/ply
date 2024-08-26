@@ -1,10 +1,9 @@
 /** @jsxImportSource @emotion/react */
-
-import { css } from '@emotion/react';
-import { X } from 'lucide-react';
-
-import useSignModalStore from '@/store/useSignModalStore';
-import { colors } from '@/styles/colors';
+import React from 'react'
+import { css } from '@emotion/react'
+import { colors } from '@/styles/colors'
+import { X } from 'lucide-react'
+import useSignModalStore from '@/stores/useSignModalStore'
 
 interface SignModalProps {
   children: React.ReactNode;

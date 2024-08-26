@@ -1,12 +1,12 @@
 /** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
-import { Link } from 'react-router-dom';
-
-import Button from '@/components/Button';
-import Signin from '@/components/sign/Signin';
-import Signup from '@/components/sign/Signup';
-import User from '@/layout/nav/User';
-import useSignModalStore from '@/store/useSignModalStore';
+import { css } from '@emotion/react'
+import Button from '@/components/Button'
+import Signin from '@/components/sign/Signin'
+import Signup from '@/components/sign/Signup'
+import User from '@/layout/nav/User'
+import useSignModalStore from '@/stores/useSignModalStore'
+import { Link } from 'react-router-dom'
+import useUserStore from '@/stores/useUserStore'
 const TESTURL = [
   'https://avatars.githubusercontent.com/u/131119152?s=64&v=4',
   'https://avatars.githubusercontent.com/u/143858798?s=64&v=4',
@@ -53,24 +53,29 @@ const user: UserData = {
 };
 
 function HeaderActions() {
-  const { profileImage, nickName, userId } = user.information;
-  const openSigninModal = useSignModalStore((state) => state.openModal);
-  return (
-    <>
-      <div css={headerActions}>
-        <Link to={'/profile'}>
-          <div className="user-info">
-            <User profileImage={profileImage} nickName={nickName} userId={userId} />
-          </div>
-        </Link>
-        <div onClick={() => openSigninModal('signin')}>
-          <Button>로그인</Button>
-        </div>
-        <Signin />
-        <Signup />
-      </div>
-    </>
-  );
+	const openSigninModal = useSignModalStore((state) => state.openModal)
+	const user = useUserStore((state) => state.userInformation)
+	const { profileImage, nickname, userid } = user.information
+
+	return (
+			<div css={headerActions}>
+				{userid === '' ? (
+					<>
+					<div onClick={() => openSigninModal('signin')}>
+						<Button>로그인</Button>
+				</div>
+				<Signin />
+				<Signup />
+					</>
+				) : (
+				<Link to={'/profile'}>
+					<div className="user-info">
+						<User profileImage={profileImage} nickname={nickname} userId={userid} />
+					</div>
+				</Link>
+				)}
+			</div>
+	)
 }
 
 export default HeaderActions;
