@@ -2,8 +2,8 @@
 
 import { css } from '@emotion/react';
 
-import { colors } from '@/styles/colors';
 import User from '@/layout/nav/User';
+import { colors } from '@/styles/colors';
 
 interface VideoGridItemProps {
   src: string;
@@ -39,7 +39,7 @@ const VideoGridItem: React.FC<VideoGridItemProps> = ({ title, user, thumbnail })
         <User profileImage="없음" nickName="손성오" userId="son" onlyImage={false} />
       </div>
       <div css={tagGroupStyle}>
-        <div css={tagStyle}>게임</div>
+        <div css={tagStyle}>게임1</div>
         <div css={tagStyle}>게임</div>
         <div css={tagStyle}>게임</div>
         <div css={tagStyle}>게임</div>
