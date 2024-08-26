@@ -21,10 +21,6 @@ pre-commit:
     prettier:
       glob: '*.{js,ts,jsx,tsx,json,yaml,md}'
       run: npm run prettier {staged_files}
-    type-check:
-      run: npm run type-check
-    audit-check:
-      run: npm audit
 
 commit-msg:
   commands:
