@@ -1,30 +1,29 @@
 /** @jsxImportSource @emotion/react */
-import React from 'react'
 import { css } from '@emotion/react'
 import Profile from '@/components/myPage/Profile'
 
 function MyPage() {
-  return (
-    <div css={{ margin: '0 40px' }}>
-      <Profile />
-      <div css={[menuBox, { position: 'relative' }]}>
-        <div css={{ width: '50%', position: 'relative', marginRight: '30px' }}>
-          <p css={{ position: 'absolute', right: '0' }}>Playlist</p>
-        </div>
-        <div
-          css={{
-            width: '50%',
-            display: 'flex',
-            justifyContent: 'space-between',
-            marginLeft: '30px',
-          }}
-        >
-          <p>Like</p>
-          <p>더보기</p>
-        </div>
-      </div>
-    </div>
-  )
+	return (
+		<div css={{ margin: '0 40px' }}>
+			<Profile />
+			<div css={[menuBox, { position: 'relative' }]}>
+				<div css={{ width: '50%', position: 'relative', marginRight: '30px' }}>
+					<p css={{ position: 'absolute', right: '0' }}>Playlist</p>
+				</div>
+				<div
+					css={{
+						width: '50%',
+						display: 'flex',
+						justifyContent: 'space-between',
+						marginLeft: '30px',
+					}}
+				>
+					<p>Like</p>
+					<p>더보기</p>
+				</div>
+			</div>
+		</div>
+	)
 }
 
 export default MyPage
