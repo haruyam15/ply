@@ -1,5 +1,5 @@
 function Timeline() {
-	return <>Timeline</>
+  return <>Timeline</>;
 }
 
-export default Timeline
+export default Timeline;

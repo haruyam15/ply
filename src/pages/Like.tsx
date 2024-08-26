@@ -1,5 +1,5 @@
 function Like() {
-	return <>like</>
+  return <>like</>;
 }
 
-export default Like
+export default Like;
