@@ -8,23 +8,30 @@
 		"server": "node server/index.js",
 		"build": "tsc -b && vite build",
 		"preview": "vite preview",
-		"postinstall": "husky install",
 		"format": "prettier --cache --write .",
-		"lint": "eslint --cache ."
+		"lint": "eslint --cache .",
+		"prettier": "prettier --write 'src/**/*.{js,jsx,ts,tsx,css,html}'"
 	},
 	"dependencies": {
+		"@emotion/react": "^11.13.3",
+		"@emotion/styled": "^11.13.0",
 		"axios": "^1.7.4",
-		"body-parser": "^1.20.2",
-		"byul": "^1.2.7",
+		"byul": "^1.2.9",
+		"byulhook": "^0.1.5",
 		"cors": "^2.8.5",
 		"dotenv": "^16.4.5",
 		"express": "^4.19.2",
+		"lodash": "^4.17.21",
+		"lucide-react": "^0.429.0",
 		"mongodb": "^6.8.0",
 		"react": "^18.3.1",
-		"react-dom": "^18.3.1"
+		"react-dom": "^18.3.1",
+		"react-router-dom": "^6.26.1",
+		"zustand": "^4.5.5"
 	},
 	"devDependencies": {
 		"@eslint/js": "^9.9.0",
+		"@types/lodash": "^4.17.7",
 		"@types/react": "^18.3.3",
 		"@types/react-dom": "^18.3.0",
 		"@vitejs/plugin-react": "^4.3.1",
@@ -34,7 +41,6 @@
 		"eslint-plugin-react-hooks": "^5.1.0-rc.0",
 		"eslint-plugin-react-refresh": "^0.4.9",
 		"globals": "^15.9.0",
-		"husky": "^9.1.4",
 		"lint-staged": "^15.2.9",
 		"prettier": "^3.3.3",
 		"typescript": "^5.5.3",
