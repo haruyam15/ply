@@ -4,7 +4,7 @@ import { css } from '@emotion/react';
 
 import { colors } from '@/styles/colors';
 
-import User from '@/layout/nav/User';
+import User from './User';
 
 interface VideoGridItemProps {
   src: string; // 비디오 URL 추가
@@ -25,7 +25,7 @@ const VideoGridItem: React.FC<VideoGridItemProps> = ({ src, title }) => {
       />
       <div css={infoStyle}>
         <h3 css={titleStyle}>{title}</h3>
-        <User profileImage="없음" nickName="손성오" userId="son" onlyImage={false} />
+        <User profileimage="없음" nickname="손성오" userid="son" onlyImage={false} />
       </div>
       <div css={tagGroupStyle}>
         <div css={tagStyle}>게임</div>
