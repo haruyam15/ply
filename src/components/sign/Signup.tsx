@@ -58,7 +58,7 @@ const Signup: React.FC = () => {
           openSigninModal('signin');
         }
       } catch (error) {
-        console.error(error)
+        console.error(error);
         toast.error('계정 생성 중에 오류가 발생하였습니다. 다시 시도해주세요.');
       }
     }
@@ -75,11 +75,11 @@ const Signup: React.FC = () => {
           userid: newUser.userid,
           nickname: newUser.nickname,
         });
-        if(res.status === 200){
-          addNewUser()
+        if (res.status === 200) {
+          addNewUser();
         }
       } catch (error) {
-        if(axios.isAxiosError(error)) {
+        if (axios.isAxiosError(error)) {
           if (error.response && error.response.status === 400) {
             const { field } = error.response.data;
             if (field === 'userid') {
@@ -93,8 +93,6 @@ const Signup: React.FC = () => {
     };
     validation();
   }, [newUser, addNewUser]);
-
-
 
   const children: React.ReactNode = (
     <>
