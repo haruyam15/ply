@@ -1,10 +1,12 @@
 /** @jsxImportSource @emotion/react */
+import { useState } from 'react';
+
 import { css } from '@emotion/react';
-import { colors } from '@/styles/colors';
-import useNavStore from '@/stores/useNavStore';
-import React, { useState } from 'react';
+
 import { If } from '@/components/IfElse';
 import FList from '@/layout/nav/FList';
+import useNavStore from '@/stores/useNavStore';
+import { colors } from '@/styles/colors';
 import { Tab } from '@/types/Nav';
 
 const FOLLOWING = 'following';

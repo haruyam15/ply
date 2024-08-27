@@ -5,14 +5,14 @@ export interface UserData {
   like: string[];
   following: FollowingFollowers[];
   followers: FollowingFollowers[];
-  myPlayList: Playlist[];
+  myplaylist: Playlist[];
 }
 
 export interface UserInformation {
-  userId: string;
+  userid: string;
   password: string;
-  profileImage: string;
-  nickName: string;
+  profileimage: string;
+  nickname: string;
 }
 
 type FollowingFollowers = Omit<UserInformation, 'password'>;
