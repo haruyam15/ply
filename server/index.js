@@ -42,16 +42,45 @@ app.post('/api/login', async (req, res) => {
 // 로그인 성공 curl -X GET "http://localhost:8080/api/login?userid=johndoe&password=john1234"
 // 로그인 실패 curl -X GET "http://localhost:8080/api/login?userid=invaliduser&password=invalidpass"
 
+app.post('/api/signup/validate', async (req, res) => {
+	const { userid, nickname } = req.body
+	try {
+    const foundUser = await database.collection('users').findOne({
+      $or: [{ 'information.userid': userid }, { 'information.nickname': nickname }]
+    });
+    if (foundUser) {
+      if (foundUser.information.userid === userid) {
+        return res.status(400).send({ field:'userid', message: 'ID is already taken' });
+      }
+      if (foundUser.information.nickname === nickname) {
+        return res.status(400).send({ field:'nickname',message: 'Nickname is already taken' });
+      }
+    }
+    res.status(200).send({ message: 'Validation successful' });
+	} catch (error) {
+		res.status(500).send(error)
+	}
+})
+
 app.post('/api/register', async (req, res) => {
-	const { userid, password, profileimage, nickname } = req.body
+	const { userid, password, nickname } = req.body
+	if (!userid || !password || !nickname) {
+    return res.status(400).send({ message: 'All fields are required' })
+  }
 	try {
 		const newUser = {
-			userid,
-			password,
-			profileimage,
-			nickname,
+			id: userid,
+			information: {
+				userid,
+        password,
+        profileimage: '',
+        nickname,
+			},
+			like: [],
+			following: [],
+      followers: []
 		}
-		const result = await database.collection('information').insertOne(newUser)
+		const result = await database.collection('users').insertOne(newUser)
 		res.status(201).send({ message: 'User registered successfully', userId: result.insertedId })
 	} catch (error) {
 		res.status(500).send(error)
