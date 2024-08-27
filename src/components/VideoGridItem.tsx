@@ -55,7 +55,7 @@ const infoStyle = css`
 `;
 
 const titleStyle = css`
-  margin: 0;
+  margin-bottom: 10px;
   padding-left: 8px;
   font-size: 16px;
   font-weight: bold;

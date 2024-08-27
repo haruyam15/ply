@@ -1,53 +1,39 @@
 /** @jsxImportSource @emotion/react */
+import { useState, useEffect } from 'react';
+
 import { css } from '@emotion/react';
 import { useNavigate } from 'react-router-dom';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
+import SkeletonGridItem from '@/components/SkeletionGridItem';
 import VideoGridItem from '@/components/VideoGridItem';
+import gridItemsData from '@/data/gridItemData';
 import { colors } from '@/styles/colors';
 
 // Home 컴포넌트 정의
 const Home: React.FC = () => {
   const navigate = useNavigate();
+  const [visibleItems, setVisibleItems] = useState(8); // 탐색 부분에서 보일 아이템 개수
+  const [loading, setLoading] = useState(false); // 로딩 상태 추가
 
-  // YouTube 비디오 ID 목록
-  const videoIds = ['pERDk4KoW-s', 'dQw4w9WgXcQ', 'C0DPdy98e4c'];
+  // 무한 스크롤 처리
+  useEffect(() => {
+    const handleScroll = () => {
+      const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+      if (scrollTop + clientHeight >= scrollHeight - 5) {
+        setLoading(true); // 로딩 시작
+        setTimeout(() => {
+          setVisibleItems((prev) => prev + 8);
+          setLoading(false); // 로딩 종료
+        }, 1000); // 로딩 시간을 1초로 설정 (예시)
+      }
+    };
 
-  // 그리드 항목 데이터
-  const gridItems = [
-    {
-      videoId: 'pERDk4KoW-s',
-      title: '백예린-Antifreeze',
-      user: 'Lovelace',
-    },
-    {
-      videoId: 'dQw4w9WgXcQ',
-      title: 'Example Domain 1',
-      user: 'User1',
-    },
-    {
-      videoId: 'C0DPdy98e4c',
-      title: 'Example Domain 2',
-      user: 'User2',
-    },
-    {
-      videoId: 'pERDk4KoW-s',
-      title: '백예린-Antifreeze',
-      user: 'Lovelace',
-    },
-    {
-      videoId: 'pERDk4KoW-s',
-      title: '백예린-Antifreeze',
-      user: 'Lovelace',
-    },
-    {
-      videoId: 'pERDk4KoW-s',
-      title: '백예린-Antifreeze',
-      user: 'Lovelace',
-    },
-  ];
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Slider 설정
   const settings = {
@@ -56,15 +42,11 @@ const Home: React.FC = () => {
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
-    arrows: true, // 화살표 버튼 활성화
+    arrows: true,
   };
 
   const navigateToTimeline = () => {
     navigate('/timeline'); // '/timeline' 경로로 이동
-  };
-
-  const navigateToSearch = () => {
-    navigate('/search');
   };
 
   return (
@@ -72,7 +54,7 @@ const Home: React.FC = () => {
       {/* 캐러셀 섹션 */}
       <div css={[carouselStyle, slickArrowStyle]}>
         <Slider {...settings}>
-          {videoIds.map((videoId, index) => (
+          {['pERDk4KoW-s', 'dQw4w9WgXcQ', 'C0DPdy98e4c'].map((videoId, index) => (
             <div key={index} css={slideStyle}>
               <img
                 src={`https://img.youtube.com/vi/${videoId}/hqdefault.jpg`}
@@ -89,22 +71,24 @@ const Home: React.FC = () => {
           더보기
         </button>
       </div>
-      {/* 그리드 섹션 */}
+      {/* 타임라인 그리드 섹션 */}
       <div css={gridContainerStyle}>
-        {gridItems.map((item, index) => (
+        {gridItemsData.slice(0, 8).map((item, index) => (
           <VideoGridItem key={index} {...item} />
         ))}
       </div>
       <div css={TimeLineStyle}>
         <div>탐색</div>
-        <button onClick={navigateToSearch} css={SeeMore}>
-          더보기
-        </button>
       </div>
+      {/* 탐색 그리드 섹션 - 무한 스크롤 */}
       <div css={gridContainerStyle}>
-        {gridItems.map((item, index) => (
+        {gridItemsData.slice(0, visibleItems).map((item, index) => (
           <VideoGridItem key={index} {...item} />
         ))}
+        {loading &&
+          Array.from({ length: 8 }).map((_, index) => (
+            <SkeletonGridItem key={index} /> // 로딩 중일 때 스켈레톤 UI 표시
+          ))}
       </div>
     </div>
   );
@@ -179,7 +163,7 @@ const SeeMore = css`
   font: inherit;
 
   &:hover {
-    background-color: ${colors.darkestGray}; /* hover 시 회색 배경으로 변경 */
+    background-color: ${colors.darkestGray};
     border-radius: 5px;
   }
 `;
