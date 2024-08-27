@@ -4,6 +4,7 @@ import { X } from 'lucide-react';
 
 import useSignModalStore from '@/stores/useSignModalStore';
 import { colors } from '@/styles/colors';
+import React from 'react';
 
 interface SignModalProps {
   children: React.ReactNode;
@@ -48,7 +49,6 @@ const loginModalArea = css`
   background-color: #1d1d1d;
   border-radius: 15px;
   color: ${colors.white};
-  display: flex;
   align-items: center;
 `;
 const closeBtn = css`
