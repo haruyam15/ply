@@ -16,6 +16,7 @@ function Logout() {
     clearUserData();
     localStorage.removeItem('userInformation');
     navigate('/');
+    location.reload();
   };
   return (
     <div css={logout(isExpand)}>

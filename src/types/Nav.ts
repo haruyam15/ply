@@ -1,1 +1,1 @@
-export type Tab = 'following' | 'followers'
+export type Tab = 'following' | 'followers';

@@ -3,7 +3,7 @@ import { css } from '@emotion/react';
 import { Link } from 'react-router-dom';
 
 import Button from '@/components/Button';
-import Signin from '@/components/sign/Signin';
+import Signin, { realUserData } from '@/components/sign/Signin';
 import Signup from '@/components/sign/Signup';
 import User from '@/components/User';
 import useSignModalStore from '@/stores/useSignModalStore';
@@ -16,7 +16,13 @@ function HeaderActions() {
 
   return (
     <div css={headerActions}>
-      {userid === '' ? (
+      {realUserData?.userid === userid ? (
+        <Link to={'/profile'}>
+          <div className="user-info">
+            <User profileimage={profileimage} nickname={nickname} userid={userid} size="md" />
+          </div>
+        </Link>
+      ) : (
         <>
           <div onClick={() => openSigninModal('signin')}>
             <Button>로그인</Button>
@@ -24,12 +30,6 @@ function HeaderActions() {
           <Signin />
           <Signup />
         </>
-      ) : (
-        <Link to={'/profile'}>
-          <div className="user-info">
-            <User profileimage={profileimage} nickname={nickname} userid={userid} size="md" />
-          </div>
-        </Link>
       )}
     </div>
   );

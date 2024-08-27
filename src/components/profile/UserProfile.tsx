@@ -9,7 +9,7 @@ interface ProfileProps {
   user: IUser;
 }
 
-interface RealUserData {
+export interface RealUserData {
   userid: string;
   profileimage: string;
   nickname: string;
@@ -18,11 +18,10 @@ interface RealUserData {
   following: string[];
 }
 
-const Profile: React.FC<ProfileProps> = ({ user }) => {
+const UserProfile: React.FC<ProfileProps> = ({ user }) => {
   const { profileimage, nickname, userid } = user.information;
   const storageUserData = localStorage.getItem('userInformation');
   const realUserData: RealUserData | null = storageUserData ? JSON.parse(storageUserData) : null;
-  console.log(realUserData);
 
   return (
     <div css={{ display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '20px' }}>
@@ -56,7 +55,7 @@ const Profile: React.FC<ProfileProps> = ({ user }) => {
   );
 };
 
-export default Profile;
+export default UserProfile;
 
 const profileimageArea = css`
   width: 230px;
