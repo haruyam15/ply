@@ -14,6 +14,21 @@ interface LoginData {
   password: string | null;
 }
 
+interface RealUserData {
+  _id: string;
+  userid: string;
+  profileimage: string;
+  nickname: string;
+  password: string;
+  followers: string[];
+  following: string[];
+}
+
+const storageUserData = localStorage.getItem('userInformation');
+export const realUserData: RealUserData | null = storageUserData
+  ? JSON.parse(storageUserData)
+  : null;
+
 const Signin: React.FC = () => {
   const signinModal = useSignModalStore((state) => state.signModals);
   const openSigninModal = useSignModalStore((state) => state.openModal);
@@ -39,12 +54,12 @@ const Signin: React.FC = () => {
             password: loginData.password,
           });
           const userData = res.data.user;
-          console.log(userData);
           if (userData.information.userid) {
             setUserData(userData);
             localStorage.setItem(
               'userInformation',
               JSON.stringify({
+                _id: userData._id,
                 userid: userData.information.userid,
                 password: userData.information.password,
                 profileimage: userData.information.profileimage,
@@ -54,6 +69,7 @@ const Signin: React.FC = () => {
               }),
             );
             closeSigninModal('signin');
+            location.reload();
           }
         } catch (error) {
           console.error(error);
@@ -62,6 +78,21 @@ const Signin: React.FC = () => {
       fetchUserData();
     }
   }, [loginData, setUserData, closeSigninModal]);
+
+  if (realUserData) {
+    const userData = {
+      information: {
+        _id: realUserData._id,
+        userid: realUserData.userid,
+        password: realUserData.password,
+        profileimage: realUserData.profileimage,
+        nickname: realUserData.nickname,
+      },
+      followers: realUserData.followers,
+      following: realUserData.following,
+    };
+    setUserData(userData);
+  }
 
   const children: React.ReactNode = (
     <>

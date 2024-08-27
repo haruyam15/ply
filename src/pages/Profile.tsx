@@ -1,15 +1,15 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 
-import Profile from '@/components/myPage/Profile';
+import UserProfile from '@/components/profile/UserProfile';
 import useUserStore from '@/stores/useUserStore';
 
-function MyPage() {
+function Profile() {
   const user = useUserStore((state) => state.userInformation);
 
   return (
     <div css={{ margin: '0 40px' }}>
-      <Profile user={user} />
+      <UserProfile user={user} />
       <div css={[menuBox, { position: 'relative' }]}>
         <div css={{ width: '50%', position: 'relative', marginRight: '30px' }}>
           <p css={{ position: 'absolute', right: '0' }}>Playlist</p>
@@ -30,7 +30,7 @@ function MyPage() {
   );
 }
 
-export default MyPage;
+export default Profile;
 
 const menuBox = css`
   width: 100%;
