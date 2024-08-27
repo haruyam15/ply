@@ -1,16 +1,17 @@
 /** @jsxImportSource @emotion/react */
+import React, { useEffect, useState } from 'react';
+
+import { css } from '@emotion/react';
+
 import SkeletonGridItem from '@/components/SkeletionGridItem';
 import TitleHeader from '@/components/TitleHeader';
 import VideoGridItem from '@/components/VideoGridItem';
 import gridItemsData from '@/data/gridItemData';
-import { css } from '@emotion/react';
-import React, { useEffect, useState } from 'react';
 
 const Playlist: React.FC = () => {
   const [visibleItems, setVisibleItems] = useState(16);
   const [loading, setLoading] = useState(false);
 
-  // 무한 스크롤 처리
   useEffect(() => {
     const handleScroll = () => {
       const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
@@ -29,10 +30,8 @@ const Playlist: React.FC = () => {
 
   return (
     <div css={containerStyle}>
-      {/* Like 페이지의 헤더 */}
       <TitleHeader profileImage="없음" nickname="손성오" actionText="Playlist" />
 
-      {/* Like 그리드 섹션 - 무한 스크롤 */}
       <div css={gridContainerStyle}>
         {gridItemsData.slice(0, visibleItems).map((item, index) => (
           <VideoGridItem key={index} {...item} />

@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import React from 'react';
+
 import { css } from '@emotion/react';
 
 interface TitleHeaderProps {
@@ -17,7 +18,7 @@ const TitleHeader: React.FC<TitleHeaderProps> = ({ profileImage, nickname, actio
           {nickname}님의 {actionText}
         </span>
       </div>
-      <div css={lineStyle}></div> {/* 흰색 선 추가 */}
+      <div css={lineStyle}></div>
     </div>
   );
 };
