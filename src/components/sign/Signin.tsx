@@ -112,7 +112,7 @@ const Signin: React.FC = () => {
             htmlFor="remember"
           >
             <input css={{ cursor: 'pointer' }} type="checkBox" id="remember" defaultChecked />
-            Remember me
+            Remember ID
           </label>
         </div>
         <div>
@@ -122,7 +122,7 @@ const Signin: React.FC = () => {
         </div>
       </form>
       <p css={{ fontSize: '14px', marginBottom: '40px' }}>
-        Don't have an account?
+        계정이 없으신가요?
         <button
           css={modalMovementBtn}
           onClick={() => {
@@ -188,7 +188,7 @@ export const submitBtn = css`
   background-color: ${colors.primaryGreen};
   color: ${colors.white};
   font-size: 20px;
-  font-weight: 400;
+  font-weight: 600;
   cursor: pointer;
   &:hover {
     background-color: #00ffa2e2;
