@@ -4,22 +4,22 @@ import { css } from '@emotion/react';
 import { If } from '@/components/IfElse';
 import { colors } from '@/styles/colors';
 
-function User({ profileImage, nickName, userId, onlyImage = false, size = 'sm' }: UserProps) {
+function User({ profileimage, nickname, userid, onlyImage = false, size = 'sm' }: UserProps) {
   return (
     <div css={userWrap(size)}>
       <If test={onlyImage}>
         <If.Then>
           <div className="profile">
-            <img src={profileImage} alt="" />
+            <img src={profileimage} alt="" />
           </div>
         </If.Then>
         <If.Else>
           <div className="profile">
-            <img width="26" height="26" src={profileImage} alt="" />
+            <img width="26" height="26" src={profileimage} alt="" />
           </div>
           <div className="user-info">
-            <p>{nickName}</p>
-            <span>{userId}</span>
+            <p>{nickname}</p>
+            <span>{userid}</span>
           </div>
         </If.Else>
       </If>
@@ -105,9 +105,9 @@ const userWrap = (size: Size) => css`
 `;
 
 interface UserProps {
-  profileImage: string;
-  nickName: string;
-  userId: string;
+  userid: string;
+  profileimage: string;
+  nickname: string;
   onlyImage?: boolean;
   size?: Size;
 }

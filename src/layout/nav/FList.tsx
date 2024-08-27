@@ -64,9 +64,9 @@ function FList({ tab }: FListProps) {
       {user[tab].map((f, i) => (
         <li key={i}>
           <User
-            profileImage={f.profileimage}
-            nickName={f.nickname}
-            userId={f.userid}
+            profileimage={f.profileimage}
+            nickname={f.nickname}
+            userid={f.userid}
             onlyImage={!isExpand}
           />
         </li>

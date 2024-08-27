@@ -81,9 +81,9 @@ function Comments() {
         <div className="write-wrap">
           <div className="writer">
             <User
-              profileImage={profileimage}
-              nickName={nickname}
-              userId={userid}
+              profileimage={profileimage}
+              nickname={nickname}
+              userid={userid}
               size="md"
               onlyImage={true}
             />
@@ -96,9 +96,9 @@ function Comments() {
         <li>
           <div className="writer-profile">
             <User
-              profileImage={profileimage}
-              nickName={nickname}
-              userId={userid}
+              profileimage={profileimage}
+              nickname={nickname}
+              userid={userid}
               size="md"
               onlyImage={true}
             />
@@ -118,9 +118,9 @@ function Comments() {
         <li>
           <div className="writer-profile">
             <User
-              profileImage={TESTURL[2]}
-              nickName={nickname}
-              userId={userid}
+              profileimage={TESTURL[2]}
+              nickname={nickname}
+              userid={userid}
               size="md"
               onlyImage={true}
             />
@@ -140,9 +140,9 @@ function Comments() {
         <li>
           <div className="writer-profile">
             <User
-              profileImage={TESTURL[1]}
-              nickName={nickname}
-              userId={userid}
+              profileimage={TESTURL[1]}
+              nickname={nickname}
+              userid={userid}
               size="md"
               onlyImage={true}
             />
@@ -162,9 +162,9 @@ function Comments() {
         <li>
           <div className="writer-profile">
             <User
-              profileImage={TESTURL[3]}
-              nickName={nickname}
-              userId={userid}
+              profileimage={TESTURL[3]}
+              nickname={nickname}
+              userid={userid}
               size="md"
               onlyImage={true}
             />
@@ -184,9 +184,9 @@ function Comments() {
         <li>
           <div className="writer-profile">
             <User
-              profileImage={TESTURL[0]}
-              nickName={nickname}
-              userId={userid}
+              profileimage={TESTURL[0]}
+              nickname={nickname}
+              userid={userid}
               size="md"
               onlyImage={true}
             />

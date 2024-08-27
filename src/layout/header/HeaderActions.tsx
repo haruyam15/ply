@@ -27,7 +27,7 @@ function HeaderActions() {
       ) : (
         <Link to={'/profile'}>
           <div className="user-info">
-            <User profileImage={profileimage} nickName={nickname} userId={userid} size="md" />
+            <User profileimage={profileimage} nickname={nickname} userid={userid} size="md" />
           </div>
         </Link>
       )}
