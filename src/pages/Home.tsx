@@ -19,7 +19,7 @@ const Home: React.FC = () => {
   const gridItems = [
     {
       src: 'https://www.youtube.com/embed/pERDk4KoW-s',
-      title: '2024 롤 명경기 모음집',
+      title: '백예린-Antifreeze',
       user: 'Lovelace',
       thumbnail: 'https://via.placeholder.com/300x150.png?text=Thumbnail+1',
     },
@@ -34,6 +34,30 @@ const Home: React.FC = () => {
       title: 'Example Domain 2',
       user: 'User2',
       thumbnail: 'https://via.placeholder.com/300x150.png?text=Thumbnail+3',
+    },
+    {
+      src: 'https://example.com',
+      title: 'Example Domain 3',
+      user: 'User3',
+      thumbnail: 'https://via.placeholder.com/300x150.png?text=Thumbnail+4',
+    },
+    {
+      src: 'https://example.com',
+      title: 'Example Domain 3',
+      user: 'User3',
+      thumbnail: 'https://via.placeholder.com/300x150.png?text=Thumbnail+4',
+    },
+    {
+      src: 'https://example.com',
+      title: 'Example Domain 3',
+      user: 'User3',
+      thumbnail: 'https://via.placeholder.com/300x150.png?text=Thumbnail+4',
+    },
+    {
+      src: 'https://example.com',
+      title: 'Example Domain 3',
+      user: 'User3',
+      thumbnail: 'https://via.placeholder.com/300x150.png?text=Thumbnail+4',
     },
     {
       src: 'https://example.com',
@@ -72,8 +96,20 @@ const Home: React.FC = () => {
           ))}
         </Slider>
       </div>
-
+      <div css={TimeLineStyle}>
+        <div>타임라인</div>
+        <div>더보기</div>
+      </div>
       {/* 그리드 섹션 */}
+      <div css={gridContainerStyle}>
+        {gridItems.map((item, index) => (
+          <VideoGridItem key={index} {...item} />
+        ))}
+      </div>
+      <div css={TimeLineStyle}>
+        <div>탐색</div>
+        <div>더보기</div>
+      </div>
       <div css={gridContainerStyle}>
         {gridItems.map((item, index) => (
           <VideoGridItem key={index} {...item} />
@@ -88,6 +124,7 @@ const containerStyle = css`
   width: 100%; /* 전체 너비 사용 */
   max-width: 1200px; /* 원하는 최대 너비 설정 */
   margin: 0 auto; /* 가운데 정렬 */
+  margin-top: 40px;
 `;
 
 const carouselStyle = css`
@@ -106,7 +143,7 @@ const slideStyle = css`
 
 const iframeStyle = css`
   width: 80%; /* iframe의 너비를 80%로 설정 */
-  height: 500px; /* iframe의 높이를 캐러셀 컨테이너에 맞춤 */
+  height: 300px; /* iframe의 높이를 캐러셀 컨테이너에 맞춤 */
   display: block; /* 블록 요소로 설정하여 margin이 작동하도록 함 */
   margin: 0 auto; /* 가운데 정렬 */
   border: none;
@@ -132,6 +169,15 @@ const slickArrowStyle = css`
   .slick-next {
     right: 10px; /* 오른쪽 버튼 위치 조정 */
   }
+`;
+
+const TimeLineStyle = css`
+  display: flex;
+  justify-content: space-between;
+  font-size: 20px;
+  margin-top: 40px;
+  padding: 0px 30px;
+  font-weight: bold;
 `;
 
 const gridContainerStyle = css`
