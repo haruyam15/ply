@@ -15,8 +15,8 @@ import { colors } from '@/styles/colors';
 // Home 컴포넌트 정의
 const Home: React.FC = () => {
   const navigate = useNavigate();
-  const [visibleItems, setVisibleItems] = useState(8); // 탐색 부분에서 보일 아이템 개수
-  const [loading, setLoading] = useState(false); // 로딩 상태 추가
+  const [visibleItems, setVisibleItems] = useState(8);
+  const [loading, setLoading] = useState(false);
 
   // 무한 스크롤 처리
   useEffect(() => {
