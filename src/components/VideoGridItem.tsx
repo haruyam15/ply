@@ -7,22 +7,17 @@ import { colors } from '@/styles/colors';
 import User from './User';
 
 interface VideoGridItemProps {
-  src: string; // 비디오 URL 추가
+  videoId: string; // 비디오 ID 추가
   title: string;
-  user: string; // 사용자 이름 추가
+  user: string;
 }
 
-const VideoGridItem: React.FC<VideoGridItemProps> = ({ src, title }) => {
+const VideoGridItem: React.FC<VideoGridItemProps> = ({ videoId, title }) => {
+  const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+
   return (
     <div css={gridItemStyle}>
-      <iframe
-        src={src}
-        title={title}
-        css={iframeStyle}
-        frameBorder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowFullScreen
-      />
+      <img src={thumbnailUrl} alt={title} css={thumbnailStyle} />
       <div css={infoStyle}>
         <h3 css={titleStyle}>{title}</h3>
         <User profileimage="없음" nickname="손성오" userid="son" onlyImage={false} />
@@ -47,10 +42,10 @@ const gridItemStyle = css`
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 `;
 
-const iframeStyle = css`
+const thumbnailStyle = css`
   width: 100%;
   height: 140px;
-  border: none;
+  object-fit: cover;
   border-radius: 12px;
 `;
 
@@ -60,7 +55,7 @@ const infoStyle = css`
 `;
 
 const titleStyle = css`
-  margin: 0;
+  margin-bottom: 10px;
   padding-left: 8px;
   font-size: 16px;
   font-weight: bold;

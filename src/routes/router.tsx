@@ -7,6 +7,7 @@ import Home from '@/pages/Home';
 import Like from '@/pages/Like';
 import Playlist from '@/pages/Playlist';
 import Profile from '@/pages/Profile';
+import Search from '@/pages/Search';
 import Timeline from '@/pages/Timeline';
 import Watch from '@/pages/Watch';
 
@@ -43,6 +44,10 @@ export const router = createBrowserRouter([
       {
         path: '/follow',
         element: <Follow />,
+      },
+      {
+        path: '/search',
+        element: <Search />,
       },
     ],
   },
