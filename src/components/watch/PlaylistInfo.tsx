@@ -71,7 +71,7 @@ function PlaylistInfo() {
           <Button size="md">
             <Heart size="18" /> <span>244</span>
           </Button>
-          <Tags />
+          <Tags tags={['윤하', '라이브', ' 페스티벌', '뷰티풀 민트 라이프']} />
         </div>
       </div>
 
