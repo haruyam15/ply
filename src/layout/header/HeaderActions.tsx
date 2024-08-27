@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import Button from '@/components/Button';
 import Signin from '@/components/sign/Signin';
 import Signup from '@/components/sign/Signup';
-import User from '@/layout/nav/User';
+import User from '@/components/User';
 import useSignModalStore from '@/stores/useSignModalStore';
 import useUserStore from '@/stores/useUserStore';
 
@@ -27,7 +27,7 @@ function HeaderActions() {
       ) : (
         <Link to={'/profile'}>
           <div className="user-info">
-            <User profileimage={profileimage} nickname={nickname} userId={userid} />
+            <User profileimage={profileimage} nickname={nickname} userid={userid} size="md" />
           </div>
         </Link>
       )}

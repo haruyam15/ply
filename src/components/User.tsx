@@ -4,13 +4,13 @@ import { css } from '@emotion/react';
 import { If } from '@/components/IfElse';
 import { colors } from '@/styles/colors';
 
-function User({ profileimage, nickname, userId, onlyImage = false }: UserProps) {
+function User({ profileimage, nickname, userid, onlyImage = false, size = 'sm' }: UserProps) {
   return (
-    <div css={userWrap}>
+    <div css={userWrap(size)}>
       <If test={onlyImage}>
         <If.Then>
           <div className="profile">
-            <img width="26" height="26" src={profileimage} alt="" />
+            <img src={profileimage} alt="" />
           </div>
         </If.Then>
         <If.Else>
@@ -19,7 +19,7 @@ function User({ profileimage, nickname, userId, onlyImage = false }: UserProps) 
           </div>
           <div className="user-info">
             <p>{nickname}</p>
-            <span>{userId}</span>
+            <span>{userid}</span>
           </div>
         </If.Else>
       </If>
@@ -28,13 +28,12 @@ function User({ profileimage, nickname, userId, onlyImage = false }: UserProps) 
 }
 export default User;
 
-const userWrap = css`
+const userWrap = (size: Size) => css`
   width: 100%;
   display: flex;
   position: relative;
   align-items: center;
   border-radius: 8px;
-  padding: 8px;
   box-sizing: border-box;
 
   .profile {
@@ -48,9 +47,12 @@ const userWrap = css`
     background-origin: border-box;
 
     img {
+      width: 26px;
+      height: 26px;
       background-color: rgba(255, 255, 255, 0.06);
       border-radius: inherit;
-      margin: 2px;
+      padding: 2px;
+      box-sizing: border-box;
       object-fit: cover;
     }
   }
@@ -67,11 +69,47 @@ const userWrap = css`
       font-size: 12px;
     }
   }
+
+  ${size === 'md' &&
+  `
+	.profile {
+		img{
+			width:36px;
+			height:36px
+		}
+	}
+
+	.user-info {
+		font-size: 16px;
+		span {
+			font-size: 14px;
+		}
+	}
+  `}
+
+  ${size === 'lg' &&
+  `
+	.profile {
+		img{
+			width:46px;
+			height:46px
+		}
+	}
+	.user-info {
+		font-size: 18px;
+		span {
+			font-size: 16px;
+		}
+	}
+  `}
 `;
 
 interface UserProps {
+  userid: string;
   profileimage: string;
   nickname: string;
-  userId: string;
   onlyImage?: boolean;
+  size?: Size;
 }
+
+type Size = 'sm' | 'md' | 'lg';

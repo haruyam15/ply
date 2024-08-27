@@ -1,13 +1,12 @@
 import { createBrowserRouter } from 'react-router-dom';
-
-import Layout from '@/layout/Layout';
 import ErrorPage from '@/pages/ErrorPage';
-import Follow from '@/pages/Follow';
-import Home from '@/pages/Home';
+import Timeline from '@/pages/Timeline';
+import Playlist from '@/pages/Playlist';
 import Like from '@/pages/Like';
 import MyPage from '@/pages/MyPage';
-import Playlist from '@/pages/Playlist';
-import Timeline from '@/pages/Timeline';
+import Layout from '@/layout/Layout';
+import Home from '@/pages/Home';
+import Watch from '@/pages/Watch';
 
 export const router = createBrowserRouter([
   {
@@ -32,12 +31,12 @@ export const router = createBrowserRouter([
         element: <Like />,
       },
       {
-        path: '/profile',
+        path: '/mypage',
         element: <MyPage />,
       },
       {
-        path: '/follow',
-        element: <Follow />,
+        path: '/watch',
+        element: <Watch />,
       },
     ],
   },

@@ -17,7 +17,7 @@
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
     "axios": "^1.7.4",
-    "byul": "^1.2.9",
+    "byul": "^1.3.0",
     "byulhook": "^0.1.7",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
