@@ -2,8 +2,9 @@
 
 import { css } from '@emotion/react';
 
-import User from '@/layout/nav/User';
 import { colors } from '@/styles/colors';
+
+import User from '@/layout/nav/User';
 
 interface VideoGridItemProps {
   src: string; // 비디오 URL 추가
