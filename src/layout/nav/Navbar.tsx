@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 
+import { realUserData } from '@/components/sign/Signin';
 import Banner from '@/layout/nav/Banner';
 import FollowingFollowers from '@/layout/nav/FollowingFollowers';
 import Logout from '@/layout/nav/Logout';
@@ -19,7 +20,7 @@ function Navbar() {
           <NavList />
           <FollowingFollowers />
           {isExpand && <Banner />}
-          <Logout />
+          {realUserData ? <Logout /> : null}
         </div>
       </div>
     </nav>

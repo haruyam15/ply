@@ -7,6 +7,7 @@ import { If } from '@/components/IfElse';
 import FList from '@/layout/nav/FList';
 import useNavStore from '@/stores/useNavStore';
 import { colors } from '@/styles/colors';
+import { Tab } from '@/types/Nav';
 
 const FOLLOWING = 'following';
 const FOLLOWERS = 'followers';
@@ -134,5 +135,3 @@ const tabWrap = css`
     }
   }
 `;
-
-type Tab = 'following' | 'followers';

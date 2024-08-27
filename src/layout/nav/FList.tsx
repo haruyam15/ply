@@ -1,8 +1,10 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 
-import User from '@/layout/nav/User';
+import User from '@/components/User';
 import useNavStore from '@/stores/useNavStore';
+import { Tab } from '@/types/Nav';
+import { UserData } from '@/types/User';
 
 const TESTURL = [
   'https://avatars.githubusercontent.com/u/131119152?s=64&v=4',
@@ -12,41 +14,47 @@ const TESTURL = [
   'https://avatars.githubusercontent.com/u/110523397?v=4',
 ];
 const user: UserData = {
-  information: { userId: 'haruyam15', profileImage: TESTURL[4], nickName: '하루얌' },
-  subscription: ['playlist1', 'playlist2'],
+  information: {
+    userid: 'haruyam15',
+    profileimage: TESTURL[4],
+    nickname: '하루얌',
+    password: '1234',
+  },
+  like: ['playlist1', 'playlist2'],
   following: [
     {
-      userId: 'Sonseongoh',
-      nickName: '성오',
-      profileImage: TESTURL[0],
+      userid: 'Sonseongoh',
+      nickname: '성오',
+      profileimage: TESTURL[0],
     },
     {
-      userId: 'dhkim511',
-      nickName: '도형',
-      profileImage: TESTURL[1],
+      userid: 'dhkim511',
+      nickname: '도형',
+      profileimage: TESTURL[1],
     },
     {
-      userId: 'love1ace',
-      nickName: '동영',
-      profileImage: TESTURL[2],
+      userid: 'love1ace',
+      nickname: '동영',
+      profileimage: TESTURL[2],
     },
     {
-      userId: 'ssumanlife',
-      nickName: '수민',
-      profileImage: TESTURL[3],
+      userid: 'ssumanlife',
+      nickname: '수민',
+      profileimage: TESTURL[3],
     },
     {
-      userId: 'abcde',
-      nickName: 'hahaha',
-      profileImage: TESTURL[4],
+      userid: 'abcde',
+      nickname: 'hahaha',
+      profileimage: TESTURL[4],
     },
   ],
   followers: [
-    { userId: 'Sonseongoh', nickName: '성오', profileImage: TESTURL[0] },
-    { userId: 'dhkim511', nickName: '도형', profileImage: TESTURL[1] },
-    { userId: 'love1ace', nickName: '동영', profileImage: TESTURL[2] },
-    { userId: 'ssumanlife', nickName: '수민', profileImage: TESTURL[3] },
+    { userid: 'Sonseongoh', nickname: '성오', profileimage: TESTURL[0] },
+    { userid: 'dhkim511', nickname: '도형', profileimage: TESTURL[1] },
+    { userid: 'love1ace', nickname: '동영', profileimage: TESTURL[2] },
+    { userid: 'ssumanlife', nickname: '수민', profileimage: TESTURL[3] },
   ],
+  myplaylist: [],
 };
 
 function FList({ tab }: FListProps) {
@@ -56,9 +64,9 @@ function FList({ tab }: FListProps) {
       {user[tab].map((f, i) => (
         <li key={i}>
           <User
-            profileImage={f.profileImage}
-            nickName={f.nickName}
-            userId={f.userId}
+            profileimage={f.profileimage}
+            nickname={f.nickname}
+            userid={f.userid}
             onlyImage={!isExpand}
           />
         </li>
@@ -71,34 +79,24 @@ export default FList;
 
 const fList = (isExpand: boolean) => css`
   padding-bottom: 5px;
-  ${!isExpand &&
-  `
-	.f-list {
-		li:hover {
-			cursor: pointer;
-			background: rgba(255, 255, 255, 0.1);
-			border-radius: 6px;
-		}
-	}
-  `}
   li {
     margin-bottom: 5px;
+    padding: 8px;
+    box-sizing: border-box;
   }
+  li:hover {
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+  }
+  ${!isExpand &&
+  `
+		li{
+			padding:4px
+		}
+  `}
 `;
 
 interface FListProps {
-  tab: 'following' | 'followers';
-}
-
-interface UserData {
-  information: UserInformation;
-  subscription: string[];
-  following: UserInformation[];
-  followers: UserInformation[];
-}
-
-interface UserInformation {
-  userId: string;
-  profileImage: string;
-  nickName: string;
+  tab: Tab;
 }

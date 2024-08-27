@@ -1,5 +1,4 @@
 /** @jsxImportSource @emotion/react */
-
 import Modal from '@/components/Modal';
 import {
   submitBtn,
@@ -7,7 +6,7 @@ import {
   idAndPassword,
   modalMovementBtn,
 } from '@/components/sign/Signin';
-import useSignModalStore from '@/store/useSignModalStore';
+import useSignModalStore from '@/stores/useSignModalStore';
 import { colors } from '@/styles/colors';
 
 const Signup: React.FC = () => {

@@ -17,7 +17,9 @@ function Layout() {
       <Navbar />
       <Logo />
       <div css={container(isExpand)} className="container">
-        <Outlet />
+        <div className="page-wrap" css={page}>
+          <Outlet />
+        </div>
       </div>
     </div>
   );
@@ -34,4 +36,7 @@ const container = (isExpand: boolean) => css`
   padding-left: ${isExpand ? '240px' : '78px'};
   min-height: 100vh;
   box-sizing: border-box;
+`;
+const page = css`
+  padding: 0 20px 20px;
 `;
