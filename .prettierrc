@@ -10,7 +10,6 @@
   "quoteProps": "as-needed",
   "endOfLine": "auto",
   "jsxSingleQuote": false,
-  "jsxBracketSameLine": false,
   "requirePragma": false,
   "insertPragma": false,
   "proseWrap": "preserve",
