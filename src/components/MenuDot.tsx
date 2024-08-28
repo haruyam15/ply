@@ -1,9 +1,12 @@
 /** @jsxImportSource @emotion/react */
 
-import { colors } from '@/styles/colors';
+import { useState } from 'react';
+
 import { css } from '@emotion/react';
 import { EllipsisVertical, Pencil, Trash2 } from 'lucide-react';
-import { useState } from 'react';
+
+import { colors } from '@/styles/colors';
+
 const MenuDot = () => {
   const [isOpen, setIsOpen] = useState(false);
 

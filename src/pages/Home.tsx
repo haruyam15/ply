@@ -90,7 +90,7 @@ const Home: React.FC = () => {
 // 스타일 정의
 const containerStyle = css`
   width: 100%;
-  max-width: 1200px;
+
   margin: 0 auto;
   margin-top: 40px;
 `;
@@ -160,12 +160,13 @@ const SeeMore = css`
     border-radius: 5px;
   }
 `;
-
 const gridContainerStyle = css`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* 가로로 자동 조정 */
+  grid-auto-rows: minmax(250px, auto); /* 세로로 자동 조정 */
   gap: 20px;
   padding: 20px;
+  width: 100%; /* 그리드 컨테이너의 너비를 100%로 설정 */
 
   @media (min-width: 600px) {
     grid-template-columns: repeat(2, 1fr);
@@ -179,5 +180,4 @@ const gridContainerStyle = css`
     grid-template-columns: repeat(4, 1fr);
   }
 `;
-
 export default Home;
