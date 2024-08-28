@@ -7,7 +7,7 @@ import signupRoute from './routes/signup.js';
 import registerRoute from './routes/getPlaylist.js';
 import followersRoute from './routes/followers.js';
 import followingRoute from './routes/following.js';
-import updateProfileRoute from './routes/updateProfile.js';
+import updateProfileRoute from './routes/updateUserInfo.js';
 import userProfileRoute from './routes/userProfile.js';
 import myPlaylistDataRoute from './routes/myPlaylistData.js';
 import likedPlaylistsRoute from './routes/likedPlaylists.js';
@@ -16,6 +16,7 @@ import likePlaylistRoute from './routes/like.js';
 import commentRoute from './routes/comment.js';
 import getPlaylistRoute from './routes/getPlaylist.js';
 import deletePlaylistRoute from './routes/deletePlaylist.js';
+import updateUserInfoRoute from './routes/updateUserInfo.js';
 
 const app = express();
 
@@ -59,3 +60,4 @@ app.use('/api', likePlaylistRoute);
 app.use('/api', commentRoute);
 app.use('/api', getPlaylistRoute);
 app.use('/api', deletePlaylistRoute);
+app.use('/api', updateUserInfoRoute);

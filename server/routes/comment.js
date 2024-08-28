@@ -1,7 +1,6 @@
 import express from 'express';
 const router = express.Router();
 
-// 댓글 추가 API
 router.post('/addComment', async (req, res) => {
   const { playlistId, content, userid } = req.body;
   const database = req.database;
@@ -13,7 +12,6 @@ router.post('/addComment', async (req, res) => {
       commentsWriter: userid
     };
 
-    // 플레이리스트 데이터에서 댓글 배열에 새로운 댓글 추가
     await database.collection('playListData').updateOne(
       { id: playlistId },
       { $push: { comments: newComment } }
