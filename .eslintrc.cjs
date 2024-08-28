@@ -29,25 +29,7 @@ module.exports = {
       },
     ],
     'react/react-in-jsx-scope': 'off',
-    'import/order': [
-      'error',
-      {
-        groups: ['builtin', 'external', 'internal', 'index'],
-        pathGroups: [
-          {
-            pattern: 'react',
-            group: 'external',
-            position: 'before',
-          },
-        ],
-        pathGroupsExcludedImportTypes: ['react'],
-        'newlines-between': 'always',
-        alphabetize: {
-          order: 'asc',
-          caseInsensitive: true,
-        },
-      },
-    ],
+    'import/order': 'off',
   },
   ignorePatterns: ['node_modules/', 'build/', 'dist/', 'functions'],
   settings: {

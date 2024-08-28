@@ -19,6 +19,7 @@
     "@tanstack/react-query": "^5.52.2",
     "axios": "^1.7.4",
     "byul": "^1.3.0",
+    "byul-alias": "^1.0.0",
     "byulhook": "^0.1.7",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
@@ -32,6 +33,7 @@
     "react-slick": "^0.30.2",
     "react-toastify": "^10.0.5",
     "slick-carousel": "^1.8.1",
+    "sweetalert2": "^11.6.13",
     "zustand": "^4.5.5"
   },
   "devDependencies": {
