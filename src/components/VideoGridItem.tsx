@@ -1,9 +1,9 @@
 /** @jsxImportSource @emotion/react */
-
 import { css } from '@emotion/react';
 
 import { colors } from '@/styles/colors';
 
+import Cover from './Cover'; // Cover 컴포넌트 추가
 import User from './User';
 
 interface VideoGridItemProps {
@@ -17,7 +17,8 @@ const VideoGridItem: React.FC<VideoGridItemProps> = ({ videoId, title }) => {
 
   return (
     <div css={gridItemStyle}>
-      <img src={thumbnailUrl} alt={title} css={thumbnailStyle} />
+      {/* Cover 컴포넌트로 이미지 감싸기 */}
+      <Cover imageSrc={thumbnailUrl} playListLength={8} />
       <div css={infoStyle}>
         <h3 css={titleStyle}>{title}</h3>
         <User profileimage="없음" nickname="손성오" userid="son" onlyImage={false} />
@@ -39,13 +40,6 @@ const gridItemStyle = css`
   height: 250px;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-`;
-
-const thumbnailStyle = css`
-  width: 100%;
-  height: 140px;
-  object-fit: cover;
-  border-radius: 12px;
 `;
 
 const infoStyle = css`
