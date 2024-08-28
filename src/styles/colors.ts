@@ -1,5 +1,5 @@
 export const colors = {
-  primaryGreen: '#00FFA3',
+  primaryGreen: '#00cc75',
   black: '#131516',
   red: '#FF6363',
   darkestGray: '#333D4B',
@@ -9,4 +9,6 @@ export const colors = {
   veryLightGray: '#FCFCFC',
   tagBoxGray: '#AFBDB2',
   white: '#FFFFFF',
+  inputGray: '#333333',
+  placeHolderGray: '#888888',
 };
