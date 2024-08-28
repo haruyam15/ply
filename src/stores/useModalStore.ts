@@ -1,12 +1,12 @@
 import { create } from 'zustand';
 
-interface SignModals {
+interface IModals {
   modalName: string;
   modalState: boolean;
 }
 
 interface State {
-  signModals: SignModals;
+  modals: IModals;
 }
 
 interface Actions {
@@ -14,23 +14,23 @@ interface Actions {
   closeModal: (modalName: string) => void;
 }
 
-const useSignModalStore = create<State & Actions>((set) => ({
-  signModals: {
+const useModalStore = create<State & Actions>((set) => ({
+  modals: {
     modalName: '',
     modalState: false,
   },
   openModal: (modalName) =>
     set(() => ({
-      signModals: {
+      modals: {
         modalName,
         modalState: true,
       },
     })),
   closeModal: (modalName) =>
     set((state) =>
-      state.signModals.modalName === modalName
+      state.modals.modalName === modalName
         ? {
-            signModals: {
+            modals: {
               modalName: '',
               modalState: false,
             },
@@ -39,4 +39,4 @@ const useSignModalStore = create<State & Actions>((set) => ({
     ),
 }));
 
-export default useSignModalStore;
+export default useModalStore;
