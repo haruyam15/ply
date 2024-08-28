@@ -5,7 +5,7 @@ import { css } from '@emotion/react';
 import axios from 'axios';
 
 import Modal from '@/components/Modal';
-import useSignModalStore from '@/stores/useSignModalStore';
+import useModalStore from '@/stores/useModalStore';
 import useUserStore from '@/stores/useUserStore';
 import { colors } from '@/styles/colors';
 
@@ -30,9 +30,9 @@ export const realUserData: RealUserData | null = storageUserData
   : null;
 
 const Signin: React.FC = () => {
-  const signinModal = useSignModalStore((state) => state.signModals);
-  const openSigninModal = useSignModalStore((state) => state.openModal);
-  const closeSigninModal = useSignModalStore((state) => state.closeModal);
+  const signinModal = useModalStore((state) => state.modals);
+  const openSigninModal = useModalStore((state) => state.openModal);
+  const closeSigninModal = useModalStore((state) => state.closeModal);
   const setUserData = useUserStore((state) => state.setUser);
   const idRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);

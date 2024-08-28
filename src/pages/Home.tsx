@@ -12,22 +12,20 @@ import VideoGridItem from '@/components/VideoGridItem';
 import gridItemsData from '@/data/gridItemData';
 import { colors } from '@/styles/colors';
 
-// Home 컴포넌트 정의
 const Home: React.FC = () => {
   const navigate = useNavigate();
-  const [visibleItems, setVisibleItems] = useState(8); // 탐색 부분에서 보일 아이템 개수
-  const [loading, setLoading] = useState(false); // 로딩 상태 추가
+  const [visibleItems, setVisibleItems] = useState(8);
+  const [loading, setLoading] = useState(false);
 
-  // 무한 스크롤 처리
   useEffect(() => {
     const handleScroll = () => {
       const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
       if (scrollTop + clientHeight >= scrollHeight - 5) {
-        setLoading(true); // 로딩 시작
+        setLoading(true);
         setTimeout(() => {
           setVisibleItems((prev) => prev + 8);
           setLoading(false); // 로딩 종료
-        }, 1000); // 로딩 시간을 1초로 설정 (예시)
+        }, 1000);
       }
     };
 
@@ -35,7 +33,6 @@ const Home: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Slider 설정
   const settings = {
     dots: true,
     infinite: true,
@@ -46,12 +43,11 @@ const Home: React.FC = () => {
   };
 
   const navigateToTimeline = () => {
-    navigate('/timeline'); // '/timeline' 경로로 이동
+    navigate('/timeline');
   };
 
   return (
     <div css={containerStyle}>
-      {/* 캐러셀 섹션 */}
       <div css={[carouselStyle, slickArrowStyle]}>
         <Slider {...settings}>
           {['pERDk4KoW-s', 'dQw4w9WgXcQ', 'C0DPdy98e4c'].map((videoId, index) => (
@@ -71,7 +67,7 @@ const Home: React.FC = () => {
           더보기
         </button>
       </div>
-      {/* 타임라인 그리드 섹션 */}
+
       <div css={gridContainerStyle}>
         {gridItemsData.slice(0, 8).map((item, index) => (
           <VideoGridItem key={index} {...item} />
@@ -80,15 +76,12 @@ const Home: React.FC = () => {
       <div css={TimeLineStyle}>
         <div>탐색</div>
       </div>
-      {/* 탐색 그리드 섹션 - 무한 스크롤 */}
+
       <div css={gridContainerStyle}>
         {gridItemsData.slice(0, visibleItems).map((item, index) => (
           <VideoGridItem key={index} {...item} />
         ))}
-        {loading &&
-          Array.from({ length: 8 }).map((_, index) => (
-            <SkeletonGridItem key={index} /> // 로딩 중일 때 스켈레톤 UI 표시
-          ))}
+        {loading && Array.from({ length: 8 }).map((_, index) => <SkeletonGridItem key={index} />)}
       </div>
     </div>
   );
