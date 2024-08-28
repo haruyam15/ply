@@ -59,7 +59,7 @@ const dropdownMenuStyle = css`
   position: absolute;
   top: 30px;
   right: 0;
-  background-color: ${colors.gray};
+  background-color: ${colors.lightblack};
   border: 1px solid #ddd;
   border-radius: 5px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
@@ -74,7 +74,7 @@ const menuItemStyle = css`
   cursor: pointer;
   font-size: 12px;
   color: ${colors.white};
-  border-bottom: 1px solid white;
+  border-bottom: 1px solid #6d6d6d;
 
   &:hover {
     background-color: ${colors.lightGray};
