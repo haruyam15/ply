@@ -30,7 +30,7 @@ export const router = createBrowserRouter([
         element: <Playlist />,
       },
       {
-        path: '/like',
+        path: '/like.js',
         element: <Like />,
       },
       {
