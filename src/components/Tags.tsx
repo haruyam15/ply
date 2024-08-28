@@ -24,6 +24,7 @@ export default Tags;
 const tagWrap = (deletable: boolean) => css`
   display: flex;
   align-items: center;
+  justify-content: end;
   gap: 5px;
   li {
     position: relative;
