@@ -4,11 +4,16 @@ import { X } from 'lucide-react';
 
 import { colors } from '@/styles/colors';
 
+interface TagsProps {
+  tags: string[];
+  deletable?: boolean;
+}
+
 function Tags({ tags, deletable = false }: TagsProps) {
   return (
     <ul css={tagWrap(deletable)}>
-      {tags.map((tag) => (
-        <li>
+      {tags.map((tag, i) => (
+        <li key={i}>
           {tag}
           <span className="del">
             <X size={15} />
@@ -57,8 +62,3 @@ const tagWrap = (deletable: boolean) => css`
     
   `}
 `;
-
-interface TagsProps {
-  tags: string[];
-  deletable?: boolean;
-}

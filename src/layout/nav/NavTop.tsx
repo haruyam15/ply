@@ -6,7 +6,9 @@ import useNavStore from '@/stores/useNavStore';
 import { colors } from '@/styles/colors';
 
 function NavTop() {
-  const { isExpand, toggleExpand } = useNavStore();
+  const isExpand = useNavStore((state) => state.isExpand);
+  const toggleExpand = useNavStore((state) => state.toggleExpand);
+
   const handleNavExpand = () => {
     toggleExpand(!isExpand);
   };

@@ -10,7 +10,7 @@ import NavTop from '@/layout/nav/NavTop';
 import useNavStore from '@/stores/useNavStore';
 
 function Navbar() {
-  const { isExpand } = useNavStore();
+  const isExpand = useNavStore((state) => state.isExpand);
 
   return (
     <nav css={nav(isExpand)}>

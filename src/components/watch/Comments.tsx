@@ -7,6 +7,7 @@ import { EllipsisVertical } from 'lucide-react';
 import Button from '@/components/Button';
 import User from '@/components/User';
 import { colors } from '@/styles/colors';
+import { Comment } from '@/types/Playlist';
 import { UserData } from '@/types/User';
 
 const TESTURL = [
@@ -59,8 +60,13 @@ const user: UserData = {
   ],
   myplaylist: [],
 };
+interface ICommentsProps {
+  comments: Comment;
+}
 
-function Comments() {
+function Comments({ comments }: ICommentsProps) {
+  console.log(comments);
+
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setComment(e.target.value);
   };
@@ -75,7 +81,7 @@ function Comments() {
     }
   }, [comment]);
   return (
-    <div className="comments" css={comments}>
+    <div className="comments" css={commentsWrap}>
       <div className="comments-header">
         <p>댓글</p>
         <div className="write-wrap">
@@ -210,7 +216,7 @@ function Comments() {
 
 export default Comments;
 
-const comments = css`
+const commentsWrap = css`
   .comments-header {
     margin-bottom: 30px;
     & > p {

@@ -1,20 +1,49 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { useQuery } from '@tanstack/react-query';
+import { useNavigate, useParams } from 'react-router-dom';
 
+import { getWatchData } from '@/apis/getWatchData';
 import Comments from '@/components/watch/Comments';
 import Player from '@/components/watch/Player';
 import PlaylistInfo from '@/components/watch/PlaylistInfo';
 import VideoList from '@/components/watch/VideoList';
 
 function Watch() {
+  const { playlistId } = useParams<{ playlistId: string }>();
+  const navigate = useNavigate();
+
+  const { isLoading, error, data } = useQuery({
+    queryKey: ['watch', playlistId],
+    queryFn: () => getWatchData(playlistId as string),
+    enabled: !!playlistId,
+  });
+
+  if (isLoading) {
+    return <span>Loading...</span>;
+  }
+
+  if (error) {
+    alert(`error : ${error}`);
+    navigate(`/`);
+  }
+
+  if (!data) {
+    return <div>no-data</div>;
+  }
+
+  // console.log(data);
+
+  const { comments, ...info } = data;
+
   return (
     <div className="watch" css={watch}>
       <div className="watch-detail">
-        <Player />
-        <PlaylistInfo />
-        <Comments />
+        <Player src={info.link[0]} />
+        {/* <PlaylistInfo info={info} />
+        <Comments comments={comments} /> */}
       </div>
-      <VideoList />
+      <VideoList link={info.link} />
     </div>
   );
 }

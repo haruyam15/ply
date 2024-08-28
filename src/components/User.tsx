@@ -4,6 +4,16 @@ import { css } from '@emotion/react';
 import { If } from '@/components/IfElse';
 import { colors } from '@/styles/colors';
 
+interface UserProps {
+  userid: string;
+  profileimage: string;
+  nickname: string;
+  onlyImage?: boolean;
+  size?: Size;
+}
+
+type Size = 'sm' | 'md' | 'lg';
+
 function User({ profileimage, nickname, userid, onlyImage = false, size = 'sm' }: UserProps) {
   return (
     <div css={userWrap(size)}>
@@ -103,13 +113,3 @@ const userWrap = (size: Size) => css`
 	}
   `}
 `;
-
-interface UserProps {
-  userid: string;
-  profileimage: string;
-  nickname: string;
-  onlyImage?: boolean;
-  size?: Size;
-}
-
-type Size = 'sm' | 'md' | 'lg';

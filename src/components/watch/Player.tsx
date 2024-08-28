@@ -1,7 +1,22 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 
-function Player() {
+import Youtube from '@/apis/youtube';
+import forkVideoId from '@/utils/forkVideoId';
+
+interface IPlayerProps {
+  src: string;
+}
+function Player({ src }: IPlayerProps) {
+  const videoId = forkVideoId(src);
+  const data = new Youtube();
+
+  if (videoId === null) {
+    throw Error('videoId가 없습니다');
+  }
+
+  console.log(data.video(videoId));
+
   return (
     <div className="player" css={player}>
       <iframe

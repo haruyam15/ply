@@ -38,7 +38,7 @@ export const router = createBrowserRouter([
         element: <Profile />,
       },
       {
-        path: '/watch',
+        path: '/watch/:playlistId',
         element: <Watch />,
       },
       {

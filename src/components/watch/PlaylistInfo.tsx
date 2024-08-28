@@ -1,103 +1,68 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { useQuery } from '@tanstack/react-query';
 import { Heart } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
+import { getUserData } from '@/apis/getUserData';
 import Button from '@/components/Button';
 import Tags from '@/components/Tags';
-import User from '@/components/User';
-import { UserData } from '@/types/User';
+import { Playlist } from '@/types/Playlist';
 
-const TESTURL = [
-  'https://avatars.githubusercontent.com/u/131119152?s=64&v=4',
-  'https://avatars.githubusercontent.com/u/143858798?s=64&v=4',
-  'https://avatars.githubusercontent.com/u/147500032?s=64&v=4',
-  'https://avatars.githubusercontent.com/u/169154369?s=64&v=4',
-  'https://avatars.githubusercontent.com/u/110523397?v=4',
-];
-const user: UserData = {
-  information: {
-    userid: 'haruyam15',
-    profileimage: TESTURL[4],
-    nickname: '하루얌',
-    password: '1234',
-  },
-  like: ['playlist1', 'playlist2'],
-  following: [
-    {
-      userid: 'Sonseongoh',
-      nickname: '성오',
-      profileimage: TESTURL[0],
-    },
-    {
-      userid: 'dhkim511',
-      nickname: '도형',
-      profileimage: TESTURL[1],
-    },
-    {
-      userid: 'love1ace',
-      nickname: '동영',
-      profileimage: TESTURL[2],
-    },
-    {
-      userid: 'ssumanlife',
-      nickname: '수민',
-      profileimage: TESTURL[3],
-    },
-    {
-      userid: 'abcde',
-      nickname: 'hahaha',
-      profileimage: TESTURL[4],
-    },
-  ],
-  followers: [
-    { userid: 'Sonseongoh', nickname: '성오', profileimage: TESTURL[0] },
-    { userid: 'dhkim511', nickname: '도형', profileimage: TESTURL[1] },
-    { userid: 'love1ace', nickname: '동영', profileimage: TESTURL[2] },
-    { userid: 'ssumanlife', nickname: '수민', profileimage: TESTURL[3] },
-  ],
-  myplaylist: [],
-};
+interface IPlaylistInfoProps {
+  info: Omit<Playlist, 'comments'>;
+}
+function PlaylistInfo({ info }: IPlaylistInfoProps) {
+  const userId = info.userId;
+  const navigate = useNavigate();
 
-function PlaylistInfo() {
-  const { profileimage, nickname, userid } = user.information;
+  const { isLoading, error, data } = useQuery({
+    queryKey: ['user', userId],
+    queryFn: () => getUserData(userId as string),
+  });
+
+  // if (isLoading) {
+  //   return <span>Loading...</span>;
+  // }
+
+  // if (error) {
+  //   alert(`error : ${error}`);
+  //   navigate(`/`);
+  // }
+
+  // if (data) {
+  //   return <div>no-data</div>;
+  // }
+
+  console.log(data);
+
   return (
-    <div className="playlist-info" css={info}>
+    <div className="playlist-info" css={playlistInfo}>
       <div className="info-header">
         <div className="title">
-          <p className="playlist-title">180513 뷰티풀 민트 라이프 2018</p>
-          <p className="video-title">연애조건</p>
+          <p className="playlist-title">{'title'}</p>
+          <p className="video-title">영상 title</p>
         </div>
         <div className="actions">
           <Button size="md">
-            <Heart size="18" /> <span>244</span>
+            <Heart size="18" /> <span>{'numoflike'}</span>
           </Button>
-          <Tags tags={['윤하', '라이브', ' 페스티벌', '뷰티풀 민트 라이프']} />
+          <Tags tags={['tags']} />
         </div>
       </div>
 
       <div className="owner">
-        <User profileimage={profileimage} nickname={nickname} userid={userid} size="lg" />
+        {/* <User profileimage={profileimage} nickname={nickname} userid={userid} size="lg" /> */}
       </div>
 
-      <div className="content">
-        180513 뷰티풀 민트 라이프 셋리스트
-        <br />
-        연애조건
-        <br />
-        Stay With me <br />
-        소나기
-        <br />
-        우산
-        <br />
-        Airplane Mode
-      </div>
+      <div className="content">{'content'}</div>
     </div>
   );
 }
 
 export default PlaylistInfo;
 
-const info = css`
+const playlistInfo = css`
   .info-header {
     display: flex;
     justify-content: space-between;

@@ -4,6 +4,13 @@ import { css } from '@emotion/react';
 
 import { colors } from '@/styles/colors';
 
+interface ButtonProps {
+  children: React.ReactNode;
+  size?: Size;
+}
+
+type Size = 'sm' | 'md' | 'lg';
+
 function Button({ children, size = 'sm' }: ButtonProps) {
   return <button css={btn(size)}>{children}</button>;
 }
@@ -37,10 +44,3 @@ const btn = (size: Size) => css`
 		font-size:20px;
 	`}
 `;
-
-interface ButtonProps {
-  children: React.ReactNode;
-  size?: Size;
-}
-
-type Size = 'sm' | 'md' | 'lg';

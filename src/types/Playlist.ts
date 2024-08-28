@@ -3,10 +3,13 @@ export interface Playlist {
   link: string[];
   title: string;
   content: string;
-  id: string;
+  userId: string;
   like: string[];
   numoflike: number;
   comments: Comment[];
+  date: string;
+  disclosureStatus: boolean;
+  tags: string[];
 }
 
 export interface Comment {
