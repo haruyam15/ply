@@ -1,11 +1,13 @@
 /** @jsxImportSource @emotion/react */
-
 import { css } from '@emotion/react';
-
 import { colors } from '@/styles/colors';
 
-function Button({ children, size = 'sm' }: ButtonProps) {
-  return <button css={btn(size)}>{children}</button>;
+function Button({ children, size = 'sm', onClick }: ButtonProps) {
+  return (
+    <button css={btn(size)} onClick={onClick}>
+      {children}
+    </button>
+  );
 }
 
 export default Button;
@@ -28,19 +30,20 @@ const btn = (size: Size) => css`
   }
   ${size === 'md' &&
   `
-		height: 40px;
-		font-size:15px;
-	`}
+    height: 40px;
+    font-size: 15px;
+  `}
   ${size === 'lg' &&
   `
-		height: 60px;
-		font-size:20px;
-	`}
+    height: 60px;
+    font-size: 20px;
+  `}
 `;
 
 interface ButtonProps {
   children: React.ReactNode;
   size?: Size;
+  onClick?: () => void | Promise<void>;
 }
 
 type Size = 'sm' | 'md' | 'lg';

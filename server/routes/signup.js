@@ -6,7 +6,7 @@ router.post('/signup/validate', async (req, res) => {
   const database = req.database;
   try {
     const foundUser = await database.collection('users').findOne({
-      $or: [{ 'information.userid': userid }, { 'information.nickname': nickname }]
+      $or: [{ 'information.userid': userid }, { 'information.nickname': nickname }],
     });
     if (foundUser) {
       if (foundUser.information.userid === userid) {

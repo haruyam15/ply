@@ -6,15 +6,13 @@ router.post('/likePlaylist', async (req, res) => {
   const database = req.database;
 
   try {
-    await database.collection('playListData').updateOne(
-      { id: playlistId },
-      { $addToSet: { like: userid } }
-    );
+    await database
+      .collection('playListData')
+      .updateOne({ id: playlistId }, { $addToSet: { like: userid } });
 
-    await database.collection('users').updateOne(
-      { 'information.userid': userid },
-      { $addToSet: { like: playlistId } }
-    );
+    await database
+      .collection('users')
+      .updateOne({ 'information.userid': userid }, { $addToSet: { like: playlistId } });
 
     res.status(200).send({ message: 'Playlist liked successfully' });
   } catch (error) {
