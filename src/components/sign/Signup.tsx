@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /** @jsxImportSource @emotion/react */
 import { useEffect, useRef, useState } from 'react';
 
@@ -11,7 +12,7 @@ import {
   idAndPassword,
   modalMovementBtn,
 } from '@/components/sign/Signin';
-import useSignModalStore from '@/stores/useSignModalStore';
+import useModalStore from '@/stores/useModalStore';
 import { colors } from '@/styles/colors';
 
 import 'react-toastify/dist/ReactToastify.css';
@@ -23,8 +24,8 @@ interface SignupData {
 }
 
 const Signup: React.FC = () => {
-  const signinModal = useSignModalStore((state) => state.signModals);
-  const openSigninModal = useSignModalStore((state) => state.openModal);
+  const signinModal = useModalStore((state) => state.modals);
+  const openSigninModal = useModalStore((state) => state.openModal);
   const [newUser, setNewUser] = useState<SignupData>({
     nickname: null,
     userid: null,
