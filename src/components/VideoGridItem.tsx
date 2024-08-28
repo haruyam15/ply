@@ -7,7 +7,7 @@ import { colors } from '@/styles/colors';
 import User from './User';
 
 interface VideoGridItemProps {
-  videoId: string; // 비디오 ID 추가
+  videoId: string;
   title: string;
   user: string;
 }
@@ -32,7 +32,6 @@ const VideoGridItem: React.FC<VideoGridItemProps> = ({ videoId, title }) => {
   );
 };
 
-// 스타일 정의
 const gridItemStyle = css`
   padding: 10px;
   background-color: ${colors.black};

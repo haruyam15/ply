@@ -1,10 +1,12 @@
 /** @jsxImportSource @emotion/react */
+import { useState } from 'react';
+
 import { css, Global } from '@emotion/react';
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
+
+import Confirm, { ConfirmStyles } from '@/components/Confirm'; // ConfirmStyles 가져오기
 import { IUser } from '@/stores/useUserStore';
 import { colors } from '@/styles/colors';
-import Confirm, { ConfirmStyles } from '@/components/Confirm'; // ConfirmStyles 가져오기
 
 interface ProfileProps {
   user: IUser;
@@ -61,7 +63,9 @@ const UserProfile: React.FC<ProfileProps> = ({ user }) => {
           </Link>
         </div>
         {realUserData?.userid === userid ? (
-          <button onClick={handleProfileEditClick} css={profileEditOrFollowerBtn}>프로필 수정</button>
+          <button onClick={handleProfileEditClick} css={profileEditOrFollowerBtn}>
+            프로필 수정
+          </button>
         ) : (
           <button css={profileEditOrFollowerBtn}>팔로우</button>
         )}
