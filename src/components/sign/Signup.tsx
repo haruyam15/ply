@@ -33,6 +33,7 @@ const Signup: React.FC = () => {
     userid: null,
     password: null,
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const nameRef = useRef<HTMLInputElement>(null);
   const idRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
@@ -44,6 +45,7 @@ const Signup: React.FC = () => {
       userid: idRef.current?.value ?? null,
       password: passwordRef.current?.value ?? null,
     });
+    setIsSubmitting(true);
   };
 
   const checkbox = document.getElementById('check') as HTMLInputElement;
@@ -69,8 +71,11 @@ const Signup: React.FC = () => {
 
   useEffect(() => {
     const validation = async () => {
+      if (!isSubmitting) return;
+
       if (!checkbox?.checked) {
         toast.error('모두 확인하였는지 체크해주세요.');
+        setIsSubmitting(false);
         return;
       }
       try {
@@ -79,7 +84,7 @@ const Signup: React.FC = () => {
           nickname: newUser.nickname,
         });
         if (res.status === 200) {
-          addNewUser();
+          await addNewUser();
         }
       } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -93,9 +98,10 @@ const Signup: React.FC = () => {
           }
         }
       }
+      setIsSubmitting(false);
     };
     validation();
-  }, [newUser, addNewUser]);
+  }, [isSubmitting]);
 
   const children: React.ReactNode = (
     <>
@@ -113,18 +119,18 @@ const Signup: React.FC = () => {
           <Input css={idAndPassword} ref={passwordRef} type="password" required />
           <label>Password</label>
         </div>
-        <div css={{ fontSize: '12px' }}>
+        <div css={{ fontSize: '14px' }}>
           <label
             css={{
-              cursor: 'pointer',
-              accentColor: `${colors.primaryGreen}`,
               display: 'flex',
               alignItems: 'center',
+              cursor: 'pointer',
+              accentColor: `${colors.primaryGreen}`,
             }}
             htmlFor="check"
           >
+            <input css={{ cursor: 'pointer', marginRight: '10px' }} type="checkBox" id="check" />
             모두 확인 하셨습니까?
-            <input css={{ cursor: 'pointer', marginLeft: '10px' }} type="checkBox" id="check" />
           </label>
         </div>
         <Button css={submitBtn} type="submit">
@@ -139,9 +145,9 @@ const Signup: React.FC = () => {
       </p>
       <ToastContainer
         position="bottom-center"
-        limit={2}
+        limit={1}
         closeButton={false}
-        autoClose={3000}
+        autoClose={2000}
         hideProgressBar
       />
     </>

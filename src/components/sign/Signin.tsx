@@ -110,11 +110,14 @@ const Signin: React.FC = () => {
         </div>
         <div css={{ fontSize: '14px' }}>
           <label
-            css={{ cursor: 'pointer', accentColor: `${colors.primaryGreen}` }}
+            css={{
+              cursor: 'pointer',
+              accentColor: `${colors.primaryGreen}`,
+            }}
             htmlFor="remember"
           >
             <input
-              css={{ cursor: 'pointer', marginRight: '10px', marginTop: '5px' }}
+              css={{ cursor: 'pointer', marginRight: '10px' }}
               type="checkBox"
               id="remember"
               defaultChecked
@@ -156,9 +159,8 @@ export const idAndPasswordArea = css`
   position: relative;
   label {
     position: absolute;
-    top: 12px;
+    top: 14px;
     left: 10px;
-    color: #888;
     transition: all 0.3s ease;
     color: ${colors.placeHolderGray};
   }
