@@ -2,9 +2,9 @@
 import { css } from '@emotion/react';
 import { colors } from '@/styles/colors';
 
-function Button({ children, size = 'sm', onClick }: ButtonProps) {
+function Button({ children, size = 'sm', onClick, ...rest }: ButtonProps) {
   return (
-    <button css={btn(size)} onClick={onClick}>
+    <button css={btn(size)} onClick={onClick} {...rest}>
       {children}
     </button>
   );
@@ -32,9 +32,9 @@ const btn = (size: Size) => css`
   ${size === 'md' &&
   `
     width: 80px;
-		height: 35px;
-		font-size:15px;
-	`}
+    height: 35px;
+    font-size:15px;
+  `}
   ${size === 'lg' &&
   `
     height: 60px;
@@ -42,10 +42,9 @@ const btn = (size: Size) => css`
   `}
 `;
 
-interface ButtonProps {
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
   size?: Size;
-  onClick?: () => void | Promise<void>;
 }
 
 type Size = 'sm' | 'md' | 'lg';

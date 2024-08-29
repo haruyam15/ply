@@ -14,6 +14,8 @@ import {
 } from '@/components/sign/Signin';
 import useModalStore from '@/stores/useModalStore';
 import { colors } from '@/styles/colors';
+import Input from '@/components/Input';
+import Button from '@/components/Button';
 
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -97,29 +99,37 @@ const Signup: React.FC = () => {
 
   const children: React.ReactNode = (
     <>
-      <h2 css={{ margin: '50px 0 20px', fontSize: '28px' }}>회원가입</h2>
+      <h2 css={{ margin: '40px 0 40px', fontSize: '28px' }}>회원가입</h2>
       <form css={{ width: '330px' }} onSubmit={(e) => onSignup(e)}>
         <div css={idAndPasswordArea}>
-          <input css={idAndPassword} ref={nameRef} type="text" required />
+          <Input css={idAndPassword} ref={nameRef} type="text" required />
           <label>NickName</label>
         </div>
         <div css={idAndPasswordArea}>
-          <input css={idAndPassword} ref={idRef} type="text" required />
+          <Input css={idAndPassword} ref={idRef} type="text" required />
           <label>ID</label>
         </div>
         <div css={idAndPasswordArea}>
-          <input css={idAndPassword} ref={passwordRef} type="password" required />
+          <Input css={idAndPassword} ref={passwordRef} type="password" required />
           <label>Password</label>
         </div>
         <div css={{ fontSize: '12px' }}>
-          <label css={{ cursor: 'pointer', accentColor: `${colors.primaryGreen}` }} htmlFor="check">
+          <label
+            css={{
+              cursor: 'pointer',
+              accentColor: `${colors.primaryGreen}`,
+              display: 'flex',
+              alignItems: 'center',
+            }}
+            htmlFor="check"
+          >
             모두 확인 하셨습니까?
-            <input css={{ cursor: 'pointer' }} type="checkBox" id="check" />
+            <input css={{ cursor: 'pointer', marginLeft: '10px' }} type="checkBox" id="check" />
           </label>
         </div>
-        <button css={submitBtn} type="submit">
+        <Button css={submitBtn} type="submit">
           가입하기
-        </button>
+        </Button>
       </form>
       <p css={{ fontSize: '14px', marginBottom: '40px' }}>
         로그인하시겠습니까?

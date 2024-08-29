@@ -8,6 +8,8 @@ import Modal from '@/components/Modal';
 import useModalStore from '@/stores/useModalStore';
 import useUserStore from '@/stores/useUserStore';
 import { colors } from '@/styles/colors';
+import Input from '@/components/Input';
+import Button from '@/components/Button';
 
 interface LoginData {
   userid: string | null;
@@ -96,14 +98,14 @@ const Signin: React.FC = () => {
 
   const children: React.ReactNode = (
     <>
-      <h2 css={{ margin: '40px 0 20px', fontSize: '28px' }}>Login</h2>
+      <h2 css={{ margin: '40px 0 40px', fontSize: '28px' }}>로그인</h2>
       <form css={{ width: '330px' }} onSubmit={(e) => onLogin(e)}>
         <div css={idAndPasswordArea}>
-          <input css={idAndPassword} ref={idRef} type="text" required />
+          <Input css={idAndPassword} ref={idRef} type="text" required />
           <label>ID</label>
         </div>
         <div css={idAndPasswordArea}>
-          <input css={idAndPassword} ref={passwordRef} type="password" required />
+          <Input css={idAndPassword} ref={passwordRef} type="password" required />
           <label>Password</label>
         </div>
         <div css={{ fontSize: '14px' }}>
@@ -111,14 +113,19 @@ const Signin: React.FC = () => {
             css={{ cursor: 'pointer', accentColor: `${colors.primaryGreen}` }}
             htmlFor="remember"
           >
-            <input css={{ cursor: 'pointer' }} type="checkBox" id="remember" defaultChecked />
-            Remember ID
+            <input
+              css={{ cursor: 'pointer', marginRight: '10px', marginTop: '5px' }}
+              type="checkBox"
+              id="remember"
+              defaultChecked
+            />
+            아이디 기억하기
           </label>
         </div>
         <div>
-          <button css={submitBtn} type="submit">
-            Login
-          </button>
+          <Button css={submitBtn} type="submit">
+            로그인
+          </Button>
         </div>
       </form>
       <p css={{ fontSize: '14px', marginBottom: '40px' }}>
@@ -149,40 +156,43 @@ export const idAndPasswordArea = css`
   position: relative;
   label {
     position: absolute;
-    top: 30px;
+    top: 12px;
     left: 10px;
     color: #888;
     transition: all 0.3s ease;
+    color: ${colors.placeHolderGray};
   }
   input:focus + label,
   input:valid + label {
-    top: -5px;
-    color: #fff;
+    top: -20px;
+    color: ${colors.placeHolderGray};
     font-size: 14px;
   }
 `;
+
 export const idAndPassword = css`
   width: 100%;
-  height: 40px;
   border: none;
   border-radius: 10px;
-  margin: 15px 0 20px;
+  margin-bottom: 30px;
   outline: none;
-  padding: 0 10px;
+  padding: 12px;
   box-sizing: border-box;
-  background-color: ${colors.white};
+  background-color: ${colors.inputGray};
 `;
+
 export const modalMovementBtn = css`
-  margin-left: 5px;
+  margin: 20px 0 0 20px;
   background-color: transparent;
   border: none;
   cursor: pointer;
   color: ${colors.primaryGreen};
 `;
+
 export const submitBtn = css`
   width: 100%;
   height: 40px;
-  margin: 5px 0 25px;
+  margin: 15px 0 25px;
   border: none;
   border-radius: 10px;
   background-color: ${colors.primaryGreen};
@@ -191,6 +201,7 @@ export const submitBtn = css`
   font-weight: 600;
   cursor: pointer;
   &:hover {
-    background-color: #00ffa2e2;
+    background-color: ${colors.primaryGreen};
+    opacity: 0.8;
   }
 `;

@@ -194,18 +194,23 @@ const editIconButton = css`
 `;
 
 const buttonWrapperStyle = css`
-  width: 85%;
+  width: 100%;
   margin-top: 15px;
 
   button {
     width: 100%;
-    font-size: 16px;
+    height: 40px;
+    margin: 15px 0 25px;
+    border: none;
+    border-radius: 10px;
     background-color: ${colors.primaryGreen};
     color: ${colors.white};
-    text-align: center;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
+    font-size: 20px;
+    font-weight: 600;
+    cursor: pointer;
+    &:hover {
+      background-color: #00ffa2e2;
+    }
     &:hover {
       background-color: ${colors.primaryGreen};
       opacity: 0.8;
