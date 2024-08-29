@@ -1,56 +1,70 @@
 /** @jsxImportSource @emotion/react */
-import { colors } from '@/styles/colors';
+import DraggableItem from '@/components/createPlaylist/DraggableItem';
 import { css } from '@emotion/react';
-import { MessageCircleWarning, AlignJustify, Dot, EllipsisVertical } from 'lucide-react';
+import { MessageCircleWarning } from 'lucide-react';
+import { useState } from 'react';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 
+export interface IChartData {
+  id: string;
+  title: string;
+  imgUrl: string;
+  channelTitle: string;
+  viewCount: string;
+  publishedAt: string;
+}
+
+const youTubeData = [
+  {
+    id: '1',
+    title: '[MV] 이영지 - Small girl feat. 도경수 (D.O.)',
+    imgUrl: 'https://img.youtube.com/vi/11iZcYbq_is/hqdefault.jpg',
+    channelTitle: '이영지',
+    viewCount: '2877만회',
+    publishedAt: '2개월 전',
+  },
+  {
+    id: '2',
+    title: '[MV] 이영지 - Small girl',
+    imgUrl: 'https://img.youtube.com/vi/11iZcYbq_is/hqdefault.jpg',
+    channelTitle: '이영지',
+    viewCount: '2877만회',
+    publishedAt: '2개월 전',
+  },
+];
 const PlaylistChart: React.FC = () => {
-  const youTubeData = [
-    {
-      title: '[MV] 이영지 - Small girl feat. 도경수 (D.O.)',
-      imgUrl: 'https://img.youtube.com/vi/11iZcYbq_is/hqdefault.jpg',
-      channelTitle: '이영지',
-      viewCount: '2877만회',
-      publishedAt: '2개월 전',
-    },
-    {
-      title: '[MV] 이영지 - Small girl feat. 도경수 (D.O.)',
-      imgUrl: 'https://img.youtube.com/vi/11iZcYbq_is/hqdefault.jpg',
-      channelTitle: '이영지',
-      viewCount: '2877만회',
-      publishedAt: '2개월 전',
-    },
-  ];
+  const [chart, setChart] = useState(youTubeData);
+
+  const handleDragDrop = (dragIndex: number, hoverIndex: number) => {
+    const dropChart = [...chart];
+    const [draggedItem] = dropChart.splice(dragIndex, 1);
+    dropChart.splice(hoverIndex, 0, draggedItem);
+    setChart(dropChart);
+  };
+  console.log(chart);
   return (
-    <div css={playlistChartWrapper}>
-      {youTubeData ? (
-        <ul css={{ width: '100%' }}>
-          {youTubeData.map((data, index) => (
-            <li css={listArea} key={index}>
-              <AlignJustify />
-              <div css={videoArea(data.imgUrl)}></div>
-              <div css={youtubeDataArea}>
-                <p>{data.title}</p>
-                <div css={etcArea}>
-                  <span>{data.channelTitle}</span>
-                  <Dot />
-                  <span>조회수 {data.viewCount}</span>
-                  <Dot />
-                  <span>{data.publishedAt}</span>
-                </div>
-              </div>
-              <div css={{ position: 'absolute', right: '20px', top: '15px' }}>
-                <EllipsisVertical />
-              </div>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <>
-          <MessageCircleWarning />
-          <p>영상을 추가해 보새요.</p>
-        </>
-      )}
-    </div>
+    <DndProvider backend={HTML5Backend}>
+      <div css={playlistChartWrapper}>
+        {chart.length > 0 ? (
+          <ul css={{ width: '100%' }}>
+            {chart.map((chartData, index) => (
+              <DraggableItem
+                key={chartData.id}
+                index={index}
+                chartData={chartData}
+                handleDragDrop={handleDragDrop}
+              />
+            ))}
+          </ul>
+        ) : (
+          <>
+            <MessageCircleWarning />
+            <p>영상을 추가해 보새요.</p>
+          </>
+        )}
+      </div>
+    </DndProvider>
   );
 };
 
@@ -65,55 +79,8 @@ const playlistChartWrapper = css`
   align-items: top;
   font-size: 22px;
   color: #6b6b6b;
+  transition: all 0.4;
   & p {
     margin-left: 10px;
   }
-`;
-const listArea = css`
-  width: 100%;
-  height: 180px;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  padding: 10px;
-  box-sizing: border-box;
-  border-radius: 10px;
-  position: relative;
-  :hover {
-    background-color: rgba(255, 255, 255, 0.1);
-  }
-`;
-
-const videoArea = (imgUrl: string) => css`
-  width: 220px;
-  height: 160px;
-  background-color: #222;
-  border-radius: 5px;
-  overflow: hidden;
-  margin-left: 20px;
-  ${imgUrl &&
-  `
-  background-image: url(${imgUrl});
-  background-size: cover;
-  background-position: top center;
-  background-repeat: no-repeat;
-  `}
-`;
-const youtubeDataArea = css`
-  display: flex;
-  align-items: top;
-  flex-direction: column;
-  height: 100%;
-  padding-top: 20px;
-  & p {
-    color: ${colors.white};
-    font-size: 18px;
-    margin-bottom: 20px;
-  }
-`;
-const etcArea = css`
-  display: flex;
-  align-items: center;
-  font-size: 14px;
-  margin-left: 10px;
 `;

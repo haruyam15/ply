@@ -1,12 +1,16 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { X } from 'lucide-react';
-
 import { colors } from '@/styles/colors';
 
-function Tags({ tags, deletable = false }: TagsProps) {
+interface TagsProps {
+  tags: string[];
+  deletable?: boolean;
+  position?: boolean;
+}
+function Tags({ tags, deletable = false, position = false }: TagsProps) {
   return (
-    <ul css={tagWrap(deletable)}>
+    <ul css={tagWrap(deletable, position)}>
       {tags.map((tag, index) => (
         <li key={index}>
           {tag}
@@ -21,7 +25,7 @@ function Tags({ tags, deletable = false }: TagsProps) {
 
 export default Tags;
 
-const tagWrap = (deletable: boolean) => css`
+const tagWrap = (deletable: boolean, position: boolean) => css`
   display: flex;
   align-items: center;
   justify-content: end;
@@ -44,6 +48,10 @@ const tagWrap = (deletable: boolean) => css`
       right: -6px;
     }
   }
+  ${position &&
+  `
+    justify-content: start;
+  `}
 
   ${deletable &&
   `
@@ -58,8 +66,3 @@ const tagWrap = (deletable: boolean) => css`
     
   `}
 `;
-
-interface TagsProps {
-  tags: string[];
-  deletable?: boolean;
-}
