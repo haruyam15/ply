@@ -3,7 +3,12 @@ import { css } from '@emotion/react';
 import { Play } from 'lucide-react';
 
 import { colors } from '@/styles/colors';
-function VideoList() {
+
+interface IVideoListProps {
+  link: string[];
+}
+
+function VideoList({ link }: IVideoListProps) {
   return (
     <div className="video-list" css={list}>
       <div className="list-header">

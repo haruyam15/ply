@@ -1,95 +1,102 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { useQuery } from '@tanstack/react-query';
 import { Heart } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
+import { getUserData } from '@/apis/getUserData';
 import Button from '@/components/Button';
 import Tags from '@/components/Tags';
+import { IPlaylist } from '@/types/playlistTypes';
 import User from '@/components/User';
-import { UserData } from '@/types/User';
+import { colors } from '@/styles/colors';
+import getYoutubeData from '@/apis/getYoutubeData';
+import forkVideoId from '@/utils/forkVideoId';
 
-const TESTURL = [
-  'https://avatars.githubusercontent.com/u/131119152?s=64&v=4',
-  'https://avatars.githubusercontent.com/u/143858798?s=64&v=4',
-  'https://avatars.githubusercontent.com/u/147500032?s=64&v=4',
-  'https://avatars.githubusercontent.com/u/169154369?s=64&v=4',
-  'https://avatars.githubusercontent.com/u/110523397?v=4',
-];
-const user: UserData = {
-  information: {
-    userid: 'haruyam15',
-    profileimage: TESTURL[4],
-    nickname: '하루얌',
-    password: '1234',
-  },
-  like: ['playlist1', 'playlist2'],
-  following: [
-    {
-      userid: 'Sonseongoh',
-      nickname: '성오',
-      profileimage: TESTURL[0],
-    },
-    {
-      userid: 'dhkim511',
-      nickname: '도형',
-      profileimage: TESTURL[1],
-    },
-    {
-      userid: 'love1ace',
-      nickname: '동영',
-      profileimage: TESTURL[2],
-    },
-    {
-      userid: 'ssumanlife',
-      nickname: '수민',
-      profileimage: TESTURL[3],
-    },
-    {
-      userid: 'abcde',
-      nickname: 'hahaha',
-      profileimage: TESTURL[4],
-    },
-  ],
-  followers: [
-    { userid: 'Sonseongoh', nickname: '성오', profileimage: TESTURL[0] },
-    { userid: 'dhkim511', nickname: '도형', profileimage: TESTURL[1] },
-    { userid: 'love1ace', nickname: '동영', profileimage: TESTURL[2] },
-    { userid: 'ssumanlife', nickname: '수민', profileimage: TESTURL[3] },
-  ],
-  myplaylist: [],
-};
+interface IPlaylistInfoProps {
+  info: Omit<IPlaylist, 'comments'>;
+}
+function PlaylistInfo({ info: data }: IPlaylistInfoProps) {
+  const navigate = useNavigate();
+  const { id, userId, title, tags, content, date, like, link } = data;
+  const videoId = link.map((l) => forkVideoId(l)).join(',');
 
-function PlaylistInfo() {
-  const { profileimage, nickname, userid } = user.information;
+  const {
+    error: userError,
+    data: userData,
+    isLoading: userIsLoading,
+  } = useQuery({
+    queryKey: ['user', userId],
+    queryFn: () => getUserData(userId),
+  });
+
+  const {
+    error: youtubeError,
+    data: youtubeData,
+    isLoading: youtubeIsLoading,
+  } = useQuery({
+    queryKey: ['youtube', id],
+    queryFn: () => getYoutubeData(videoId),
+  });
+
+  if (userIsLoading) {
+    return <></>;
+  }
+
+  if (userError) {
+    alert(`유저를 조회할 수 없습니다. \n ${userError}`);
+    navigate(`/`);
+    return;
+  }
+
+  if (!userData) {
+    alert(`유저를 조회할 수 없습니다. \n ${userError}`);
+    navigate(`/`);
+    return;
+  }
+
+  if (youtubeIsLoading) {
+    return <></>;
+  }
+
+  if (youtubeError) {
+    alert(`유튜브 데이터를 조회할 수 없습니다. \n ${youtubeError}`);
+    navigate(`/`);
+    return;
+  }
+
+  if (!youtubeData) {
+    alert(`유튜브 데이터를 조회할 수 없습니다. \n ${youtubeData}`);
+    navigate(`/`);
+    return;
+  }
+
   return (
-    <div className="playlist-info" css={info}>
+    <div className="playlist-info" css={playlistInfo}>
       <div className="info-header">
         <div className="title">
-          <p className="playlist-title">180513 뷰티풀 민트 라이프 2018</p>
-          <p className="video-title">연애조건</p>
+          <p className="playlist-title">{title}</p>
+          <p className="video-title">{youtubeData.items[0].snippet.title}</p>
         </div>
         <div className="actions">
           <Button size="md">
-            <Heart size="18" /> <span>244</span>
+            <Heart size="18" /> <span>{like.length}</span>
           </Button>
-          <Tags tags={['윤하', '라이브', ' 페스티벌', '뷰티풀 민트 라이프']} />
+          <Tags tags={tags} />
         </div>
       </div>
 
       <div className="owner">
-        <User profileimage={profileimage} nickname={nickname} userid={userid} size="lg" />
+        <User
+          profileimage={userData.profileimage}
+          nickname={userData.nickname}
+          userid={userId}
+          size="lg"
+        />
       </div>
-
       <div className="content">
-        180513 뷰티풀 민트 라이프 셋리스트
-        <br />
-        연애조건
-        <br />
-        Stay With me <br />
-        소나기
-        <br />
-        우산
-        <br />
-        Airplane Mode
+        <p>{date}</p>
+        {content}
       </div>
     </div>
   );
@@ -97,7 +104,7 @@ function PlaylistInfo() {
 
 export default PlaylistInfo;
 
-const info = css`
+const playlistInfo = css`
   .info-header {
     display: flex;
     justify-content: space-between;
@@ -140,5 +147,10 @@ const info = css`
     box-sizing: border-box;
     font-size: 15px;
     line-height: 1.3;
+    p {
+      margin-bottom: 5px;
+      font-size: 13px;
+      color: ${colors.lightestGray};
+    }
   }
 `;
