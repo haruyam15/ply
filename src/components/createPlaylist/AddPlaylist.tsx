@@ -72,7 +72,7 @@ const AddPlaylist = () => {
           />
           <Button size="md">추가</Button>
         </div>
-        <Tags tags={['신남', '7080']} deletable={true} />
+        <Tags tags={['신남', '7080']} deletable={true} position={true} />
       </form>
     </div>
   );
