@@ -1,18 +1,16 @@
 /** @jsxImportSource @emotion/react */
-import React from 'react';
-
 import { css } from '@emotion/react';
 import { X } from 'lucide-react';
 
 import useModalStore from '@/stores/useModalStore';
 import { colors } from '@/styles/colors';
 
-interface SignModalProps {
+interface ModalProps {
   children: React.ReactNode;
   modalName: string;
 }
 
-const Modal = ({ children, modalName }: SignModalProps) => {
+const Modal = ({ children, modalName }: ModalProps) => {
   const closeModal = useModalStore((state) => state.closeModal);
 
   return (

@@ -1,5 +1,5 @@
 import express from 'express';
-import dotenv from 'dotenv';
+import * as dotenv from 'dotenv';
 import cors from 'cors';
 import { MongoClient } from 'mongodb';
 import loginRoute from './routes/login.js';

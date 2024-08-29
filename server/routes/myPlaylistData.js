@@ -10,7 +10,10 @@ router.get('/user/myPlaylistData', async (req, res) => {
 
     if (user) {
       const { myPlaylist } = user;
-      const playlists = await database.collection('playListData').find({ id: { $in: myPlaylist } }).toArray();
+      const playlists = await database
+        .collection('playListData')
+        .find({ id: { $in: myPlaylist } })
+        .toArray();
 
       res.status(200).send(playlists);
     } else {
