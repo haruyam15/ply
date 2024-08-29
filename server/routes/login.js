@@ -5,7 +5,9 @@ router.post('/login', async (req, res) => {
   const { userid, password } = req.body;
   const database = req.database;
   try {
-    const user = await database.collection('users').findOne({ 'information.userid': userid, 'information.password': password });
+    const user = await database
+      .collection('users')
+      .findOne({ 'information.userid': userid, 'information.password': password });
     if (user) {
       res.status(200).send({ message: 'Login successful', user });
     } else {

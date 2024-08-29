@@ -1,21 +1,18 @@
 /** @jsxImportSource @emotion/react */
-
 import { css } from '@emotion/react';
-
 import { colors } from '@/styles/colors';
 
 interface ButtonProps {
   children: React.ReactNode;
   size?: Size;
-  type?: 'button' | 'submit' | 'reset';
-  onClick?: React.MouseEventHandler<HTMLButtonElement>;
+  onClick?: () => void | Promise<void>;
 }
 
 type Size = 'sm' | 'md' | 'lg';
 
-function Button({ children, size = 'sm', type, onClick }: ButtonProps) {
+function Button({ children, size = 'sm', onClick }: ButtonProps) {
   return (
-    <button css={btn(size)} type={type} onClick={onClick}>
+    <button css={btn(size)} onClick={onClick}>
       {children}
     </button>
   );
@@ -25,6 +22,7 @@ export default Button;
 
 const btn = (size: Size) => css`
   display: flex;
+  justify-content: center;
   align-items: center;
   height: 30px;
   border: 1px solid rgba(255, 255, 255, 0.12);
@@ -41,12 +39,13 @@ const btn = (size: Size) => css`
   }
   ${size === 'md' &&
   `
-		height: 40px;
+    width: 80px;
+		height: 35px;
 		font-size:15px;
 	`}
   ${size === 'lg' &&
   `
-		height: 60px;
-		font-size:20px;
-	`}
+    height: 60px;
+    font-size: 20px;
+  `}
 `;

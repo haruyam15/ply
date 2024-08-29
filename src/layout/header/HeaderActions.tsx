@@ -12,14 +12,18 @@ import useUserStore from '@/stores/useUserStore';
 function HeaderActions() {
   const openSigninModal = useModalStore((state) => state.openModal);
   const user = useUserStore((state) => state.userInformation);
-  const { profileimage, nickname, userid } = user.information;
 
   return (
     <div css={headerActions}>
-      {realUserData?.userid === userid ? (
+      {realUserData?.userid === user.information.userid ? (
         <Link to={'/profile'}>
           <div className="user-info">
-            <User profileimage={profileimage} nickname={nickname} userid={userid} size="md" />
+            <User
+              profileimage={user.information.profileimage}
+              nickname={user.information.nickname}
+              userid={user.information.userid}
+              size="md"
+            />
           </div>
         </Link>
       ) : (

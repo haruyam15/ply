@@ -19,7 +19,7 @@ router.post('/createPlaylist', async (req, res) => {
       comments: [],
       date: new Date().toISOString().split('T')[0],
       disclosureStatus: true,
-      tags
+      tags,
     };
 
     await database.collection('playListData').insertOne(newPlaylist);
@@ -27,10 +27,9 @@ router.post('/createPlaylist', async (req, res) => {
     const user = await database.collection('users').findOne({ 'information.userid': userid });
 
     if (user) {
-      await database.collection('users').updateOne(
-        { 'information.userid': userid },
-        { $push: { myPlaylist: playlistId } }
-      );
+      await database
+        .collection('users')
+        .updateOne({ 'information.userid': userid }, { $push: { myPlaylist: playlistId } });
 
       res.status(201).send({ message: 'Playlist created successfully', playlistId });
     } else {
