@@ -1,27 +1,33 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-
-import Youtube from '@/apis/youtube';
 import forkVideoId from '@/utils/forkVideoId';
+
+// import getYoutubeData from '@/apis/getYoutubeData';
+// import { ISnippet } from '@/types/youtubeResponseTypes';
+// import { useEffect, useState } from 'react';
+// import { useQuery } from '@tanstack/react-query';
 
 interface IPlayerProps {
   src: string;
 }
 function Player({ src }: IPlayerProps) {
-  const videoId = forkVideoId(src);
-  const data = new Youtube();
+  const videoId = forkVideoId(src) as string;
 
-  if (videoId === null) {
-    throw Error('videoId가 없습니다');
-  }
+  // const { isLoading, data } = useQuery({
+  //   queryKey: ['youtube', videoId],
+  //   queryFn: () => getYoutubeData(videoId),
+  // });
 
-  console.log(data.video(videoId));
+  // if (isLoading) {
+  //   return <div>loading...</div>;
+  // }
+
+  // console.log(data);
 
   return (
     <div className="player" css={player}>
       <iframe
-        src="https://www.youtube.com/embed/ockq7VfdZxc?list=PL74Zf6m2qP_637hyH0i1PKtr-3OGPIbi3"
-        title="180513 뷰티풀 민트 라이프 2018 윤하 - 연애조건"
+        src={`https://www.youtube.com/embed/${videoId}`}
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
         referrerPolicy="strict-origin-when-cross-origin"
         allowFullScreen

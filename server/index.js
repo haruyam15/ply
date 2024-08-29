@@ -17,7 +17,7 @@ import commentRoute from './routes/comment.js';
 import getPlaylistRoute from './routes/getPlaylist.js';
 import deletePlaylistRoute from './routes/deletePlaylist.js';
 import updateUserInfoRoute from './routes/updateUserInfo.js';
-import youtubeRoute from './routes/youtube';
+import youtubeRoute from './routes/youtube.js';
 
 const app = express();
 

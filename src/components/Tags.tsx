@@ -4,12 +4,12 @@ import { X } from 'lucide-react';
 
 import { colors } from '@/styles/colors';
 
-interface TagsProps {
+interface ITagsProps {
   tags: string[];
   deletable?: boolean;
 }
 
-function Tags({ tags, deletable = false }: TagsProps) {
+function Tags({ tags, deletable = false }: ITagsProps) {
   return (
     <ul css={tagWrap(deletable)}>
       {tags.map((tag, i) => (

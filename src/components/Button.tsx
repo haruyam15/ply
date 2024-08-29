@@ -7,12 +7,18 @@ import { colors } from '@/styles/colors';
 interface ButtonProps {
   children: React.ReactNode;
   size?: Size;
+  type?: 'button' | 'submit' | 'reset';
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
 }
 
 type Size = 'sm' | 'md' | 'lg';
 
-function Button({ children, size = 'sm' }: ButtonProps) {
-  return <button css={btn(size)}>{children}</button>;
+function Button({ children, size = 'sm', type, onClick }: ButtonProps) {
+  return (
+    <button css={btn(size)} type={type} onClick={onClick}>
+      {children}
+    </button>
+  );
 }
 
 export default Button;

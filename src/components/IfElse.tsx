@@ -1,24 +1,24 @@
 import { ReactNode, ReactElement, Children, isValidElement } from 'react';
 
-interface ThenProps {
+interface IThenProps {
   children: ReactNode;
 }
 
-interface ElseProps {
+interface IElseProps {
   children: ReactNode;
 }
 
-interface IfProps {
+interface IIfProps {
   test: boolean;
   children: ReactNode;
 }
 
-const Then: React.FC<ThenProps> = ({ children }) => <>{children}</>;
-const Else: React.FC<ElseProps> = ({ children }) => <>{children}</>;
+const Then: React.FC<IThenProps> = ({ children }) => <>{children}</>;
+const Else: React.FC<IElseProps> = ({ children }) => <>{children}</>;
 
-const If: React.FC<IfProps> & {
-  Then: React.FC<ThenProps>;
-  Else: React.FC<ElseProps>;
+const If: React.FC<IIfProps> & {
+  Then: React.FC<IThenProps>;
+  Else: React.FC<IElseProps>;
 } = ({ test, children }) => {
   let thenNode: ReactElement | null = null;
   let elseNode: ReactElement | null = null;

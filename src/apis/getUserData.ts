@@ -1,8 +1,13 @@
 import axios from 'axios';
+import { IUserInformation } from '@/types/userTypes';
 
-import { UserData } from '@/types/User';
-
-export const getUserData = async (userId: string): Promise<UserData> => {
-  const response = await axios.get(`/api/users/${userId}`);
-  return response.data;
+type getUserData = Pick<IUserInformation, 'profileimage' | 'nickname'>;
+export const getUserData = async (userId: string): Promise<getUserData | null> => {
+  try {
+    const response = await axios.get(`/api/user/profile?userid=${userId}`);
+    return response.data;
+  } catch (error) {
+    console.error('유저 정보를 불러오는데 실패했습니다 :', error);
+    return null;
+  }
 };

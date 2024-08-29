@@ -3,18 +3,16 @@ import { css } from '@emotion/react';
 
 import { If } from '@/components/IfElse';
 import { colors } from '@/styles/colors';
+import { IUserInformation } from '@/types/userTypes';
 
-interface UserProps {
-  userid: string;
-  profileimage: string;
-  nickname: string;
+interface IUserProps extends Omit<IUserInformation, 'password'> {
   onlyImage?: boolean;
   size?: Size;
 }
 
 type Size = 'sm' | 'md' | 'lg';
 
-function User({ profileimage, nickname, userid, onlyImage = false, size = 'sm' }: UserProps) {
+function User({ profileimage, nickname, userid, onlyImage = false, size = 'sm' }: IUserProps) {
   return (
     <div css={userWrap(size)}>
       <If test={onlyImage}>

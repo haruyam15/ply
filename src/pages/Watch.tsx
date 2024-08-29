@@ -29,10 +29,10 @@ function Watch() {
   }
 
   if (!data) {
-    return <div>no-data</div>;
+    alert(`플레이리스트 정보가 없습니다.`);
+    navigate(`/`);
+    return;
   }
-
-  // console.log(data);
 
   const { comments, ...info } = data;
 
@@ -40,8 +40,8 @@ function Watch() {
     <div className="watch" css={watch}>
       <div className="watch-detail">
         <Player src={info.link[0]} />
-        {/* <PlaylistInfo info={info} />
-        <Comments comments={comments} /> */}
+        <PlaylistInfo info={info} />
+        <Comments comments={comments} />
       </div>
       <VideoList link={info.link} />
     </div>

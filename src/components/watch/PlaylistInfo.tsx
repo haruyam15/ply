@@ -7,55 +7,97 @@ import { useNavigate } from 'react-router-dom';
 import { getUserData } from '@/apis/getUserData';
 import Button from '@/components/Button';
 import Tags from '@/components/Tags';
-import { Playlist } from '@/types/Playlist';
+import { IPlaylist } from '@/types/playlistTypes';
+import User from '@/components/User';
+import { colors } from '@/styles/colors';
+import getYoutubeData from '@/apis/getYoutubeData';
+import forkVideoId from '@/utils/forkVideoId';
 
 interface IPlaylistInfoProps {
-  info: Omit<Playlist, 'comments'>;
+  info: Omit<IPlaylist, 'comments'>;
 }
-function PlaylistInfo({ info }: IPlaylistInfoProps) {
-  const userId = info.userId;
+function PlaylistInfo({ info: data }: IPlaylistInfoProps) {
   const navigate = useNavigate();
+  const { id, userId, title, tags, content, date, like, link } = data;
+  const videoId = link.map((l) => forkVideoId(l)).join(',');
 
-  const { isLoading, error, data } = useQuery({
+  const {
+    error: userError,
+    data: userData,
+    isLoading: userIsLoading,
+  } = useQuery({
     queryKey: ['user', userId],
-    queryFn: () => getUserData(userId as string),
+    queryFn: () => getUserData(userId),
   });
 
-  // if (isLoading) {
-  //   return <span>Loading...</span>;
-  // }
+  const {
+    error: youtubeError,
+    data: youtubeData,
+    isLoading: youtubeIsLoading,
+  } = useQuery({
+    queryKey: ['youtube', id],
+    queryFn: () => getYoutubeData(videoId),
+  });
 
-  // if (error) {
-  //   alert(`error : ${error}`);
-  //   navigate(`/`);
-  // }
+  if (userIsLoading) {
+    return <></>;
+  }
 
-  // if (data) {
-  //   return <div>no-data</div>;
-  // }
+  if (userError) {
+    alert(`유저를 조회할 수 없습니다. \n ${userError}`);
+    navigate(`/`);
+    return;
+  }
 
-  console.log(data);
+  if (!userData) {
+    alert(`유저를 조회할 수 없습니다. \n ${userError}`);
+    navigate(`/`);
+    return;
+  }
+
+  if (youtubeIsLoading) {
+    return <></>;
+  }
+
+  if (youtubeError) {
+    alert(`유튜브 데이터를 조회할 수 없습니다. \n ${youtubeError}`);
+    navigate(`/`);
+    return;
+  }
+
+  if (!youtubeData) {
+    alert(`유튜브 데이터를 조회할 수 없습니다. \n ${youtubeData}`);
+    navigate(`/`);
+    return;
+  }
 
   return (
     <div className="playlist-info" css={playlistInfo}>
       <div className="info-header">
         <div className="title">
-          <p className="playlist-title">{'title'}</p>
-          <p className="video-title">영상 title</p>
+          <p className="playlist-title">{title}</p>
+          <p className="video-title">{youtubeData.items[0].snippet.title}</p>
         </div>
         <div className="actions">
           <Button size="md">
-            <Heart size="18" /> <span>{'numoflike'}</span>
+            <Heart size="18" /> <span>{like.length}</span>
           </Button>
-          <Tags tags={['tags']} />
+          <Tags tags={tags} />
         </div>
       </div>
 
       <div className="owner">
-        {/* <User profileimage={profileimage} nickname={nickname} userid={userid} size="lg" /> */}
+        <User
+          profileimage={userData.profileimage}
+          nickname={userData.nickname}
+          userid={userId}
+          size="lg"
+        />
       </div>
-
-      <div className="content">{'content'}</div>
+      <div className="content">
+        <p>{date}</p>
+        {content}
+      </div>
     </div>
   );
 }
@@ -105,5 +147,10 @@ const playlistInfo = css`
     box-sizing: border-box;
     font-size: 15px;
     line-height: 1.3;
+    p {
+      margin-bottom: 5px;
+      font-size: 13px;
+      color: ${colors.lightestGray};
+    }
   }
 `;
