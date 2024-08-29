@@ -10,6 +10,7 @@ import Profile from '@/pages/Profile';
 import Search from '@/pages/Search';
 import Timeline from '@/pages/Timeline';
 import Watch from '@/pages/Watch';
+import CreatePlaylist from '@/pages/CreatePlaylist';
 
 export const router = createBrowserRouter([
   {
@@ -48,6 +49,10 @@ export const router = createBrowserRouter([
       {
         path: '/search',
         element: <Search />,
+      },
+      {
+        path: '/createplaylist',
+        element: <CreatePlaylist />,
       },
     ],
   },

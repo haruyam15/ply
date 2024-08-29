@@ -14,6 +14,7 @@ export default Button;
 
 const btn = (size: Size) => css`
   display: flex;
+  justify-content: center;
   align-items: center;
   height: 30px;
   border: 1px solid rgba(255, 255, 255, 0.12);
@@ -30,9 +31,10 @@ const btn = (size: Size) => css`
   }
   ${size === 'md' &&
   `
-    height: 40px;
-    font-size: 15px;
-  `}
+    width: 80px;
+		height: 35px;
+		font-size:15px;
+	`}
   ${size === 'lg' &&
   `
     height: 60px;

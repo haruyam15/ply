@@ -7,8 +7,8 @@ import { colors } from '@/styles/colors';
 function Tags({ tags, deletable = false }: TagsProps) {
   return (
     <ul css={tagWrap(deletable)}>
-      {tags.map((tag) => (
-        <li>
+      {tags.map((tag, index) => (
+        <li key={index}>
           {tag}
           <span className="del">
             <X size={15} />
