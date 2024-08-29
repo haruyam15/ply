@@ -9,13 +9,12 @@ router.post('/addComment', async (req, res) => {
     const newComment = {
       commentsContent: content,
       commentsDate: new Date().toISOString().split('T')[0],
-      commentsWriter: userid
+      commentsWriter: userid,
     };
 
-    await database.collection('playListData').updateOne(
-      { id: playlistId },
-      { $push: { comments: newComment } }
-    );
+    await database
+      .collection('playListData')
+      .updateOne({ id: playlistId }, { $push: { comments: newComment } });
 
     res.status(200).send({ message: 'Comment added successfully' });
   } catch (error) {

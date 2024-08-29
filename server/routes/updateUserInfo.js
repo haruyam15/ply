@@ -11,10 +11,9 @@ router.post('/updateUserInfo', async (req, res) => {
     if (password) updateFields['information.password'] = password;
     if (nickname) updateFields['information.nickname'] = nickname;
 
-    const result = await database.collection('users').updateOne(
-      { 'information.userid': userid },
-      { $set: updateFields }
-    );
+    const result = await database
+      .collection('users')
+      .updateOne({ 'information.userid': userid }, { $set: updateFields });
 
     if (result.matchedCount === 1) {
       res.status(200).send({ message: 'User information updated successfully' });
