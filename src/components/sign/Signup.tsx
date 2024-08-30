@@ -55,7 +55,7 @@ const Signup: React.FC = () => {
           password: newUser.password,
         });
         if (res.status === 201) {
-          toast('가입이 완료되었습니다.');
+          toast.success('가입이 완료되었습니다.');
           openSigninModal('signin');
         }
       } catch (error) {
@@ -67,7 +67,7 @@ const Signup: React.FC = () => {
 
   useEffect(() => {
     const validation = async () => {
-      if (!checkbox?.checked) {
+      if (!checkbox?.checked && signinModal.modalState) {
         toast.error('모두 확인하였는지 체크해주세요.');
         return;
       }

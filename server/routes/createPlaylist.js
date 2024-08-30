@@ -3,7 +3,7 @@ import crypto from 'crypto';
 const router = express.Router();
 
 router.post('/createPlaylist', async (req, res) => {
-  const { userid, title, content, link, tags } = req.body;
+  const { userid, title, content, link, tags, disclosureStatus, imgUrl } = req.body;
   const database = req.database;
 
   try {
@@ -18,23 +18,14 @@ router.post('/createPlaylist', async (req, res) => {
       like: [],
       comments: [],
       date: new Date().toISOString().split('T')[0],
-      disclosureStatus: true,
+      disclosureStatus,
       tags,
+      imgUrl,
     };
 
     await database.collection('playListData').insertOne(newPlaylist);
 
-    const user = await database.collection('users').findOne({ 'information.userid': userid });
-
-    if (user) {
-      await database
-        .collection('users')
-        .updateOne({ 'information.userid': userid }, { $push: { myPlaylist: playlistId } });
-
-      res.status(201).send({ message: 'Playlist created successfully', playlistId });
-    } else {
-      res.status(404).send({ message: 'User not found' });
-    }
+    res.status(201).send({ message: 'Playlist created successfully', playlistId });
   } catch (error) {
     res.status(500).send({ message: 'Failed to create playlist', error });
   }
