@@ -8,7 +8,7 @@ router.post('/signup/validate', async (req, res) => {
     const foundUser = await database.collection('users').findOne({
       $or: [{ 'information.userid': userid }, { 'information.nickname': nickname }],
     });
-    console.log(foundUser);
+
     if (foundUser) {
       if (foundUser.information.userid === userid) {
         return res.status(400).send({ field: 'userid', message: 'ID is already taken' });
