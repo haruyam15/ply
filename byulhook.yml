@@ -12,13 +12,16 @@
 #   commands:
 #     lint:
 #       run: 'npm run lint'
-
 pre-commit:
+  parallel: true
   commands:
-    Lint:
-      run: 'npm run lint'
+    eslint:
+      glob: '*.{js,ts,jsx,tsx}'
+      run: npm run lint
+
     prettier:
-      run: 'npm run prettier --write'
+      glob: '*.{js,ts,jsx,tsx,json,yaml,md}'
+      run: npm run prettier --write
 
 commit-msg:
   commands:

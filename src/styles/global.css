@@ -146,7 +146,8 @@ button {
 	padding: 0;
 }
 
-input {
+input,
+textarea {
 	background: 0 0;
 	border: 0;
 	border-radius: 0;
@@ -159,4 +160,13 @@ body {
 
 a {
 	text-decoration: none;
+}
+
+img {
+	width: 100%;
+}
+
+input:focus,
+textarea:focus {
+	outline: none;
 }
