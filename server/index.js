@@ -4,20 +4,8 @@ import cors from 'cors';
 import { MongoClient } from 'mongodb';
 import loginRoute from './routes/login.js';
 import signupRoute from './routes/signup.js';
-import registerRoute from './routes/getPlaylist.js';
-import followersRoute from './routes/followers.js';
-import followingRoute from './routes/following.js';
-import updateProfileRoute from './routes/updateUserInfo.js';
-import userProfileRoute from './routes/userProfile.js';
-import myPlaylistDataRoute from './routes/myPlaylistData.js';
-import likedPlaylistsRoute from './routes/likedPlaylists.js';
-import createPlaylistRoute from './routes/createPlaylist.js';
-import likePlaylistRoute from './routes/like.js';
-import commentRoute from './routes/comment.js';
-import getPlaylistRoute from './routes/getPlaylist.js';
-import deletePlaylistRoute from './routes/deletePlaylist.js';
-import updateUserInfoRoute from './routes/updateUserInfo.js';
 import youtubeRoute from './routes/youtube.js';
+import timelineRoute from './routes/timeline.js';
 
 const app = express();
 
@@ -35,7 +23,7 @@ async function connectToDB() {
   try {
     const client = await MongoClient.connect(MONGOURL);
     database = client.db(sampleDBName);
-    app.listen(PORT, () => console.log(`MongoDB listening on ${PORT}`));
+    app.listen(PORT, () => console.log(`서버가 ${PORT}에서 실행 중입니다.`));
   } catch (error) {
     console.error(error);
   }
@@ -47,19 +35,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/api', loginRoute);
-app.use('/api', signupRoute);
-app.use('/api', registerRoute);
-app.use('/api', followersRoute);
-app.use('/api', followingRoute);
-app.use('/api', updateProfileRoute);
-app.use('/api', userProfileRoute);
-app.use('/api', myPlaylistDataRoute);
-app.use('/api', likedPlaylistsRoute);
-app.use('/api', createPlaylistRoute);
-app.use('/api', likePlaylistRoute);
-app.use('/api', commentRoute);
-app.use('/api', getPlaylistRoute);
-app.use('/api', deletePlaylistRoute);
-app.use('/api', updateUserInfoRoute);
-app.use('/api', youtubeRoute);
+app.use('/api/login', loginRoute);
+app.use('/api/signup', signupRoute);
+app.use('/api/youtube', youtubeRoute);
+app.use('/api/timeline', timelineRoute);
