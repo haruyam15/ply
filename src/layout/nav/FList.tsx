@@ -4,8 +4,8 @@ import { useNavigate } from 'react-router-dom';
 
 import User from '@/components/User';
 import useNavStore from '@/stores/useNavStore';
-import { Tab } from '@/types/Nav';
-import { UserData } from '@/types/User';
+import { Tab } from '@/types/navTypes';
+import { IUserData } from '@/types/userTypes';
 import { colors } from '@/styles/colors';
 
 const TESTURL = [
@@ -13,13 +13,9 @@ const TESTURL = [
   'https://avatars.githubusercontent.com/u/143858798?s=64&v=4',
   'https://avatars.githubusercontent.com/u/147500032?s=64&v=4',
   'https://avatars.githubusercontent.com/u/169154369?s=64&v=4',
-  'https://avatars.githubusercontent.com/u/110523397?v=4',
-  'https://avatars.githubusercontent.com/u/1?v=4',
-  'https://avatars.githubusercontent.com/u/2?v=4',
-  'https://avatars.githubusercontent.com/u/3?v=4',
 ];
 
-const user: UserData = {
+const user: IUserData = {
   information: {
     userid: 'haruyam15',
     profileimage: TESTURL[4],
@@ -53,35 +49,17 @@ const user: UserData = {
       nickname: 'hahaha',
       profileimage: TESTURL[4],
     },
-    {
-      userid: 'extra1',
-      nickname: 'Extra User 1',
-      profileimage: TESTURL[5],
-    },
-    {
-      userid: 'extra2',
-      nickname: 'Extra User 2',
-      profileimage: TESTURL[6],
-    },
-    {
-      userid: 'extra3',
-      nickname: 'Extra User 3',
-      profileimage: TESTURL[7],
-    },
   ],
   followers: [
     { userid: 'Sonseongoh', nickname: '성오', profileimage: TESTURL[0] },
     { userid: 'dhkim511', nickname: '도형', profileimage: TESTURL[1] },
     { userid: 'love1ace', nickname: '동영', profileimage: TESTURL[2] },
     { userid: 'ssumanlife', nickname: '수민', profileimage: TESTURL[3] },
-    { userid: 'extra1', nickname: 'Extra User 1', profileimage: TESTURL[5] },
-    { userid: 'extra2', nickname: 'Extra User 2', profileimage: TESTURL[6] },
-    { userid: 'extra3', nickname: 'Extra User 3', profileimage: TESTURL[7] },
   ],
   myplaylist: [],
 };
 
-function FList({ tab }: IFListProps) {
+function FList({ tab }: FListProps) {
   const isExpand = useNavStore((state) => state.isExpand);
   const navigate = useNavigate();
 
@@ -89,8 +67,8 @@ function FList({ tab }: IFListProps) {
     navigate('/follow');
   };
 
-  const displayedUsers = user[tab].slice(0, 5);
-  const hasMore = user[tab].length > 5;
+  const displayedUsers = user[tab].slice(0, 4);
+  const hasMore = user[tab].length > 3;
 
   return (
     <>

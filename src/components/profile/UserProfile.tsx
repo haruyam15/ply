@@ -5,7 +5,7 @@ import useModalStore from '@/stores/useModalStore';
 import { IUser } from '@/stores/useUserStore';
 import { colors } from '@/styles/colors';
 import ProfileEditModal from './ProfileEditModal';
-import { UserInformation } from '@/types/User';
+import { IUserInformation } from '@/types/userTypes';
 
 interface ProfileProps {
   user: IUser;
@@ -16,7 +16,9 @@ const UserProfile: React.FC<ProfileProps> = ({ user }) => {
   const openProfileModal = useModalStore((state) => state.openModal);
   const { profileimage, nickname, userid } = user.information;
   const storageUserData = localStorage.getItem('userInformation');
-  const realUserData: UserInformation | null = storageUserData ? JSON.parse(storageUserData) : null;
+  const realUserData: IUserInformation | null = storageUserData
+    ? JSON.parse(storageUserData)
+    : null;
 
   const handleOpenProfileModal = () => {
     openProfileModal('profileEdit');

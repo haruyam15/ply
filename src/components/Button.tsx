@@ -2,7 +2,7 @@
 import { css } from '@emotion/react';
 import { colors } from '@/styles/colors';
 
-interface ButtonProps {
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
   size?: Size;
   onClick?: () => void | Promise<void>;
@@ -49,10 +49,3 @@ const btn = (size: Size) => css`
     font-size: 20px;
   `}
 `;
-
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  children: React.ReactNode;
-  size?: Size;
-}
-
-type Size = 'sm' | 'md' | 'lg';
