@@ -11,9 +11,16 @@ import Confirm from './Confirm';
 interface MenuDotProps {
   showEdit?: boolean;
   showDelete?: boolean;
+  deleteItem?: (index: number) => void;
+  index?: number;
 }
 
-const MenuDot: React.FC<MenuDotProps> = ({ showEdit = true, showDelete = true }) => {
+const MenuDot: React.FC<MenuDotProps> = ({
+  showEdit = true,
+  showDelete = true,
+  deleteItem,
+  index,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
@@ -66,6 +73,8 @@ const MenuDot: React.FC<MenuDotProps> = ({ showEdit = true, showDelete = true })
           text="정말 삭제하시겠습니까?"
           onConfirm={handleConfirm}
           onClose={handleCloseConfirm}
+          deleteItem={deleteItem}
+          index={index}
         />
       )}
     </div>
