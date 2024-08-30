@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import axios from 'axios';
 
 interface IInformation {
   _id: string;
@@ -17,12 +18,14 @@ export interface IUser {
 interface State {
   userInformation: IUser;
 }
+
 interface Action {
   setUser: (userData: IUser) => void;
   clearUser: () => void;
+  fetchFollowers: () => Promise<string[]>;
 }
 
-const useUserStore = create<State & Action>((set) => ({
+const useUserStore = create<State & Action>((set, get) => ({
   userInformation: {
     information: {
       _id: '',
@@ -62,6 +65,18 @@ const useUserStore = create<State & Action>((set) => ({
         following: [],
       },
     })),
+  fetchFollowers: async () => {
+    const { userInformation } = get();
+    try {
+      const response = await axios.post('/api/followers', {
+        userid: userInformation.information.userid,
+      });
+      return response.data.followers;
+    } catch (error) {
+      console.error('Failed to fetch followers:', error);
+      return [];
+    }
+  },
 }));
 
 export default useUserStore;
