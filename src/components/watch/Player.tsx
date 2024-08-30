@@ -4,23 +4,13 @@ import useNowPlayingStore from '@/stores/useNowPlayingStore';
 import forkVideoId from '@/utils/forkVideoId';
 import { css } from '@emotion/react';
 import { useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 function Player() {
-  const navigate = useNavigate();
   const playlistId = useParams().playlistId as string;
   const playingVideoId = useNowPlayingStore((state) => state.playingVideoId);
   const setPlayingVideoId = useNowPlayingStore((state) => state.setPlayingVideoId);
-  const { data, isLoading, error } = useWatchData(playlistId);
-
-  if (isLoading) {
-    <div></div>;
-  }
-
-  if (error) {
-    alert('존재하지 않는 플레이리스트 입니다.');
-    navigate('/');
-  }
+  const { data } = useWatchData(playlistId);
 
   useEffect(() => {
     if (data) {
