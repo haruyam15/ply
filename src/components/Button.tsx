@@ -2,6 +2,14 @@
 import { css } from '@emotion/react';
 import { colors } from '@/styles/colors';
 
+interface ButtonProps {
+  children: React.ReactNode;
+  size?: Size;
+  onClick?: () => void | Promise<void>;
+}
+
+type Size = 'sm' | 'md' | 'lg';
+
 function Button({ children, size = 'sm', onClick, ...rest }: ButtonProps) {
   return (
     <button css={btn(size)} onClick={onClick} {...rest}>

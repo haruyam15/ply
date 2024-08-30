@@ -16,6 +16,7 @@
   "dependencies": {
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
+    "@tanstack/react-query": "^5.52.2",
     "axios": "^1.7.4",
     "byul": "^1.3.0",
     "byul-alias": "^1.0.0",

@@ -81,7 +81,7 @@ const user: UserData = {
   myplaylist: [],
 };
 
-function FList({ tab }: FListProps) {
+function FList({ tab }: IFListProps) {
   const isExpand = useNavStore((state) => state.isExpand);
   const navigate = useNavigate();
 

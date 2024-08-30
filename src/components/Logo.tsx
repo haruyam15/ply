@@ -4,7 +4,7 @@ import { css } from '@emotion/react';
 function Logo() {
   return (
     <h1 css={logo}>
-      <img src="./assets/logo.png" />
+      <img src="/assets/logo.png" />
     </h1>
   );
 }

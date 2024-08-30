@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-
 import Comments from '@/components/watch/Comments';
 import Player from '@/components/watch/Player';
 import PlaylistInfo from '@/components/watch/PlaylistInfo';
