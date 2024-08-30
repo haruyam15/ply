@@ -11,9 +11,9 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 
 type Size = 'sm' | 'md' | 'lg';
 
-function Button({ children, size = 'sm', onClick, ...rest }: ButtonProps) {
+function Button({ children, size = 'sm', onClick, background = false, ...rest }: ButtonProps) {
   return (
-    <button css={btn(size)} onClick={onClick} {...rest}>
+    <button css={btn(size, background)} onClick={onClick} {...rest}>
       {children}
     </button>
   );
