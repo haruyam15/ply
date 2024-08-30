@@ -8,6 +8,7 @@ import Tags from '@/components/Tags';
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import axios from 'axios';
 import usePlaylistDataStore from '@/stores/usePlaylistDataStore';
+import forkVideoId from '@/utils/forkVideoId';
 
 const API_KEY = import.meta.env.VITE_YOUTUBE_API_KEY;
 
@@ -52,6 +53,38 @@ const AddPlaylist = forwardRef(({}, ref) => {
     return playlistData;
   }, [title, content, tags]);
 
+  useEffect(() => {
+    const fetchYoutubeData = async () => {
+      const apiClient = axios.create({
+        baseURL: 'https://www.googleapis.com/youtube/v3/',
+        params: { key: API_KEY },
+      });
+      try {
+        const res = await apiClient.get('videos', {
+          params: {
+            part: 'snippet, statistics',
+            id: videoId,
+            fields: 'items(id, snippet(channelTitle, title))',
+          },
+        });
+        const resData = res.data.items[0];
+        if (resData) {
+          const playlistData = {
+            id: resData.id,
+            title: resData.snippet.title,
+            link,
+            imgUrl,
+            channelTitle: resData.snippet.channelTitle,
+          };
+          setPlaylistData(playlistData);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchYoutubeData();
+  }, [link, videoId]);
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, type: string) => {
     if (e.key === 'Enter' && !isComposing) {
       if (type === 'tag') handleAddTagChange();
@@ -75,11 +108,8 @@ const AddPlaylist = forwardRef(({}, ref) => {
 
   const handleUrl = useCallback(async () => {
     if (url.current?.value) {
-      const idExtractionFromUrl =
-        /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu.be\/)([a-zA-Z0-9_-]{11})/;
-      const match = url.current?.value.match(idExtractionFromUrl);
-      if (match) {
-        const newVideoId = match[1];
+      const newVideoId = forkVideoId(url.current.value);
+      if (newVideoId) {
         setLink([...link, url.current?.value]);
         setImgUrl([`https://img.youtube.com/vi/${newVideoId}/hqdefault.jpg`, ...imgUrl]);
         setVideoId(newVideoId);
@@ -91,39 +121,6 @@ const AddPlaylist = forwardRef(({}, ref) => {
       }
     }
   }, [url]);
-
-  useEffect(() => {
-    const fetchYoutubeData = async () => {
-      const apiClient = axios.create({
-        baseURL: 'https://www.googleapis.com/youtube/v3/',
-        params: { key: API_KEY },
-      });
-      try {
-        const res = await apiClient.get('videos', {
-          params: {
-            part: 'snippet, statistics',
-            id: videoId,
-            fields: 'items(id, snippet(channelTitle, title))',
-          },
-        });
-        const resData = res.data.items[0];
-        if (resData) {
-          // const editPublishedAtData = resData.snippet.publishedAt.slice(0, 10);
-          const playlistData = {
-            id: resData.id,
-            title: resData.snippet.title,
-            link,
-            imgUrl,
-            channelTitle: resData.snippet.channelTitle,
-          };
-          setPlaylistData(playlistData);
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchYoutubeData();
-  }, [link, videoId]);
 
   const handleDeleteTag = (index: number) => {
     setTags((prevTags) => prevTags.filter((_, i) => i !== index));

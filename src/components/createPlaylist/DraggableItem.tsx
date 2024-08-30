@@ -48,10 +48,10 @@ const DraggableItem: React.FC<IChartListProps> = ({
       <div css={{ cursor: 'pointer' }}>
         <AlignJustify />
       </div>
-      <div css={videoArea(chartData.imgUrl[0])}></div>
+      <div css={videoArea(chartData?.imgUrl[0])}></div>
       <div css={youtubeDataArea}>
-        <p>{chartData.title}</p>
-        <span>{chartData.channelTitle}</span>
+        <p>{chartData?.title}</p>
+        <span>{chartData?.channelTitle}</span>
       </div>
       <div css={{ position: 'absolute', right: '20px', top: '15px' }}>
         <MenuDot showEdit={false} deleteItem={handleDeletePlaylist} index={index} />
