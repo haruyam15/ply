@@ -12,14 +12,20 @@ interface VideoGridItemProps {
   videoId: string;
   title: string;
   user: string;
+  showEdit: boolean;
+  showDelete: boolean;
 }
 
-const VideoGridItem: React.FC<VideoGridItemProps> = ({ videoId, title }) => {
+const VideoGridItem: React.FC<VideoGridItemProps> = ({
+  videoId,
+  title,
+  showEdit = false,
+  showDelete = true,
+}) => {
   const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
 
   return (
     <div css={gridItemStyle}>
-      {/* Cover 컴포넌트로 이미지 감싸기 */}
       <Cover imageSrc={thumbnailUrl} playListLength={8} />
       <div css={descriptionStyle}>
         <div css={infoStyle}>
@@ -27,7 +33,7 @@ const VideoGridItem: React.FC<VideoGridItemProps> = ({ videoId, title }) => {
           <User profileimage="없음" nickname="손성오" userid="son" onlyImage={false} />
         </div>
         <div>
-          <MenuDot />
+          <MenuDot showEdit={showEdit} showDelete={showDelete} />
         </div>
       </div>
       <Tags tags={['게임', '재미', '음악', '힐링']} />

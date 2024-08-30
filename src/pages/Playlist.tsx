@@ -34,7 +34,7 @@ const Playlist: React.FC = () => {
 
       <div css={gridContainerStyle}>
         {gridItemsData.slice(0, visibleItems).map((item, index) => (
-          <VideoGridItem key={index} {...item} />
+          <VideoGridItem key={index} {...item} showEdit={true} showDelete={true} />
         ))}
         {loading && Array.from({ length: 8 }).map((_, index) => <SkeletonGridItem key={index} />)}
       </div>
