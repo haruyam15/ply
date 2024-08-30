@@ -2,74 +2,83 @@
 import { css } from '@emotion/react';
 import { useQuery } from '@tanstack/react-query';
 import { Heart } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import { getUserData } from '@/apis/getUserData';
 import Button from '@/components/Button';
 import Tags from '@/components/Tags';
-import { IPlaylist } from '@/types/playlistTypes';
 import User from '@/components/User';
 import { colors } from '@/styles/colors';
-import getYoutubeData from '@/apis/getYoutubeData';
 import forkVideoId from '@/utils/forkVideoId';
+import useYoutubeFecth from '@/hooks/useYoutubeFetch';
+import useWatchData from '@/hooks/useWatchData';
+import { useEffect, useState } from 'react';
 
-interface IPlaylistInfoProps {
-  info: Omit<IPlaylist, 'comments'>;
-}
-function PlaylistInfo({ info: data }: IPlaylistInfoProps) {
+//플리데이터안에 유저데이터오면 코드수정해야 함
+
+function PlaylistInfo() {
+  const playlistId = useParams().playlistId as string;
   const navigate = useNavigate();
-  const { id, userId, title, tags, content, date, like, link } = data;
-  const videoId = link.map((l) => forkVideoId(l)).join(',');
 
   const {
-    error: userError,
+    isLoading: playlistLoading,
+    data: playlistData,
+    error: playlistError,
+  } = useWatchData(playlistId);
+
+  const [videoId, setVideoId] = useState<string>('');
+  const [makerId, setMakerId] = useState<string>('');
+
+  useEffect(() => {
+    if (playlistData) {
+      const { link, userId } = playlistData;
+      setVideoId(link.map((l) => forkVideoId(l)).join(','));
+      setMakerId(userId);
+    }
+  }, [playlistData]);
+
+  const {
+    data: youtubeData,
+    error: youtubeError,
+    isLoading: youtubeIsLoading,
+  } = useYoutubeFecth(playlistId, videoId, !!videoId);
+
+  const {
     data: userData,
+    error: userError,
     isLoading: userIsLoading,
   } = useQuery({
-    queryKey: ['user', userId],
-    queryFn: () => getUserData(userId),
+    queryKey: ['user', makerId],
+    queryFn: () => getUserData(makerId),
+    enabled: !!makerId,
   });
 
-  const {
-    error: youtubeError,
-    data: youtubeData,
-    isLoading: youtubeIsLoading,
-  } = useQuery({
-    queryKey: ['youtube', id],
-    queryFn: () => getYoutubeData(videoId),
-  });
-
-  if (userIsLoading) {
-    return <></>;
+  if (playlistLoading || youtubeIsLoading || userIsLoading) {
+    return <div></div>;
   }
 
-  if (userError) {
-    alert(`유저를 조회할 수 없습니다. \n ${userError}`);
-    navigate(`/`);
-    return;
-  }
-
-  if (!userData) {
-    alert(`유저를 조회할 수 없습니다. \n ${userError}`);
-    navigate(`/`);
-    return;
-  }
-
-  if (youtubeIsLoading) {
-    return <></>;
+  if (playlistError) {
+    alert('플레이리스트 조회에 오류가 발생했습니다.');
+    navigate('/');
+    return null;
   }
 
   if (youtubeError) {
-    alert(`유튜브 데이터를 조회할 수 없습니다. \n ${youtubeError}`);
-    navigate(`/`);
-    return;
+    alert('유튜브 조회에 오류가 발생했습니다.');
+    navigate('/');
+    return null;
+  }
+  if (userError) {
+    alert('유저 조회에 오류가 발생했습니다.');
+    navigate('/');
+    return null;
   }
 
-  if (!youtubeData) {
-    alert(`유튜브 데이터를 조회할 수 없습니다. \n ${youtubeData}`);
-    navigate(`/`);
-    return;
+  if (!userData || !youtubeData || !playlistData) {
+    return null;
   }
+
+  const { title, tags, content, date, like } = playlistData;
 
   return (
     <div className="playlist-info" css={playlistInfo}>
@@ -90,7 +99,7 @@ function PlaylistInfo({ info: data }: IPlaylistInfoProps) {
         <User
           profileimage={userData.profileimage}
           nickname={userData.nickname}
-          userid={userId}
+          userid={makerId}
           size="lg"
         />
       </div>

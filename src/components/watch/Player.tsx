@@ -1,33 +1,28 @@
 /** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
+import useWatchData from '@/hooks/useWatchData';
+import useNowPlayingStore from '@/stores/useNowPlayingStore';
 import forkVideoId from '@/utils/forkVideoId';
+import { css } from '@emotion/react';
+import { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 
-// import getYoutubeData from '@/apis/getYoutubeData';
-// import { ISnippet } from '@/types/youtubeResponseTypes';
-// import { useEffect, useState } from 'react';
-// import { useQuery } from '@tanstack/react-query';
+function Player() {
+  const playlistId = useParams().playlistId as string;
+  const playingVideoId = useNowPlayingStore((state) => state.playingVideoId);
+  const setPlayingVideoId = useNowPlayingStore((state) => state.setPlayingVideoId);
+  const { data } = useWatchData(playlistId);
 
-interface IPlayerProps {
-  src: string;
-}
-function Player({ src }: IPlayerProps) {
-  const videoId = forkVideoId(src) as string;
-
-  // const { isLoading, data } = useQuery({
-  //   queryKey: ['youtube', videoId],
-  //   queryFn: () => getYoutubeData(videoId),
-  // });
-
-  // if (isLoading) {
-  //   return <div>loading...</div>;
-  // }
-
-  // console.log(data);
+  useEffect(() => {
+    if (data) {
+      const now = forkVideoId(data.link[0]) as string;
+      setPlayingVideoId(now);
+    }
+  }, [data, setPlayingVideoId]);
 
   return (
     <div className="player" css={player}>
       <iframe
-        src={`https://www.youtube.com/embed/${videoId}`}
+        src={`https://www.youtube.com/embed/${playingVideoId}`}
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
         referrerPolicy="strict-origin-when-cross-origin"
         allowFullScreen
