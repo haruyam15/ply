@@ -6,6 +6,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
   size?: Size;
   onClick?: () => void | Promise<void>;
+  background?: boolean;
 }
 
 type Size = 'sm' | 'md' | 'lg';
@@ -20,7 +21,7 @@ function Button({ children, size = 'sm', onClick, ...rest }: ButtonProps) {
 
 export default Button;
 
-const btn = (size: Size) => css`
+const btn = (size: Size, background: boolean) => css`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -47,5 +48,11 @@ const btn = (size: Size) => css`
   `
     height: 60px;
     font-size: 20px;
+  `}
+  
+  ${background &&
+  `
+    background-color: ${colors.white};
+    color: ${colors.black};
   `}
 `;

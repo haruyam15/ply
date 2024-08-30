@@ -7,16 +7,19 @@ interface TagsProps {
   tags: string[];
   deletable?: boolean;
   position?: boolean;
+  onClick?: (index: number) => void;
 }
-function Tags({ tags, deletable = false, position = false }: TagsProps) {
+function Tags({ tags, deletable = false, position = false, onClick }: TagsProps) {
   return (
     <ul css={tagWrap(deletable, position)}>
       {tags.map((tag, index) => (
         <li key={index}>
           {tag}
-          <span className="del">
-            <X size={15} />
-          </span>
+          {deletable && onClick && (
+            <span className="del" onClick={() => onClick(index)}>
+              <X size={15} />
+            </span>
+          )}
         </li>
       ))}
     </ul>
