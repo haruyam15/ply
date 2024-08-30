@@ -7,7 +7,7 @@ import { If } from '@/components/IfElse';
 import FList from '@/layout/nav/FList';
 import useNavStore from '@/stores/useNavStore';
 import { colors } from '@/styles/colors';
-import { Tab } from '@/types/Nav';
+import { Tab } from '@/types/navTypes';
 
 const FOLLOWING = 'following';
 const FOLLOWERS = 'followers';
