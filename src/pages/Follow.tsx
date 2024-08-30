@@ -44,13 +44,9 @@ const Follow: React.FC = () => {
       {followerDetails.map((follower, index) => (
         <div
           key={index}
-          css={{ display: 'flex', justifyContent: 'left', alignItems: 'center', margin: '20px' }}
+          css={{ display: 'flex', justifyContent: 'left', alignItems: 'center', margin: '80px' }}
         >
-          <img
-            css={profileimageArea}
-            src={follower.profileimage || '/default-profile-image.jpg'}
-            alt={`${follower.nickname}'s profile`}
-          />
+          <img css={profileimageArea} src={follower.profileimage || '/default-profile-image.jpg'} />
           <div css={{ marginLeft: '30px' }}>
             <h1 css={{ fontSize: '32px' }}>{follower.nickname}</h1>
             <div
@@ -85,15 +81,16 @@ const profileimageArea = css`
   height: 230px;
   border-radius: 50%;
   object-fit: cover;
-  background-color: ${colors.lightestGray};
+  background-color: ${colors.gray};
 `;
 
 const profileEditOrFollowerBtn = css`
   width: 100px;
   height: 30px;
-  background-color: ${colors.gray};
+  margin-top: 10px;
+  background-color: ${colors.primaryGreen};
   color: ${colors.white};
-  font-weight: 500;
+  font-weight: 800;
   border: none;
   border-radius: 15px;
   cursor: pointer;
