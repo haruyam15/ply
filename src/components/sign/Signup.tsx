@@ -107,11 +107,11 @@ const Signup: React.FC = () => {
       <form css={{ width: '330px' }} onSubmit={(e) => onSignup(e)}>
         <div css={idAndPasswordArea}>
           <Input css={idAndPassword} ref={nameRef} type="text" required />
-          <label>UserName</label>
+          <label>Username</label>
         </div>
         <div css={idAndPasswordArea}>
           <Input css={idAndPassword} ref={idRef} type="text" required />
-          <label>ID</label>
+          <label>Id</label>
         </div>
         <div css={idAndPasswordArea}>
           <Input css={idAndPassword} ref={passwordRef} type="password" required />
