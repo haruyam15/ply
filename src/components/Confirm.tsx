@@ -39,7 +39,7 @@ const Confirm: React.FC<ConfirmDialogProps> = ({
     }).then((result) => {
       if (result.isConfirmed) {
         onConfirm();
-        // console.log(deleteItem, '--', index);
+        console.log(index);
         if (deleteItem && index) {
           deleteItem(index);
         }
