@@ -16,6 +16,7 @@ export interface IChartData {
 
 const PlaylistChart: React.FC = () => {
   const playlistData = usePlaylistDataStore((state) => state.playlistData);
+  const draggabledData = usePlaylistDataStore((state) => state.draggabledData);
   const [chart, setChart] = useState(playlistData);
 
   useEffect(() => {
@@ -27,16 +28,14 @@ const PlaylistChart: React.FC = () => {
 
   const handleDragDrop = (dragIndex: number, hoverIndex: number) => {
     const dropChart = [...chart];
-    const [draggedItem] = dropChart.splice(dragIndex, 1);
-    dropChart.splice(hoverIndex, 0, draggedItem);
+    const draggedItem = dropChart.splice(dragIndex - 1, 1);
+    dropChart.splice(hoverIndex - 1, 0, draggedItem[0]);
     setChart(dropChart);
+    draggabledData(dropChart);
   };
 
   const handleDeletePlaylist = (index: number) => {
-    console.log(index, '--------');
-    setChart(chart.filter((_, i) => i !== index));
-    // const updatedChart = chart.filter((_, index) => index !== chart.length - 1);
-    // setChart(updatedChart);
+    setChart(chart.filter((_, i) => i !== index - 1));
   };
 
   return (
@@ -46,8 +45,8 @@ const PlaylistChart: React.FC = () => {
           <ul css={{ width: '100%' }}>
             {chart.map((chartData, index) => (
               <DraggableItem
-                key={chartData.id}
-                index={index}
+                key={index}
+                index={index + 1}
                 chartData={chartData}
                 handleDragDrop={handleDragDrop}
                 handleDeletePlaylist={handleDeletePlaylist}

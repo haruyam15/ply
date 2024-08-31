@@ -13,11 +13,13 @@ interface State {
 }
 interface Action {
   setPlaylistData: (data: IPlaylistData) => void;
+  draggabledData: (arrData: IPlaylistData[]) => void;
 }
 
 const usePlaylistDataStore = create<State & Action>((set) => ({
   playlistData: [],
   setPlaylistData: (data) => set((state) => ({ playlistData: [...state.playlistData, data] })),
+  draggabledData: (arrData) => set(() => ({ playlistData: arrData })),
 }));
 
 export default usePlaylistDataStore;
