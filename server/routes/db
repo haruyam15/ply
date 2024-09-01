@@ -1,89 +1,45 @@
 // users
 
-  "_id": {
-    "$oid": "66c97bd29b2d21b7f7144171"
-  },
-  "id": "lovelace",
-  "information": {
-    "userid": "lovelace",
-    "password": "123",
-    "profileimage": "newimage.jpg",
-    "nickname": "김동영"
-  },
-  "like": [
-    "1",
-    "2",
-    "6",
-    "9",
-    "13",
-    "3"
-  ],
-  "following": [
-    "sumin",
-    "dhkim511",
-    "thstjddh",
-    "haruyam15"
-  ],
-  "followers": [
-    "dhkim511",
-    "sumin",
-    "thstjddh",
-    "haruyam15"
-  ],
-  "myPlaylist": [
-    "1",
-    "6",
-    "11",
-    "9a9d2f615ac9022bb421dee9cab2b1b1"
-  ]
+{
+  "userId": "lovelace",
+  "profileImage": "newimage.jpg",
+  "nickname": "김동영",
+  "password": "123",
+  "likes": ["1", "2", "6", "9", "13", "3"],
+  "following": ["sumin", "dhkim511", "thstjddh", "haruyam15"],
+  "followers": ["dhkim511", "sumin", "thstjddh", "haruyam15"],
+  "myPlaylists": ["1", "6", "11", "9a9d2f615ac9022bb421dee9cab2b1b1"]
 }
 
 // playListData
-_id
-66ce9041b47c3e8e932cba91
-id
-"5"
-
-link
-Array (2)
-0
-"https://www.youtube.com/watch?v=k6CBMCI07WY"
-1
-"https://www.youtube.com/watch?v=85rrbElFkTI"
-title
-"Focus Beats"
-content
-"Get in the zone with these focus-enhancing beats."
-userId
-"haruyam15"
-
-like
-Array (2)
-0
-"dhkim511"
-1
-"thstjddh"
-
-comments
-Array (2)
-
-0
-Object
-
-1
-Object
-date
-"2024-08-23"
-disclosureStatus
-true
-
-tags
-Array (3)
-0
-"focus"
-1
-"work"
-2
-"beats"
-imgUrl
-"https://img.youtube.com/vi/11iZcYbq_is/hqdefault.jpg"
+{
+  "id": "1",
+  "link": [
+    "https://www.youtube.com/watch?v=k6CBMCI07WY",
+    "https://www.youtube.com/watch?v=85rrbElFkTI"
+  ],
+  "title": "Focus Beats",
+  "content": "Get in the zone with these focus-enhancing beats.",
+  "userId": "haruyam15",
+  "like": ["dhkim511", "thstjddh"],
+  "comments": [
+    {
+      "commentId": "1",
+      "userId": "dhkim511",
+      "commentText": "Great focus music!",
+      "createdAt": "2024-08-23"
+    },
+    {
+      "commentId": "2",
+      "userId": "thstjddh",
+      "commentText": "Perfect for working!",
+      "createdAt": "2024-08-23"
+    }
+  ],
+  "date": "2024-08-23",
+  "disclosureStatus": true,
+  "tags": ["focus", "work", "beats"],
+  "imgUrl": [
+    "https://img.youtube.com/vi/11iZcYbq_is/hqdefault.jpg"
+  ]
+}

@@ -4,25 +4,23 @@ const router = express.Router();
 
 const getTimelineData = async (userId, database) => {
   try {
-    const user = await database.collection('users').findOne({ id: userId });
+    const user = await database.collection('users').findOne({ userId });
     if (!user) {
       return { success: false, message: '사용자를 찾을 수 없습니다.' };
     }
 
     const followingUsers = await database
       .collection('users')
-      .find({ id: { $in: user.following } })
+      .find({ userId: { $in: user.following } })
       .toArray();
 
     let allPlaylistIds = [];
     followingUsers.forEach((followingUser) => {
-      allPlaylistIds = allPlaylistIds.concat(followingUser.myPlaylist);
+      allPlaylistIds = allPlaylistIds.concat(followingUser.myPlaylists || []);
     });
 
-    // 사용자가 좋아하는 플레이리스트 ID도 추가
-    allPlaylistIds = allPlaylistIds.concat(user.like);
+    allPlaylistIds = allPlaylistIds.concat(user.likes || []);
 
-    // 중복 제거 및 무작위 정렬
     allPlaylistIds = [...new Set(allPlaylistIds)].sort(() => Math.random() - 0.5);
 
     const playlistsData = await database
@@ -34,6 +32,8 @@ const getTimelineData = async (userId, database) => {
     return {
       success: true,
       data: {
+        profileImage: user.profileImage,
+        following: user.following,
         playlists: playlistsData,
       },
     };
@@ -45,7 +45,7 @@ const getTimelineData = async (userId, database) => {
 
 router.get('/:userId', async (req, res, next) => {
   const { userId } = req.params;
-  const database = req.database;
+  const { database } = req;
 
   try {
     const result = await getTimelineData(userId, database);
@@ -67,5 +67,4 @@ router.use((err, req, res) => {
 export default router;
 
 // 타임라인 API 테스트 명령어 예시:
-// curl -X GET http://localhost:8080/api/timeline/사용자ID
-// 예: curl -X GET http://localhost:8080/api/timeline/lovelace
+// curl -X GET http://localhost:8080/api/timeline/lovelace
