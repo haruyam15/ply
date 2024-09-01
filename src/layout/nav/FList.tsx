@@ -1,10 +1,13 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-
 import User from '@/components/User';
 import useNavStore from '@/stores/useNavStore';
-import { Tab } from '@/types/Nav';
-import { UserData } from '@/types/User';
+import { IUserData } from '@/types/userTypes';
+import { Tab } from '@/types/navTypes';
+
+interface IFListProps {
+  tab: Tab;
+}
 
 const TESTURL = [
   'https://avatars.githubusercontent.com/u/131119152?s=64&v=4',
@@ -13,7 +16,7 @@ const TESTURL = [
   'https://avatars.githubusercontent.com/u/169154369?s=64&v=4',
   'https://avatars.githubusercontent.com/u/110523397?v=4',
 ];
-const user: UserData = {
+const user: IUserData = {
   information: {
     userid: 'haruyam15',
     profileimage: TESTURL[4],
@@ -57,7 +60,7 @@ const user: UserData = {
   myplaylist: [],
 };
 
-function FList({ tab }: FListProps) {
+function FList({ tab }: IFListProps) {
   const isExpand = useNavStore((state) => state.isExpand);
   return (
     <ul css={fList(isExpand)}>
@@ -96,7 +99,3 @@ const fList = (isExpand: boolean) => css`
 		}
   `}
 `;
-
-interface FListProps {
-  tab: Tab;
-}

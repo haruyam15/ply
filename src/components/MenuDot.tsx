@@ -6,9 +6,23 @@ import { css } from '@emotion/react';
 import { EllipsisVertical, Pencil, Trash2 } from 'lucide-react';
 
 import { colors } from '@/styles/colors';
+import Confirm from './Confirm';
 
-const MenuDot = () => {
+interface MenuDotProps {
+  showEdit?: boolean;
+  showDelete?: boolean;
+  deleteItem?: (index: number) => void;
+  index?: number;
+}
+
+const MenuDot: React.FC<MenuDotProps> = ({
+  showEdit = true,
+  showDelete = true,
+  deleteItem,
+  index,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
   const toggleMenu = () => {
     setIsOpen((prev) => !prev);
@@ -20,8 +34,16 @@ const MenuDot = () => {
   };
 
   const handleDelete = () => {
-    console.log('Delete clicked');
     setIsOpen(false);
+    setIsConfirmOpen(true);
+  };
+
+  const handleConfirm = () => {
+    setIsConfirmOpen(false);
+  };
+
+  const handleCloseConfirm = () => {
+    setIsConfirmOpen(false);
   };
 
   return (
@@ -31,15 +53,29 @@ const MenuDot = () => {
       </div>
       {isOpen && (
         <div css={dropdownMenuStyle}>
-          <div css={menuItemStyle} onClick={handleEdit}>
-            <Pencil />
-            <p css={menuTextStyle}>수정</p>
-          </div>
-          <div css={menuItemStyle} onClick={handleDelete}>
-            <Trash2 />
-            <p css={menuTextStyle}>삭제</p>
-          </div>
+          {showEdit && (
+            <div css={menuItemStyle} onClick={handleEdit}>
+              <Pencil />
+              <p css={menuTextStyle}>수정</p>
+            </div>
+          )}
+          {showDelete && (
+            <div css={menuItemStyle} onClick={handleDelete}>
+              <Trash2 />
+              <p css={menuTextStyle}>삭제</p>
+            </div>
+          )}
         </div>
+      )}
+      {isConfirmOpen && (
+        <Confirm
+          title="삭제 확인"
+          text="정말 삭제하시겠습니까?"
+          onConfirm={handleConfirm}
+          onClose={handleCloseConfirm}
+          deleteItem={deleteItem}
+          index={index}
+        />
       )}
     </div>
   );

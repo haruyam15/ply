@@ -3,16 +3,23 @@ import { useRef } from 'react';
 import { colors } from '@/styles/colors';
 import { css } from '@emotion/react';
 import { useDrag, useDrop } from 'react-dnd';
-import { AlignJustify, Dot, EllipsisVertical } from 'lucide-react';
+import { AlignJustify } from 'lucide-react';
 import { IChartData } from '@/components/createPlaylist/PlaylistChart';
+import MenuDot from '@/components/MenuDot';
 
 interface IChartListProps {
   chartData: IChartData;
   index: number;
   handleDragDrop: (dragIndex: number, hoverIndex: number) => void;
+  handleDeletePlaylist: (index: number) => void;
 }
 
-const DraggableItem: React.FC<IChartListProps> = ({ chartData, index, handleDragDrop }) => {
+const DraggableItem: React.FC<IChartListProps> = ({
+  chartData,
+  index,
+  handleDragDrop,
+  handleDeletePlaylist,
+}) => {
   const ref = useRef(null);
 
   const [, drop] = useDrop({
@@ -41,19 +48,13 @@ const DraggableItem: React.FC<IChartListProps> = ({ chartData, index, handleDrag
       <div css={{ cursor: 'pointer' }}>
         <AlignJustify />
       </div>
-      <div css={videoArea(chartData.imgUrl)}></div>
+      <div css={videoArea(chartData?.imgUrl[0])}></div>
       <div css={youtubeDataArea}>
-        <p>{chartData.title}</p>
-        <div css={etcArea}>
-          <span>{chartData.channelTitle}</span>
-          <Dot />
-          <span>조회수 {chartData.viewCount}</span>
-          <Dot />
-          <span>{chartData.publishedAt}</span>
-        </div>
+        <p>{chartData?.title}</p>
+        <span>{chartData?.channelTitle}</span>
       </div>
       <div css={{ position: 'absolute', right: '20px', top: '15px' }}>
-        <EllipsisVertical />
+        <MenuDot showEdit={false} deleteItem={handleDeletePlaylist} index={index} />
       </div>
     </div>
   );
@@ -99,13 +100,11 @@ const youtubeDataArea = css`
   padding-top: 20px;
   & p {
     color: ${colors.white};
-    font-size: 18px;
+    font-size: 22px;
     margin-bottom: 20px;
   }
-`;
-const etcArea = css`
-  display: flex;
-  align-items: center;
-  font-size: 14px;
-  margin-left: 10px;
+  & span {
+    margin-left: 10px;
+    font-size: 16px;
+  }
 `;

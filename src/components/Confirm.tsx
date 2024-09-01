@@ -9,9 +9,18 @@ interface ConfirmDialogProps {
   text: string;
   onConfirm: () => void;
   onClose: () => void;
+  deleteItem?: (index: number) => void;
+  index?: number;
 }
 
-const Confirm: React.FC<ConfirmDialogProps> = ({ title, text, onConfirm, onClose }) => {
+const Confirm: React.FC<ConfirmDialogProps> = ({
+  title,
+  text,
+  onConfirm,
+  onClose,
+  index,
+  deleteItem,
+}) => {
   useEffect(() => {
     Swal.fire({
       title,
@@ -30,10 +39,14 @@ const Confirm: React.FC<ConfirmDialogProps> = ({ title, text, onConfirm, onClose
     }).then((result) => {
       if (result.isConfirmed) {
         onConfirm();
+        console.log(index);
+        if (deleteItem && index) {
+          deleteItem(index);
+        }
       }
       onClose();
     });
-  }, [title, text, onConfirm, onClose]);
+  }, [title, text, onConfirm, onClose, deleteItem, index]);
 
   return <Global styles={ConfirmStyles} />;
 };
