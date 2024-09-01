@@ -4,7 +4,7 @@ import { Play } from 'lucide-react';
 import { colors } from '@/styles/colors';
 import forkVideoId from '@/utils/forkVideoId';
 import { useNavigate, useParams } from 'react-router-dom';
-import useYoutubeFecth from '@/hooks/useYoutubeFetch';
+import useYoutubeFetch from '@/hooks/useYoutubeFetch';
 import useWatchData from '@/hooks/useWatchData';
 import { useEffect, useState } from 'react';
 import useNowPlayingStore from '@/stores/useNowPlayingStore';
@@ -34,7 +34,7 @@ function VideoList() {
     data: youtubeData,
     error: youtubeError,
     isLoading: youtubeIsLoading,
-  } = useYoutubeFecth(playlistId, videoId, !!videoId);
+  } = useYoutubeFetch(videoId, !!videoId, playlistId);
 
   if (playlistLoading || youtubeIsLoading) {
     return <div></div>;
