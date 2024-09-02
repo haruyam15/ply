@@ -9,7 +9,7 @@ interface TagsProps {
   position?: boolean;
   onClick?: (index: number) => void;
 }
-function Tags({ tags, deletable = false, position = false, onClick }: TagsProps) {
+function Tags({ tags = [], deletable = false, position = false, onClick }: TagsProps) {
   return (
     <ul css={tagWrap(deletable, position)}>
       {tags?.map((tag, index) => (
