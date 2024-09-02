@@ -15,18 +15,19 @@ interface PlaylistData {
   disclosureStatus: string;
 }
 
-// interface UserInformation {
-//   profileImage: string;
-//   userName: string;
-//   userId: string;
-// }
+interface UserInformation {
+  profileImage: string;
+  userName: string;
+  userId: string;
+}
 
 const Timeline: React.FC = () => {
   const [visibleItems, setVisibleItems] = useState(16);
   const [loading, setLoading] = useState(false);
   const [playlists, setPlaylists] = useState<PlaylistData[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [hasMore, setHasMore] = useState(true); // 추가할 데이터가 있는지 여부를 나타내는 상태
+  const [hasMore, setHasMore] = useState(true);
+  const [userInformation, setUserInformation] = useState<UserInformation | null>(null);
 
   const userInformationString = localStorage.getItem('userInformation');
 
@@ -42,6 +43,29 @@ const Timeline: React.FC = () => {
   }
 
   useEffect(() => {
+    const fetchUserInformation = async () => {
+      if (!userId) {
+        setError('로그인된 사용자가 없습니다.');
+        return;
+      }
+
+      try {
+        const response = await fetch(`/api/profile/${userId}`);
+        if (!response.ok) {
+          throw new Error('사용자 정보를 가져오는 중 오류가 발생했습니다.');
+        }
+        const data = await response.json();
+        setUserInformation(data);
+      } catch (e) {
+        console.error('사용자 정보 요청 오류:', e);
+        setError('사용자 정보를 불러오는 중 오류가 발생했습니다.');
+      }
+    };
+
+    fetchUserInformation();
+  }, [userId]);
+
+  useEffect(() => {
     const fetchTimelineData = async () => {
       if (!userId) {
         setError('로그인된 사용자가 없습니다.');
@@ -50,13 +74,13 @@ const Timeline: React.FC = () => {
 
       try {
         setLoading(true);
-        const response = await fetch(`/api/timeline/${userId}`); // 동적으로 사용자 ID 사용
+        const response = await fetch(`/api/timeline/${userId}`);
         if (!response.ok) {
           throw new Error('데이터를 가져오는 중 오류가 발생했습니다.');
         }
         const result = await response.json();
         setPlaylists(result.playlists);
-        setHasMore(result.playlists.length > visibleItems); // 추가할 데이터가 있는지 여부 결정
+        setHasMore(result.playlists.length > visibleItems);
         setLoading(false);
       } catch (error) {
         if (error instanceof Error) {
@@ -72,7 +96,7 @@ const Timeline: React.FC = () => {
     };
 
     fetchTimelineData();
-  }, [userId]);
+  }, [userId, visibleItems]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -84,7 +108,7 @@ const Timeline: React.FC = () => {
           setLoading(false);
           console.log('추가 데이터 로드 완료, 아이템 수:', visibleItems);
           if (playlists.length <= visibleItems + 8) {
-            setHasMore(false); // 추가 데이터가 더 이상 없는 경우 무한 스크롤 중지
+            setHasMore(false);
           }
         }, 1000);
       }
@@ -92,11 +116,15 @@ const Timeline: React.FC = () => {
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [loading, hasMore, visibleItems, playlists.length]); // 종속성 배열에 추가된 상태들
+  }, [loading, hasMore, visibleItems, playlists.length]);
 
   return (
     <div css={containerStyle}>
-      <TitleHeader profileImage="없음" nickname="손성오" actionText="Timeline" />
+      <TitleHeader
+        profileImage={userInformation?.profileImage || '없음'}
+        nickname={userInformation?.userName || '손성오'}
+        actionText="타임라인"
+      />
 
       {error && <div css={errorStyle}>{error}</div>}
 
@@ -110,6 +138,9 @@ const Timeline: React.FC = () => {
             showDelete={true}
             showEdit={true}
             tags={item.tags}
+            profileImage={userInformation?.profileImage || ''}
+            userName={userInformation?.userName || ''}
+            userId={userInformation?.userId || ''}
           />
         ))}
         {loading && Array.from({ length: 8 }).map((_, index) => <SkeletonGridItem key={index} />)}

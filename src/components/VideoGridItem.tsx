@@ -15,6 +15,9 @@ interface VideoGridItemProps {
   showEdit: boolean;
   showDelete: boolean;
   tags: string[];
+  profileImage: string; // 추가된 프로필 이미지
+  userName: string; // 추가된 사용자 이름
+  userId: string; // 추가된 사용자 ID
 }
 
 const VideoGridItem: React.FC<VideoGridItemProps> = ({
@@ -23,6 +26,9 @@ const VideoGridItem: React.FC<VideoGridItemProps> = ({
   showEdit = false,
   showDelete = true,
   tags,
+  profileImage,
+  userName,
+  userId,
 }) => {
   const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
 
@@ -32,7 +38,8 @@ const VideoGridItem: React.FC<VideoGridItemProps> = ({
       <div css={descriptionStyle}>
         <div css={infoStyle}>
           <h3 css={titleStyle}>{title}</h3>
-          <User profileImage="없음" nickname="손성오" userId="son" onlyImage={false} />
+          {/* User 컴포넌트에 사용자 정보 전달 */}
+          <User profileImage={profileImage} nickname={userName} userId={userId} onlyImage={false} />
         </div>
         <div>
           <MenuDot showEdit={showEdit} showDelete={showDelete} />
