@@ -71,7 +71,7 @@ const PlaylistPage: React.FC = () => {
 
       try {
         setLoading(true);
-        const response = await fetch(`/api/playlistPage/${userId}`); // userId 기반으로 API 호출
+        const response = await fetch(`/api/playlistPage/${userId}`);
         if (!response.ok) {
           throw new Error('플레이리스트 데이터를 가져오는 중 오류가 발생했습니다.');
         }
@@ -116,6 +116,7 @@ const PlaylistPage: React.FC = () => {
         profileImage={userInformation?.profileImage || '없음'}
         nickname={userInformation?.userName || '손성오'}
         actionText="Playlist"
+        showAddPlaylistButton={true}
       />
 
       {error && <div css={errorStyle}>{error}</div>}
@@ -131,9 +132,9 @@ const PlaylistPage: React.FC = () => {
             showEdit={true}
             tags={item.tags}
             profileImage={userInformation?.profileImage || ''}
-            userName={item.userId} // userName을 userId로 대체
+            userName={item.userId}
             userId={item.userId}
-            imgUrl={item.imgUrl[0]} // imgUrl 배열에서 첫 번째 요소 사용
+            imgUrl={item.imgUrl[0]}
           />
         ))}
         {loading && Array.from({ length: 8 }).map((_, index) => <SkeletonGridItem key={index} />)}
