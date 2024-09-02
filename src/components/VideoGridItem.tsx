@@ -3,7 +3,7 @@ import { css } from '@emotion/react';
 
 import { colors } from '@/styles/colors';
 
-import Cover from './Cover'; // Cover 컴포넌트 추가
+import Cover from './Cover';
 import MenuDot from './MenuDot';
 import Tags from './Tags';
 import User from './User';
@@ -14,6 +14,7 @@ interface VideoGridItemProps {
   user: string;
   showEdit: boolean;
   showDelete: boolean;
+  tags: string[];
 }
 
 const VideoGridItem: React.FC<VideoGridItemProps> = ({
@@ -21,6 +22,7 @@ const VideoGridItem: React.FC<VideoGridItemProps> = ({
   title,
   showEdit = false,
   showDelete = true,
+  tags,
 }) => {
   const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
 
@@ -36,7 +38,7 @@ const VideoGridItem: React.FC<VideoGridItemProps> = ({
           <MenuDot showEdit={showEdit} showDelete={showDelete} />
         </div>
       </div>
-      <Tags tags={['게임', '재미', '음악', '힐링']} />
+      <Tags tags={tags} />
     </div>
   );
 };
