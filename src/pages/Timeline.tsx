@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { css } from '@emotion/react';
 
-import SkeletonGridItem from '@/components/SkeletionGridItem';
+import SkeletonGridItem from '@/components/SkeletonGridItem';
 import TitleHeader from '@/components/TitleHeader';
 import VideoGridItem from '@/components/VideoGridItem';
 
@@ -11,7 +11,7 @@ interface PlaylistData {
   title: string;
   userId: string;
   tags: string[];
-  imgUrl: string;
+  imgUrl: string; // imgUrl 속성 추가
   disclosureStatus: string;
 }
 
@@ -35,8 +35,8 @@ const Timeline: React.FC = () => {
 
   if (userInformationString) {
     try {
-      const userInformation = JSON.parse(userInformationString); // JSON 파싱
-      userId = userInformation.userId; // userId 추출
+      const userInformation = JSON.parse(userInformationString);
+      userId = userInformation.userId;
     } catch (e) {
       console.error('로컬 스토리지에서 사용자 정보를 파싱하는 중 오류 발생:', e);
     }
@@ -123,7 +123,7 @@ const Timeline: React.FC = () => {
       <TitleHeader
         profileImage={userInformation?.profileImage || '없음'}
         nickname={userInformation?.userName || '손성오'}
-        actionText="타임라인"
+        actionText="Timeline"
       />
 
       {error && <div css={errorStyle}>{error}</div>}
@@ -141,6 +141,7 @@ const Timeline: React.FC = () => {
             profileImage={userInformation?.profileImage || ''}
             userName={userInformation?.userName || ''}
             userId={userInformation?.userId || ''}
+            imgUrl={item.imgUrl} // imgUrl을 VideoGridItem에 전달
           />
         ))}
         {loading && Array.from({ length: 8 }).map((_, index) => <SkeletonGridItem key={index} />)}
