@@ -167,6 +167,7 @@ const gridContainerStyle = css`
   gap: 20px;
   padding: 20px;
   width: 100%; /* 그리드 컨테이너의 너비를 100%로 설정 */
+  box-sizing: border-box;
 
   @media (min-width: 600px) {
     grid-template-columns: repeat(2, 1fr);

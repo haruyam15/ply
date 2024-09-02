@@ -1,39 +1,67 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { useQuery } from '@tanstack/react-query';
 import { Heart } from 'lucide-react';
-import { useNavigate, useParams } from 'react-router-dom';
-
-import { getUserData } from '@/apis/getUserData';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import Button from '@/components/Button';
 import Tags from '@/components/Tags';
 import User from '@/components/User';
 import { colors } from '@/styles/colors';
 import forkVideoId from '@/utils/forkVideoId';
 import useYoutubeFetch from '@/hooks/useYoutubeFetch';
-import useWatchData from '@/hooks/useWatchData';
+import useWatchDataFetch from '@/hooks/useWatchDataFetch';
 import { useEffect, useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import axios from 'axios';
+import useUserStore from '@/stores/useUserStore';
 
-//플리데이터안에 유저데이터오면 코드수정해야 함
+type PostLikeType = 'likeAdd' | 'likeDelete';
 
 function PlaylistInfo() {
-  const playlistId = useParams().playlistId as string;
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const playlistId = useParams().playlistId as string;
+  const urlParams = new URLSearchParams(useLocation().search);
+  const playingVideoId = urlParams.get('v') as string;
+  const userInformation = useUserStore((state) => state.userInformation);
+  const [isLike, setIsLike] = useState<boolean>(false);
+
+  console.log(userInformation);
+  const postLike = async (addOrDel: PostLikeType): Promise<{ message: string } | null> => {
+    try {
+      const response = await axios.post(
+        `http://localhost:8080/api/${addOrDel}/${userId}/${playlistId}`,
+      );
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  };
+
+  const mutation = useMutation({
+    mutationFn: postLike,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['like'] });
+    },
+  });
+
+  const handleLike = () => {
+    mutation.mutate(isLike ? 'likeDelete' : 'likeAdd');
+    setIsLike((prev) => !prev);
+  };
 
   const {
     isLoading: playlistLoading,
     data: playlistData,
     error: playlistError,
-  } = useWatchData(playlistId);
+  } = useWatchDataFetch(playlistId);
 
   const [videoId, setVideoId] = useState<string>('');
-  const [makerId, setMakerId] = useState<string>('');
 
   useEffect(() => {
     if (playlistData) {
-      const { link, userId } = playlistData;
+      const { link } = playlistData;
       setVideoId(link.map((l) => forkVideoId(l)).join(','));
-      setMakerId(userId);
     }
   }, [playlistData]);
 
@@ -43,17 +71,7 @@ function PlaylistInfo() {
     isLoading: youtubeIsLoading,
   } = useYoutubeFetch(videoId, !!videoId, playlistId);
 
-  const {
-    data: userData,
-    error: userError,
-    isLoading: userIsLoading,
-  } = useQuery({
-    queryKey: ['user', makerId],
-    queryFn: () => getUserData(makerId),
-    enabled: !!makerId,
-  });
-
-  if (playlistLoading || youtubeIsLoading || userIsLoading) {
+  if (playlistLoading || youtubeIsLoading) {
     return <div></div>;
   }
 
@@ -68,40 +86,33 @@ function PlaylistInfo() {
     navigate('/');
     return null;
   }
-  if (userError) {
-    alert('유저 조회에 오류가 발생했습니다.');
-    navigate('/');
+
+  if (!youtubeData || !playlistData) {
     return null;
   }
 
-  if (!userData || !youtubeData || !playlistData) {
-    return null;
-  }
-
-  const { title, tags, content, date, like } = playlistData;
+  const { title, tags, content, date, like, userName, profileImage, userId } = playlistData;
+  const videoTitle = youtubeData.items.filter((item) => item.id === playingVideoId)[0].snippet
+    .title;
 
   return (
     <div className="playlist-info" css={playlistInfo}>
       <div className="info-header">
         <div className="title">
           <p className="playlist-title">{title}</p>
-          <p className="video-title">{youtubeData.items[0].snippet.title}</p>
+          <p className="video-title">{videoTitle}</p>
         </div>
         <div className="actions">
-          <Button size="md">
-            <Heart size="18" /> <span>{like.length}</span>
+          <Button size="md" onClick={handleLike}>
+            <Heart size="18" fill={isLike ? colors.white : 'transperant'} /> <span>{like}</span>
           </Button>
           <Tags tags={tags} />
         </div>
       </div>
 
       <div className="owner">
-        <User
-          profileImage={userData.profileImage}
-          nickname={userData.nickname}
-          userId={makerId}
-          size="lg"
-        />
+        <User profileimage={profileImage} nickname={userName} userid={userId} size="lg" />
+        <Button>팔로잉</Button>
       </div>
       <div className="content">
         <p>{date}</p>
@@ -146,7 +157,10 @@ const playlistInfo = css`
   }
 
   .owner {
+    display: flex;
+    align-items: center;
     margin-bottom: 20px;
+    gap: 20px;
   }
 
   .content {

@@ -1,7 +1,7 @@
 import { getWatchData } from '@/apis/getWatchData';
 import { useQuery } from '@tanstack/react-query';
 
-function useWatchData(playlistId: string) {
+function useWatchDataFetch(playlistId: string) {
   const { isLoading, error, data } = useQuery({
     queryKey: ['watch', playlistId],
     queryFn: () => getWatchData(playlistId),
@@ -10,4 +10,4 @@ function useWatchData(playlistId: string) {
   return { isLoading, error, data };
 }
 
-export default useWatchData;
+export default useWatchDataFetch;

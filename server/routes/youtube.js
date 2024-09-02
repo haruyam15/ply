@@ -6,7 +6,6 @@ router.get('/videos', async (req, res) => {
   try {
     const { id, part } = req.query;
     const APIKEY = process.env.YOUTUBE_API_KEY;
-
     const response = await axios.get(`https://www.googleapis.com/youtube/v3/videos`, {
       params: {
         id,
