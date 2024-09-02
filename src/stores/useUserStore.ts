@@ -62,9 +62,7 @@ const useUserStore = create<State & Action>((set, get) => ({
   fetchFollowers: async () => {
     const { userInformation } = get();
     try {
-      const response = await axios.post('/api/followers', {
-        userid: userInformation.information.userid,
-      });
+      const response = await axios.get(`/api/profile/${userInformation.userId}`);
       return response.data.followers;
     } catch (error) {
       console.error('Failed to fetch followers:', error);

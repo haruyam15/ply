@@ -1,16 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-
 import UserProfile from '@/components/profile/UserProfile';
-import useUserStore from '@/stores/useUserStore';
 import { colors } from '@/styles/colors';
 
 function Profile() {
-  const user = useUserStore((state) => state.userInformation);
-
   return (
     <div css={{ margin: '0 40px' }}>
-      <UserProfile user={user} />
+      <UserProfile />
       <div css={[menuBox, { position: 'relative' }]}>
         <div css={{ width: '50%', position: 'relative', marginRight: '30px' }}>
           <p css={{ position: 'absolute', right: '0' }}>플레이리스트</p>

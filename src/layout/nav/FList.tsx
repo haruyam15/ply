@@ -5,7 +5,7 @@ import User from '@/components/User';
 import useNavStore from '@/stores/useNavStore';
 import { Tab } from '@/types/navTypes';
 import { IUserData } from '@/types/userTypes';
-import Button from '@/components/Button'; // 새로운 Button 컴포넌트 가져오기
+import Button from '@/components/Button';
 
 const TESTURL = [
   'https://avatars.githubusercontent.com/u/131119152?s=64&v=4',

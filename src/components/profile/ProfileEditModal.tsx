@@ -19,48 +19,51 @@ const ProfileEditModal: React.FC = () => {
   const { modals, closeModal } = useModalStore();
   const { setUser } = useUserStore();
   const userInformation: IUser = useUserStore((state) => state.userInformation);
-  const { profileimage, nickname, userid } = userInformation.information;
-  const [newProfileImage, setNewProfileImage] = useState<string>(profileimage);
+  const { profileImage, nickname, userId } = userInformation;
+  const [newProfileImage, setNewProfileImage] = useState<string>(profileImage);
   const [newNickname, setNewNickname] = useState<string>(nickname);
   const [newPassword, setNewPassword] = useState<string>('');
   const [showConfirm, setShowConfirm] = useState(false);
 
   const handleProfileUpdate = async () => {
     try {
-      const response = await fetch('/api/updateUserInfo', {
-        method: 'POST',
+      const response = await fetch(`/api/profileEdit/${userId}`, {
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          userid,
-          profileimage: newProfileImage,
+          profileImage: newProfileImage,
           password: newPassword,
-          nickname: newNickname,
+          userName: newNickname,
         }),
       });
 
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to update profile');
+      }
+
       const result = await response.json();
-      if (response.ok) {
+      if (result.success) {
         setUser({
-          information: {
-            _id: userInformation.information._id,
-            userid,
-            password: newPassword || userInformation.information.password,
-            profileimage: newProfileImage,
-            nickname: newNickname,
-          },
+          userId,
+          password: newPassword || userInformation.password,
+          profileImage: newProfileImage,
+          nickname: newNickname,
+          likes: userInformation.likes,
           followers: userInformation.followers,
           following: userInformation.following,
+          myPlaylists: userInformation.myPlaylists,
         });
 
         localStorage.setItem(
           'userInformation',
           JSON.stringify({
-            userid,
-            profileimage: newProfileImage,
+            userId,
+            profileImage: newProfileImage,
             nickname: newNickname,
-            password: newPassword || userInformation.information.password,
+            password: newPassword || userInformation.password,
             followers: userInformation.followers,
             following: userInformation.following,
           }),
@@ -119,7 +122,7 @@ const ProfileEditModal: React.FC = () => {
               <img src={newProfileImage} alt="Profile" css={profileImageStyle} />
               <div css={profileTextStyle}>
                 <h2>{newNickname}</h2>
-                <span>@{userid}</span>
+                <span>@{userId}</span>
               </div>
             </div>
             <ul css={listStyle}>
@@ -263,7 +266,7 @@ const PasswordChangeModal: React.FC<{
     return regex.test(password);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!validatePassword(newPassword)) {
       setError(
         '비밀번호는 최소 6자 이상이어야 하며 숫자, 영문, 특수 문자의 조합을 포함해야 합니다.',
@@ -274,9 +277,30 @@ const PasswordChangeModal: React.FC<{
       setError('새 비밀번호가 일치하지 않습니다.');
       return;
     }
-    onPasswordChange(newPassword);
-    toast.success('비밀번호가 성공적으로 변경되었습니다.');
-    onBack();
+
+    try {
+      const userId = useUserStore.getState().userInformation.userId;
+      const response = await fetch(`/api/passwordCheck/${userId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ inputPassword: currentPassword }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.isPasswordValid) {
+        onPasswordChange(newPassword);
+        toast.success('비밀번호가 성공적으로 변경되었습니다.');
+        onBack();
+      } else {
+        setError('현재 비밀번호가 일치하지 않습니다.');
+      }
+    } catch (error) {
+      console.error('Failed to check password:', error);
+      toast.error('비밀번호 확인 중 오류가 발생했습니다.');
+    }
   };
 
   return (
