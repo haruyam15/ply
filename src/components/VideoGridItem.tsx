@@ -3,7 +3,7 @@ import { css } from '@emotion/react';
 
 import { colors } from '@/styles/colors';
 
-import Cover from './Cover'; // Cover 컴포넌트 추가
+import Cover from './Cover';
 import MenuDot from './MenuDot';
 import Tags from './Tags';
 import User from './User';
@@ -14,29 +14,37 @@ interface VideoGridItemProps {
   user: string;
   showEdit: boolean;
   showDelete: boolean;
+  tags: string[];
+  profileImage: string; // 추가된 프로필 이미지
+  userName: string; // 추가된 사용자 이름
+  userId: string; // 추가된 사용자 ID
+  imgUrl: string; // 썸네일 이미지 URL 추가
 }
 
 const VideoGridItem: React.FC<VideoGridItemProps> = ({
-  videoId,
   title,
   showEdit = false,
   showDelete = true,
+  tags,
+  profileImage,
+  userName,
+  userId,
+  imgUrl,
 }) => {
-  const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
-
   return (
     <div css={gridItemStyle}>
-      <Cover imageSrc={thumbnailUrl} playListLength={8} />
+      <Cover imageSrc={imgUrl} playListLength={8} />
       <div css={descriptionStyle}>
         <div css={infoStyle}>
           <h3 css={titleStyle}>{title}</h3>
-          <User profileimage="없음" nickname="손성오" userid="son" onlyImage={false} />
+          {/* User 컴포넌트에 사용자 정보 전달 */}
+          <User profileImage={profileImage} nickname={userName} userId={userId} onlyImage={false} />
         </div>
         <div>
           <MenuDot showEdit={showEdit} showDelete={showDelete} />
         </div>
       </div>
-      <Tags tags={['게임', '재미', '음악', '힐링']} />
+      <Tags tags={tags} />
     </div>
   );
 };

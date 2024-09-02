@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 
 import { css } from '@emotion/react';
 
-import SkeletonGridItem from '@/components/SkeletionGridItem';
+import SkeletonGridItem from '@/components/SkeletonGridItem';
 import TitleHeader from '@/components/TitleHeader';
 import VideoGridItem from '@/components/VideoGridItem';
 import gridItemsData from '@/data/gridItemData';
