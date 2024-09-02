@@ -2,7 +2,7 @@ import axios from 'axios';
 import express from 'express';
 const router = express.Router();
 
-router.get('/youtube/videos', async (req, res) => {
+router.get('/videos', async (req, res) => {
   try {
     const { id, part } = req.query;
     const APIKEY = process.env.YOUTUBE_API_KEY;

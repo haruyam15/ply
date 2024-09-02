@@ -19,3 +19,16 @@ export interface IComment {
   commentsDate: string;
   commentsWriter: string;
 }
+
+export interface PlaylistDataStore {
+  title: string;
+  content: string;
+  disclosureStatus: boolean;
+  tags: string[];
+}
+
+export interface NewPlaylistData extends PlaylistDataStore {
+  userId: string;
+  link: (string | undefined)[];
+  imgUrl: string[];
+}

@@ -8,7 +8,7 @@ import { EllipsisVertical } from 'lucide-react';
 import { getUserData } from '@/apis/getUserData';
 import User from '@/components/User';
 
-type UsersData = Pick<IUserInformation, 'profileimage' | 'nickname'> | null;
+type UsersData = Pick<IUserInformation, 'profileImage' | 'nickname'> | null;
 
 interface ICommentListProps {
   comments: IComment[];
@@ -36,9 +36,9 @@ function CommentList({ comments }: ICommentListProps) {
           <li key={i}>
             <div className="writer-profile">
               <User
-                profileimage={commentUsersData[i].profileimage}
+                profileImage={commentUsersData[i].profileImage}
                 nickname={commentUsersData[i].nickname}
-                userid={comment.commentsWriter}
+                userId={comment.commentsWriter}
                 size="md"
                 onlyImage={true}
               />
