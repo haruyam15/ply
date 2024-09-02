@@ -9,13 +9,7 @@ import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useSta
 import useYoutubeDataStore from '@/stores/useYoutubeDataStore';
 import forkVideoId from '@/utils/forkVideoId';
 import useYoutubeFetch from '@/hooks/useYoutubeFetch';
-
-export interface PlaylistDataStore {
-  title: string;
-  content: string;
-  disclosureStatus: boolean;
-  tags: string[];
-}
+import { PlaylistDataStore } from '@/types/playlistTypes';
 
 const AddPlaylist = forwardRef(({}, ref) => {
   const [tags, setTags] = useState<string[]>([]);

@@ -1,19 +1,21 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { useRef } from 'react';
-import AddPlaylist, { PlaylistDataStore } from '@/components/createPlaylist/AddPlaylist';
+import AddPlaylist from '@/components/createPlaylist/AddPlaylist';
 import PlaylistChart from '@/components/createPlaylist/PlaylistChart';
 import Button from '@/components/Button';
 import usePlaylistDataStore from '@/stores/useYoutubeDataStore';
 import useUserStore from '@/stores/useUserStore';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import axios from 'axios';
+import useNewPlaylist from '@/hooks/useNewPlaylist';
+import { PlaylistDataStore } from '@/types/playlistTypes';
 
 const CreatePlaylist = () => {
   const userData = useUserStore((state) => state.userInformation);
   const addedPlaylist = usePlaylistDataStore((state) => state.youTubelistData);
   const playlistDataToAdd = useRef<{ getPlaylistData: () => PlaylistDataStore }>(null);
+  const { mutateAsync } = useNewPlaylist();
 
   const handleValidation = () => {
     if (playlistDataToAdd.current?.getPlaylistData()?.title === '') {
@@ -28,23 +30,26 @@ const CreatePlaylist = () => {
   };
 
   const fetchCreatePlaylistData = async () => {
-    try {
-      if (playlistDataToAdd.current?.getPlaylistData()) {
-        const res = await axios.post('/api/createPlaylist', {
-          userId: userData.userId,
-          title: playlistDataToAdd.current?.getPlaylistData().title,
-          content: playlistDataToAdd.current?.getPlaylistData().content,
-          disclosureStatus: playlistDataToAdd.current?.getPlaylistData().disclosureStatus,
-          tags: playlistDataToAdd.current?.getPlaylistData().tags,
-          link: addedPlaylist.map((item) => item.link),
-          imgUrl: addedPlaylist[0].imgUrl,
-        });
-        if (res.status === 201) toast.success('플레이리스트가 생성되었습니다.');
-        history.back();
+    if (playlistDataToAdd.current?.getPlaylistData()) {
+      const playlistData = {
+        userId: userData.userId,
+        title: playlistDataToAdd.current?.getPlaylistData().title,
+        content: playlistDataToAdd.current?.getPlaylistData().content,
+        disclosureStatus: playlistDataToAdd.current?.getPlaylistData().disclosureStatus,
+        tags: playlistDataToAdd.current?.getPlaylistData().tags,
+        link: addedPlaylist.map((item) => item.link?.[0]),
+        imgUrl: addedPlaylist.map((item) => item.imgUrl?.[0]),
+      };
+      try {
+        await mutateAsync(playlistData);
+        toast.success('플레이리스트가 생성되었습니다.');
+        setTimeout(() => {
+          history.back();
+        }, 2000);
+      } catch (error) {
+        toast.error('플레이리스트 생성 중에 오류가 발생하였습니다. 다시 시도해주세요.');
+        console.error(error);
       }
-    } catch (error) {
-      toast.error('플레이리스트 생성 중에 오류가 발생하였습니다. 다시 시도해주세요.');
-      console.error(error);
     }
   };
   return (
