@@ -107,15 +107,15 @@ const Signup: React.FC = () => {
       <form css={{ width: '330px' }} onSubmit={(e) => onSignup(e)}>
         <div css={idAndPasswordArea}>
           <Input css={idAndPassword} ref={nameRef} type="text" required />
-          <label>Username</label>
+          <label>닉네임</label>
         </div>
         <div css={idAndPasswordArea}>
           <Input css={idAndPassword} ref={idRef} type="text" required />
-          <label>Id</label>
+          <label>아이디</label>
         </div>
         <div css={idAndPasswordArea}>
           <Input css={idAndPassword} ref={passwordRef} type="password" required />
-          <label>Password</label>
+          <label>비밀번호</label>
         </div>
         <div css={{ fontSize: '14px' }}>
           <label
@@ -138,7 +138,7 @@ const Signup: React.FC = () => {
       <p css={{ fontSize: '14px', marginBottom: '40px' }}>
         로그인하시겠습니까?
         <button css={modalMovementBtn} onClick={() => openSigninModal('signin')}>
-          Go back to login
+          로그인 화면으로 돌아가기
         </button>
       </p>
       <ToastContainer

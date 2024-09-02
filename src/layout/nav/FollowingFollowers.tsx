@@ -27,12 +27,12 @@ function FollowingFollowers() {
           <ul className="tab">
             <li>
               <button onClick={handleTab} aria-selected={selected === FOLLOWERS}>
-                Followers
+                팔로워
               </button>
             </li>
             <li>
               <button onClick={handleTab} aria-selected={selected === FOLLOWING}>
-                Following
+                팔로잉
               </button>
             </li>
           </ul>

@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { useState } from 'react';
 import { css } from '@emotion/react';
-import { Pencil } from 'lucide-react';
+import { ChevronLeft, Pencil } from 'lucide-react';
 import Modal from '@/components/Modal';
 import Input from '@/components/Input';
 import Button from '@/components/Button';
@@ -9,6 +9,8 @@ import Confirm from '@/components/Confirm';
 import useModalStore from '@/stores/useModalStore';
 import useUserStore, { IUser } from '@/stores/useUserStore';
 import { colors } from '@/styles/colors';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const ProfileEditModal: React.FC = () => {
   const [currentModal, setCurrentModal] = useState<
@@ -20,7 +22,8 @@ const ProfileEditModal: React.FC = () => {
   const { profileimage, nickname, userid } = userInformation.information;
   const [newProfileImage, setNewProfileImage] = useState<string>(profileimage);
   const [newNickname, setNewNickname] = useState<string>(nickname);
-  const [newPassword] = useState<string>('');
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [newPassword, setNewPassword] = useState<string>('');
   const [showConfirm, setShowConfirm] = useState(false);
 
   const handleProfileUpdate = async () => {
@@ -65,17 +68,15 @@ const ProfileEditModal: React.FC = () => {
         );
 
         closeModal('profileEdit');
+        toast.success('프로필이 성공적으로 업데이트되었습니다.');
       } else {
         console.error(result.message);
+        toast.error('프로필 업데이트에 실패했습니다.');
       }
     } catch (error) {
       console.error('Failed to update profile:', error);
+      toast.error('프로필 업데이트 중 오류가 발생했습니다.');
     }
-  };
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handleShowConfirm = () => {
-    setShowConfirm(true);
   };
 
   const handleConfirm = () => {
@@ -109,22 +110,20 @@ const ProfileEditModal: React.FC = () => {
         return <PasswordChangeModal onBack={() => setCurrentModal('main')} />;
       default:
         return (
-          <Modal modalName="profileEdit">
-            <div css={modalContentStyle}>
-              <div css={profileHeaderStyle}>
-                <img src={profileimage} alt="Profile" css={profileImageStyle} />
-                <div css={profileTextStyle}>
-                  <h2>{nickname}</h2>
-                  <span>@{userid}</span>
-                </div>
+          <div css={modalContentStyle}>
+            <div css={profileHeaderStyle}>
+              <img src={profileimage} alt="Profile" css={profileImageStyle} />
+              <div css={profileTextStyle}>
+                <h2>{nickname}</h2>
+                <span>@{userid}</span>
               </div>
-              <ul css={listStyle}>
-                <li onClick={() => setCurrentModal('profileImage')}>프로필 사진 변경</li>
-                <li onClick={() => setCurrentModal('nickname')}>닉네임 변경</li>
-                <li onClick={() => setCurrentModal('password')}>비밀번호 변경</li>
-              </ul>
             </div>
-          </Modal>
+            <ul css={listStyle}>
+              <li onClick={() => setCurrentModal('profileImage')}>프로필 사진 변경</li>
+              <li onClick={() => setCurrentModal('nickname')}>닉네임 변경</li>
+              <li onClick={() => setCurrentModal('password')}>비밀번호 변경</li>
+            </ul>
+          </div>
         );
     }
   };
@@ -132,7 +131,7 @@ const ProfileEditModal: React.FC = () => {
   return (
     <>
       {modals.modalName === 'profileEdit' && modals.modalState && (
-        <>
+        <Modal modalName="profileEdit">
           {renderModalContent()}
           {showConfirm && (
             <Confirm
@@ -142,8 +141,9 @@ const ProfileEditModal: React.FC = () => {
               onClose={handleCloseConfirm}
             />
           )}
-        </>
+        </Modal>
       )}
+      <ToastContainer />
     </>
   );
 };
@@ -164,30 +164,28 @@ const ProfileImageModal: React.FC<{
   };
 
   return (
-    <Modal modalName="profileImage">
-      <div css={modalContentStyle}>
-        <h2 css={modalTitleStyle}>프로필 사진</h2>
-        <div>
-          <img src={profileimage} alt="Profile" css={modalProfileImage} />
-          <button
-            css={editIconButton}
-            onClick={() => document.getElementById('fileInput')?.click()}
-          >
-            <Pencil size={20} color={colors.white} />
-          </button>
-        </div>
-        <Input
-          id="fileInput"
-          type="file"
-          accept="image/*"
-          onChange={handleProfileImageChange}
-          style={{ display: 'none' }}
-        />
-        <div css={buttonWrapperStyle}>
-          <Button onClick={onBack}>완료</Button>
-        </div>
+    <div css={modalContentStyle}>
+      <button css={backButtonStyle} onClick={onBack}>
+        <ChevronLeft size={24} color={colors.white} />
+      </button>
+      <h2 css={modalTitleStyle}>프로필 사진</h2>
+      <div css={modalProfileImageWrapper}>
+        <img src={profileimage} alt="Profile" css={modalProfileImage} />
+        <button css={editIconButton} onClick={() => document.getElementById('fileInput')?.click()}>
+          <Pencil size={20} color={colors.white} />
+        </button>
       </div>
-    </Modal>
+      <Input
+        id="fileInput"
+        type="file"
+        accept="image/*"
+        onChange={handleProfileImageChange}
+        style={{ display: 'none' }}
+      />
+      <div css={buttonWrapperStyle}>
+        <Button onClick={onBack}>완료</Button>
+      </div>
+    </div>
   );
 };
 
@@ -197,16 +195,17 @@ const NicknameModal: React.FC<{
   setNewNickname: (nickname: string) => void;
 }> = ({ onBack, nickname, setNewNickname }) => {
   return (
-    <Modal modalName="nickname">
-      <div css={modalContentStyle}>
-        <h2 css={modalTitleStyle}>이름</h2>
-        <Input value={nickname} onChange={(e) => setNewNickname(e.target.value)} type={''} />
-        <p css={noteStyle}>이름은 14일 동안 최대 두 번까지 변경할 수 있습니다.</p>
-        <div css={buttonWrapperStyle}>
-          <Button onClick={onBack}>완료</Button>
-        </div>
+    <div css={modalContentStyle}>
+      <button css={backButtonStyle} onClick={onBack}>
+        <ChevronLeft size={24} color={colors.white} />
+      </button>
+      <h2 css={modalTitleStyle}>이름</h2>
+      <Input value={nickname} onChange={(e) => setNewNickname(e.target.value)} type={''} />
+      <p css={noteStyle}>이름은 14일 동안 최대 두 번까지 변경할 수 있습니다.</p>
+      <div css={buttonWrapperStyle}>
+        <Button onClick={onBack}>완료</Button>
       </div>
-    </Modal>
+    </div>
   );
 };
 
@@ -217,43 +216,45 @@ const PasswordChangeModal: React.FC<{ onBack: () => void }> = ({ onBack }) => {
 
   const handleSubmit = () => {
     if (newPassword !== confirmPassword) {
-      alert('새 비밀번호가 일치하지 않습니다.');
+      toast.error('새 비밀번호가 일치하지 않습니다.');
       return;
     }
     // Handle password change logic
     onBack();
+    toast.success('비밀번호가 성공적으로 변경되었습니다.');
   };
 
   return (
-    <Modal modalName="password">
-      <div css={modalContentStyle}>
-        <h2 css={modalTitleStyle}>비밀번호 변경</h2>
-        <Input
-          type="password"
-          placeholder="현재 비밀번호"
-          value={currentPassword}
-          onChange={(e) => setCurrentPassword(e.target.value)}
-        />
-        <Input
-          type="password"
-          placeholder="새 비밀번호"
-          value={newPassword}
-          onChange={(e) => setNewPassword(e.target.value)}
-        />
-        <Input
-          type="password"
-          placeholder="새 비밀번호 재입력"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-        />
-        <p css={noteStyle}>
-          비밀번호는 최소 6자 이상이어야 하며 숫자, 영문, 특수 문자의 조합을 포함해야 합니다.
-        </p>
-        <div css={buttonWrapperStyle}>
-          <Button onClick={handleSubmit}>비밀번호 변경</Button>
-        </div>
+    <div css={modalContentStyle}>
+      <button css={backButtonStyle} onClick={onBack}>
+        <ChevronLeft size={24} color={colors.white} />
+      </button>
+      <h2 css={modalTitleStyle}>비밀번호 변경</h2>
+      <Input
+        type="password"
+        placeholder="현재 비밀번호"
+        value={currentPassword}
+        onChange={(e) => setCurrentPassword(e.target.value)}
+      />
+      <Input
+        type="password"
+        placeholder="새 비밀번호"
+        value={newPassword}
+        onChange={(e) => setNewPassword(e.target.value)}
+      />
+      <Input
+        type="password"
+        placeholder="새 비밀번호 재입력"
+        value={confirmPassword}
+        onChange={(e) => setConfirmPassword(e.target.value)}
+      />
+      <p css={noteStyle}>
+        비밀번호는 최소 6자 이상이어야 하며 숫자, 영문, 특수 문자의 조합을 포함해야 합니다.
+      </p>
+      <div css={buttonWrapperStyle}>
+        <Button onClick={handleSubmit}>비밀번호 변경</Button>
       </div>
-    </Modal>
+    </div>
   );
 };
 
@@ -268,6 +269,7 @@ const modalContentStyle = css`
   border-radius: 10px;
   width: 100%;
   max-width: 420px;
+  position: relative;
 `;
 
 const profileHeaderStyle = css`
@@ -337,6 +339,10 @@ const buttonWrapperStyle = css`
   }
 `;
 
+const modalProfileImageWrapper = css`
+  position: relative;
+`;
+
 const modalProfileImage = css`
   width: 150px;
   height: 150px;
@@ -374,4 +380,13 @@ const modalTitleStyle = css`
 const noteStyle = css`
   font-size: 12px;
   color: ${colors.gray};
+`;
+
+const backButtonStyle = css`
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
 `;

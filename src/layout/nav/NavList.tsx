@@ -13,25 +13,25 @@ function NavList() {
       <li>
         <Link to={'/'}>
           <House />
-          <span>Home</span>
+          <span>홈</span>
         </Link>
       </li>
       <li>
         <Link to={'/timeline'}>
           <History />
-          <span>Timeline</span>
+          <span>타임라인</span>
         </Link>
       </li>
       <li>
         <Link to={'/playlist'}>
           <Video />
-          <span>Playlist</span>
+          <span>플레이리스트</span>
         </Link>
       </li>
       <li>
         <Link to={'/Like'}>
           <Heart />
-          <span>Like</span>
+          <span>좋아요</span>
         </Link>
       </li>
     </ul>

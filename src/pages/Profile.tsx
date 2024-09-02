@@ -13,7 +13,7 @@ function Profile() {
       <UserProfile user={user} />
       <div css={[menuBox, { position: 'relative' }]}>
         <div css={{ width: '50%', position: 'relative', marginRight: '30px' }}>
-          <p css={{ position: 'absolute', right: '0' }}>Playlist</p>
+          <p css={{ position: 'absolute', right: '0' }}>플레이리스트</p>
         </div>
         <div
           css={{
@@ -23,7 +23,7 @@ function Profile() {
             marginLeft: '30px',
           }}
         >
-          <p>Like</p>
+          <p>좋아요</p>
           <p>더보기</p>
         </div>
       </div>

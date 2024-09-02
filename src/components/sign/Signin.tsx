@@ -102,11 +102,11 @@ const Signin: React.FC = () => {
       <form css={{ width: '330px' }} onSubmit={(e) => onLogin(e)}>
         <div css={idAndPasswordArea}>
           <Input css={idAndPassword} ref={idRef} type="text" required />
-          <label>ID</label>
+          <label>아이디</label>
         </div>
         <div css={idAndPasswordArea}>
           <Input css={idAndPassword} ref={passwordRef} type="password" required />
-          <label>Password</label>
+          <label>비밀번호</label>
         </div>
         <div css={{ fontSize: '14px' }}>
           <label
@@ -139,7 +139,7 @@ const Signin: React.FC = () => {
             openSigninModal('signup');
           }}
         >
-          Sign Up now
+          회원가입
         </button>
       </p>
     </>
