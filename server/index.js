@@ -22,6 +22,9 @@ import playlistDeleteRoute from './routes/playlistDelete.js';
 import commentAddRoute from './routes/commentAdd.js';
 import likeDeleteRoute from './routes/likeDelete.js';
 import likeAddRoute from './routes/likeAdd.js';
+import loginRoute from './routes/login.js';
+import signupRoute from './routes/signup.js';
+import signupValidate from './routes/signupValidate.js';
 
 const app = express();
 
@@ -51,6 +54,9 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use('/api', loginRoute);
+app.use('/api', signupRoute);
+app.use('/api', signupValidate);
 app.use('/api/youtube', youtubeRoute);
 app.use('/api/timeline', timelineRoute);
 app.use('/api/followCheck', followCheckRoute);

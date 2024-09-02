@@ -16,7 +16,7 @@ interface ProfileProps {
 }
 
 export interface RealUserData {
-  userid: string;
+  userId: string;
   profileimage: string;
   nickname: string;
   password: string;
@@ -30,11 +30,11 @@ const UserProfile: React.FC<ProfileProps> = ({ user }) => {
   const closeProfileModal = useModalStore((state) => state.closeModal);
 
   const { setUser } = useUserStore();
-  const { profileimage, nickname, userid } = user.information;
+  const { profileImage, nickname, userId } = user;
   const storageUserData = localStorage.getItem('userInformation');
   const realUserData: RealUserData | null = storageUserData ? JSON.parse(storageUserData) : null;
 
-  const [newProfileImage, setNewProfileImage] = useState<string>(profileimage);
+  const [newProfileImage, setNewProfileImage] = useState<string>(profileImage);
   const [newNickname, setNewNickname] = useState<string>(nickname);
   const [newPassword, setNewPassword] = useState<string>('');
   const [showConfirm, setShowConfirm] = useState(false);
@@ -55,7 +55,7 @@ const UserProfile: React.FC<ProfileProps> = ({ user }) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          userid,
+          userId,
           profileimage: newProfileImage,
           password: newPassword,
           nickname: newNickname,
@@ -65,24 +65,23 @@ const UserProfile: React.FC<ProfileProps> = ({ user }) => {
       const result = await response.json();
       if (response.ok) {
         setUser({
-          information: {
-            _id: user.information._id,
-            userid,
-            password: newPassword || user.information.password,
-            profileimage: newProfileImage,
-            nickname: newNickname,
-          },
+          userId,
+          password: newPassword || user.password,
+          profileImage: newProfileImage,
+          nickname: newNickname,
+          likes: user.likes,
           followers: user.followers,
           following: user.following,
+          myPlaylists: user.myPlaylists,
         });
 
         localStorage.setItem(
           'userInformation',
           JSON.stringify({
-            userid,
-            profileimage: newProfileImage,
+            userId,
+            profileImage: newProfileImage,
             nickname: newNickname,
-            password: newPassword || user.information.password,
+            password: newPassword || user.password,
             followers: user.followers,
             following: user.following,
           }),
@@ -142,7 +141,7 @@ const UserProfile: React.FC<ProfileProps> = ({ user }) => {
             color: `${colors.lightestGray}`,
           }}
         >
-          <p>@{userid}</p>
+          <p>@{userId}</p>
           <Link to="/follow" css={{ color: `${colors.lightestGray}` }}>
             팔로워 {user.followers?.length || 0}
           </Link>
@@ -150,7 +149,7 @@ const UserProfile: React.FC<ProfileProps> = ({ user }) => {
             플레이리스트 {user.following?.length || 0}
           </Link>
         </div>
-        {realUserData?.userid === userid ? (
+        {realUserData?.userId === userId ? (
           <button css={profileEditOrFollowerBtn} onClick={handleOpenProfileModal}>
             프로필 수정
           </button>

@@ -8,8 +8,8 @@ import User from '@/components/User';
 import useUserStore from '@/stores/useUserStore';
 
 function CommentWrite() {
-  const user = useUserStore((state) => state.userInformation).information;
-  const { profileimage, nickname, userid } = user;
+  const user = useUserStore((state) => state.userInformation);
+  const { profileImage, nickname, userId } = user;
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [commentInput, setCommentInput] = useState<string>('');
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -37,9 +37,9 @@ function CommentWrite() {
       <div className="write-wrap">
         <div className="writer">
           <User
-            profileimage={profileimage}
+            profileImage={profileImage}
             nickname={nickname}
-            userid={userid}
+            userId={userId}
             size="md"
             onlyImage={true}
           />

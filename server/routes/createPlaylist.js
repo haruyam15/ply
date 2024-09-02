@@ -43,4 +43,3 @@ export default router;
 // }'
 // 플리 추가 api 입니다 이렇게 추가 하시면 됩니다
 // curl -X POST "http://localhost:8080/api/createPlaylist" -H "Content-Type: application/json" -d '{"userid":"lovelace","title":"New Playlist","content":"This is a new playlist.","link":["https://example.com"],"tags":["new","music"]}'
-
