@@ -90,7 +90,7 @@ const Home: React.FC = () => {
 // 스타일 정의
 const containerStyle = css`
   width: 100%;
-  background-color: #1d1d1d;
+  background-color: ${colors.black};
   margin: 0 auto;
   margin-top: 40px;
 `;

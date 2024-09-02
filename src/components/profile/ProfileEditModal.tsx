@@ -331,10 +331,8 @@ const buttonWrapperStyle = css`
     font-size: 20px;
     cursor: pointer;
     &:hover {
-      background-color: #00ffa2e2;
-    }
-    &:hover {
-      opacity: 0.8;
+      background-color: #1ba034;
+      border: none;
     }
   }
 `;

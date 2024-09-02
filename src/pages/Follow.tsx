@@ -55,14 +55,14 @@ const Follow: React.FC = () => {
                 display: 'flex',
                 justifyContent: 'space-between',
                 margin: '30px 5px 20px',
-                color: `${colors.lightestGray}`,
+                color: `${colors.white}`,
               }}
             >
               <p>@{follower.userid}</p>
-              <Link to="/follow" css={{ color: `${colors.lightestGray}` }}>
+              <Link to="/follow" css={{ color: `${colors.white}` }}>
                 팔로워 {userInformation.followers.length}
               </Link>
-              <Link to="/playlist" css={{ color: `${colors.lightestGray}` }}>
+              <Link to="/playlist" css={{ color: `${colors.white}` }}>
                 플레이리스트 {userInformation.following.length}
               </Link>
             </div>

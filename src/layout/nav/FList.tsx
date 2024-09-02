@@ -1,12 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { useNavigate } from 'react-router-dom';
-
 import User from '@/components/User';
 import useNavStore from '@/stores/useNavStore';
 import { Tab } from '@/types/navTypes';
 import { IUserData } from '@/types/userTypes';
-import { colors } from '@/styles/colors';
+import Button from '@/components/Button'; // 새로운 Button 컴포넌트 가져오기
 
 const TESTURL = [
   'https://avatars.githubusercontent.com/u/131119152?s=64&v=4',
@@ -85,9 +84,11 @@ function FList({ tab }: FListProps) {
         ))}
       </ul>
       {hasMore && (
-        <button css={moreButton(isExpand)} onClick={handleMoreClick}>
-          {isExpand ? 'More' : '...'}
-        </button>
+        <div css={buttonContainer}>
+          <Button size={isExpand ? 'sm' : 'md'} onClick={handleMoreClick}>
+            {isExpand ? 'More' : '...'}
+          </Button>
+        </div>
       )}
     </>
   );
@@ -115,19 +116,10 @@ const fList = (isExpand: boolean) => css`
   `}
 `;
 
-const moreButton = (isExpand: boolean) => css`
-  width: 100%;
-  padding: 8px;
-  background-color: transparent;
-  color: ${colors.lightGray};
-  border: none;
-  cursor: pointer;
-  text-align: left;
-  font-size: ${isExpand ? '14px' : '20px'};
-  &:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 6px;
-  }
+const buttonContainer = css`
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
 `;
 
 interface FListProps {

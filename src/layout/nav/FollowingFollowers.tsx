@@ -89,13 +89,13 @@ const tabWrap = css`
       width: 100%;
       display: block;
       padding: 10px 10px 13px;
-      color: ${colors.gray};
+      color: ${colors.lightestGray};
     }
     button:hover {
       color: ${colors.lightestGray};
     }
     button[aria-selected='true'] {
-      color: ${colors.lightestGray};
+      color: ${colors.primaryGreen};
     }
     button[aria-selected='true']::after {
       content: '';

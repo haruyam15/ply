@@ -8,6 +8,7 @@ import Logout from '@/layout/nav/Logout';
 import NavList from '@/layout/nav/NavList';
 import NavTop from '@/layout/nav/NavTop';
 import useNavStore from '@/stores/useNavStore';
+import { colors } from '@/styles/colors';
 
 function Navbar() {
   const isExpand = useNavStore((state) => state.isExpand);
@@ -39,7 +40,7 @@ const nav = (isExpand: boolean) => css`
   z-index: 12000;
 
   .nav-inner {
-    background-color: #1d1d1d;
+    background-color: ${colors.black};
     display: flex;
     flex-direction: column;
     height: 100%;

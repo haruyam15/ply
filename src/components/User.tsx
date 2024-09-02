@@ -46,7 +46,7 @@ const userWrap = (size: Size) => css`
 
   .profile {
     display: flex;
-    border: 1px solid transparent;
+    border: 1px solid ${colors.primaryGreen};
     border-radius: 50%;
     position: relative;
     background-clip: content-box, border-box;

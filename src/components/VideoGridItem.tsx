@@ -43,7 +43,7 @@ const VideoGridItem: React.FC<VideoGridItemProps> = ({
 
 const gridItemStyle = css`
   padding: 10px;
-  background-color: #1d1d1d;
+  background-color: ${colors.black};
   border-radius: 10px;
   height: 250px;
   overflow: hidden;

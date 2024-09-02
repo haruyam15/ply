@@ -54,13 +54,13 @@ const search = (isFocus: boolean) => css`
     display: flex;
     height: 38px;
     padding: 0 12px 0 14px;
-    border: 1px solid ${isFocus ? `rgba(0, 255, 163, 0.5)` : `rgba(255, 255, 255, 0.12)`};
+    border: 1px solid ${isFocus ? `#1EE13C` : `#4a4a4a`};
     border-radius: 20px;
     align-items: center;
   }
 
   input {
-    color: ${colors.veryLightGray};
+    color: ${colors.placeHolderGray};
     flex: 1 1;
     font-size: 15px;
     height: 100%;

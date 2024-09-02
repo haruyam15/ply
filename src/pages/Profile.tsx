@@ -3,6 +3,7 @@ import { css } from '@emotion/react';
 
 import UserProfile from '@/components/profile/UserProfile';
 import useUserStore from '@/stores/useUserStore';
+import { colors } from '@/styles/colors';
 
 function Profile() {
   const user = useUserStore((state) => state.userInformation);
@@ -37,7 +38,7 @@ const menuBox = css`
   height: 40px;
   display: flex;
   justify-content: space-between;
-  border-bottom: 1px solid #fff;
+  border-bottom: 1px solid ${colors.borderGray};
   box-sizing: border-box;
   padding: 5px 0;
   font-size: 18px;

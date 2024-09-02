@@ -45,7 +45,7 @@ const modalArea = css`
   width: 500px;
   display: flex;
   flex-direction: column;
-  background-color: #1d1d1d;
+  background-color: ${colors.black};
   border-radius: 15px;
   color: ${colors.white};
   align-items: center;
