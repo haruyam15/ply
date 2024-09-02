@@ -4,18 +4,18 @@ import { colors } from '@/styles/colors';
 import { css } from '@emotion/react';
 import { useDrag, useDrop } from 'react-dnd';
 import { AlignJustify } from 'lucide-react';
-import { IChartData } from '@/components/createPlaylist/PlaylistChart';
+import { IYoutubelistData } from '@/stores/useYoutubeDataStore';
 import MenuDot from '@/components/MenuDot';
 
-interface IChartListProps {
-  chartData: IChartData;
+interface DraggableItemProps {
+  youTubelistData: IYoutubelistData;
   index: number;
   handleDragDrop: (dragIndex: number, hoverIndex: number) => void;
   handleDeletePlaylist: (index: number) => void;
 }
 
-const DraggableItem: React.FC<IChartListProps> = ({
-  chartData,
+const DraggableItem: React.FC<DraggableItemProps> = ({
+  youTubelistData,
   index,
   handleDragDrop,
   handleDeletePlaylist,
@@ -48,10 +48,10 @@ const DraggableItem: React.FC<IChartListProps> = ({
       <div css={{ cursor: 'pointer' }}>
         <AlignJustify />
       </div>
-      <div css={videoArea(chartData.imgUrl[0])}></div>
+      <div css={videoArea(youTubelistData?.imgUrl[0])}></div>
       <div css={youtubeDataArea}>
-        <p>{chartData.title}</p>
-        <span>{chartData.channelTitle}</span>
+        <p>{youTubelistData?.title}</p>
+        <span>{youTubelistData?.channelTitle}</span>
       </div>
       <div css={{ position: 'absolute', right: '20px', top: '15px' }}>
         <MenuDot showEdit={false} deleteItem={handleDeletePlaylist} index={index} />

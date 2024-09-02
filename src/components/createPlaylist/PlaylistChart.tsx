@@ -1,54 +1,36 @@
 /** @jsxImportSource @emotion/react */
 import DraggableItem from '@/components/createPlaylist/DraggableItem';
-import usePlaylistDataStore from '@/stores/usePlaylistDataStore';
+import usePlaylistDataStore from '@/stores/useYoutubeDataStore';
 import { css } from '@emotion/react';
 import { MessageCircleWarning } from 'lucide-react';
-import { useEffect, useState } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 
-export interface IChartData {
-  id: string;
-  title: string;
-  imgUrl: string[];
-  channelTitle: string;
-}
-
 const PlaylistChart: React.FC = () => {
-  const playlistData = usePlaylistDataStore((state) => state.playlistData);
-  const [chart, setChart] = useState(playlistData);
-
-  useEffect(() => {
-    const handleChart = () => {
-      setChart(playlistData);
-    };
-    handleChart();
-  }, [playlistData]);
+  const youTubelistData = usePlaylistDataStore((state) => state.youTubelistData);
+  const draggabledData = usePlaylistDataStore((state) => state.draggabledData);
 
   const handleDragDrop = (dragIndex: number, hoverIndex: number) => {
-    const dropChart = [...chart];
-    const [draggedItem] = dropChart.splice(dragIndex, 1);
-    dropChart.splice(hoverIndex, 0, draggedItem);
-    setChart(dropChart);
+    const dropItem = [...youTubelistData];
+    const draggedItem = dropItem.splice(dragIndex, 1);
+    dropItem.splice(hoverIndex, 0, draggedItem[0]);
+    draggabledData(dropItem);
   };
 
   const handleDeletePlaylist = (index: number) => {
-    console.log(index, '--------');
-    setChart(chart.filter((_, i) => i !== index));
-    // const updatedChart = chart.filter((_, index) => index !== chart.length - 1);
-    // setChart(updatedChart);
+    draggabledData(youTubelistData.filter((_, i) => i !== index));
   };
 
   return (
     <DndProvider backend={HTML5Backend}>
       <div css={playlistChartWrapper('top')}>
-        {chart.length > 0 ? (
+        {youTubelistData ? (
           <ul css={{ width: '100%' }}>
-            {chart.map((chartData, index) => (
+            {youTubelistData.map((youTubelistData, index) => (
               <DraggableItem
-                key={chartData.id}
+                key={index}
                 index={index}
-                chartData={chartData}
+                youTubelistData={youTubelistData}
                 handleDragDrop={handleDragDrop}
                 handleDeletePlaylist={handleDeletePlaylist}
               />
