@@ -30,7 +30,7 @@ const VideoGridItem: React.FC<VideoGridItemProps> = ({
       <div css={descriptionStyle}>
         <div css={infoStyle}>
           <h3 css={titleStyle}>{title}</h3>
-          <User profileimage="없음" nickname="손성오" userid="son" onlyImage={false} />
+          <User profileImage="없음" nickname="손성오" userId="son" onlyImage={false} />
         </div>
         <div>
           <MenuDot showEdit={showEdit} showDelete={showDelete} />
