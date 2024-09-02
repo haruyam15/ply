@@ -7,7 +7,7 @@ import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
-import SkeletonGridItem from '@/components/SkeletionGridItem';
+import SkeletonGridItem from '@/components/SkeletonGridItem';
 import VideoGridItem from '@/components/VideoGridItem';
 import gridItemsData from '@/data/gridItemData';
 import { colors } from '@/styles/colors';
