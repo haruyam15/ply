@@ -11,12 +11,11 @@ import VideoGridItem from '@/components/VideoGridItem';
 import { colors } from '@/styles/colors';
 
 interface PlaylistData {
-  id: string;
   title: string;
   userId: string;
   tags: string[];
   imgUrl: string[];
-  disclosureStatus: string;
+  disclosureStatus: boolean;
 }
 
 interface UserInformation {
@@ -176,18 +175,18 @@ const Home: React.FC = () => {
       </div>
 
       <div css={gridContainerStyle}>
-        {playlists.slice(0, 8).map((item, index) => (
+        {playlists.slice(0, visibleItems).map((item, index) => (
           <VideoGridItem
             key={index}
-            videoId={item.id}
+            videoId={item.imgUrl[0].split('/')[4]} // imgUrl에서 videoId 추출
             title={item.title}
             user={item.userId}
             showDelete={true}
             showEdit={true}
             tags={item.tags}
             profileImage={userInformation?.profileImage || ''}
-            userName={userInformation?.userName || ''}
-            userId={userInformation?.userId || ''}
+            userName={item.userId}
+            userId={item.userId}
             imgUrl={item.imgUrl[0]}
           />
         ))}
@@ -211,8 +210,8 @@ const Home: React.FC = () => {
             showEdit={true}
             tags={item.tags}
             profileImage={userInformation?.profileImage || ''}
-            userName={userInformation?.userName || ''}
-            userId={userInformation?.userId || ''}
+            userName={item.userId}
+            userId={item.userId}
             imgUrl={item.imgUrl[0]} // imgUrl 배열에서 첫 번째 요소 사용
           />
         ))}
