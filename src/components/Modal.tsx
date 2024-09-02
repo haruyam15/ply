@@ -38,11 +38,11 @@ const wrapper = css`
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 14000;
 `;
 const modalArea = css`
   position: relative;
-  width: 480px;
+  width: 500px;
   display: flex;
   flex-direction: column;
   background-color: #1d1d1d;
@@ -56,6 +56,6 @@ const closeBtn = css`
   background-color: transparent;
   border: none;
   outline: none;
-  padding: 10px;
+  padding: 16px;
   cursor: pointer;
 `;

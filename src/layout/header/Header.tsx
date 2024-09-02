@@ -19,7 +19,7 @@ export default Header;
 const header = css`
   width: 100%;
   height: 60px;
-  background-color: ${colors.black};
+  background-color: #1d1d1d;
   color: ${colors.veryLightGray};
   left: 0;
   min-width: 800px;

@@ -39,7 +39,7 @@ const nav = (isExpand: boolean) => css`
   z-index: 12000;
 
   .nav-inner {
-    background-color: #141517;
+    background-color: #1d1d1d;
     display: flex;
     flex-direction: column;
     height: 100%;

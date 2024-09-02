@@ -168,7 +168,7 @@ export const idAndPasswordArea = css`
   input:valid + label {
     top: -20px;
     color: ${colors.placeHolderGray};
-    font-size: 14px;
+    font-size: 16px;
   }
 `;
 
