@@ -97,9 +97,9 @@ function PlaylistInfo() {
 
       <div className="owner">
         <User
-          profileimage={userData.profileimage}
+          profileImage={userData.profileImage}
           nickname={userData.nickname}
-          userid={makerId}
+          userId={makerId}
           size="lg"
         />
       </div>

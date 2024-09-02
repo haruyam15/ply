@@ -12,22 +12,22 @@ interface IUserProps extends Omit<IUserInformation, 'password'> {
 
 type Size = 'sm' | 'md' | 'lg';
 
-function User({ profileimage, nickname, userid, onlyImage = false, size = 'sm' }: IUserProps) {
+function User({ profileImage, nickname, userId, onlyImage = false, size = 'sm' }: IUserProps) {
   return (
     <div css={userWrap(size)}>
       <If test={onlyImage}>
         <If.Then>
           <div className="profile">
-            <img src={profileimage} alt="" />
+            <img src={profileImage} alt="" />
           </div>
         </If.Then>
         <If.Else>
           <div className="profile">
-            <img width="26" height="26" src={profileimage} alt="" />
+            <img width="26" height="26" src={profileImage} alt="" />
           </div>
           <div className="user-info">
             <p>{nickname}</p>
-            <span>{userid}</span>
+            <span>{userId}</span>
           </div>
         </If.Else>
       </If>

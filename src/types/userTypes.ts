@@ -1,7 +1,10 @@
 import { IPlaylist } from '@/types/playlistTypes';
 
 export interface IUserData {
-  information: IUserInformation;
+  userId: string;
+  password: string;
+  profileImage: string;
+  nickname: string;
   like: string[];
   following: FollowingFollowers[];
   followers: FollowingFollowers[];
@@ -9,9 +12,9 @@ export interface IUserData {
 }
 
 export interface IUserInformation {
-  userid: string;
+  userId: string;
   password: string;
-  profileimage: string;
+  profileImage: string;
   nickname: string;
 }
 

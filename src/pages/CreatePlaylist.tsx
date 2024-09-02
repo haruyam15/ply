@@ -11,7 +11,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 
 const CreatePlaylist = () => {
-  const userData = useUserStore((state) => state.userInformation.information);
+  const userData = useUserStore((state) => state.userInformation);
   const addedPlaylist = usePlaylistDataStore((state) => state.youTubelistData);
   const playlistDataToAdd = useRef<{ getPlaylistData: () => PlaylistDataStore }>(null);
 
@@ -31,7 +31,7 @@ const CreatePlaylist = () => {
     try {
       if (playlistDataToAdd.current?.getPlaylistData()) {
         const res = await axios.post('/api/createPlaylist', {
-          userid: userData.userid,
+          userId: userData.userId,
           title: playlistDataToAdd.current?.getPlaylistData().title,
           content: playlistDataToAdd.current?.getPlaylistData().content,
           disclosureStatus: playlistDataToAdd.current?.getPlaylistData().disclosureStatus,
