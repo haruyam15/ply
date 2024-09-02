@@ -56,6 +56,6 @@ const closeBtn = css`
   background-color: transparent;
   border: none;
   outline: none;
-  padding: 16px;
+  padding: 10px;
   cursor: pointer;
 `;

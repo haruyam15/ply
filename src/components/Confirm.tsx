@@ -54,6 +54,10 @@ const Confirm: React.FC<ConfirmDialogProps> = ({
 export default Confirm;
 
 export const ConfirmStyles = css`
+  .swal2-container {
+    z-index: 15000 !important; // Modal의 z-index보다 높게 설정
+  }
+
   .custom-confirm-button {
     width: 100px;
     height: 40px;

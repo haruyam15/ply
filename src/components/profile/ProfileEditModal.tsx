@@ -22,7 +22,6 @@ const ProfileEditModal: React.FC = () => {
   const { profileimage, nickname, userid } = userInformation.information;
   const [newProfileImage, setNewProfileImage] = useState<string>(profileimage);
   const [newNickname, setNewNickname] = useState<string>(nickname);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [newPassword, setNewPassword] = useState<string>('');
   const [showConfirm, setShowConfirm] = useState(false);
 
@@ -107,14 +106,19 @@ const ProfileEditModal: React.FC = () => {
           />
         );
       case 'password':
-        return <PasswordChangeModal onBack={() => setCurrentModal('main')} />;
+        return (
+          <PasswordChangeModal
+            onBack={() => setCurrentModal('main')}
+            onPasswordChange={(password) => setNewPassword(password)}
+          />
+        );
       default:
         return (
           <div css={modalContentStyle}>
             <div css={profileHeaderStyle}>
-              <img src={profileimage} alt="Profile" css={profileImageStyle} />
+              <img src={newProfileImage} alt="Profile" css={profileImageStyle} />
               <div css={profileTextStyle}>
-                <h2>{nickname}</h2>
+                <h2>{newNickname}</h2>
                 <span>@{userid}</span>
               </div>
             </div>
@@ -123,6 +127,9 @@ const ProfileEditModal: React.FC = () => {
               <li onClick={() => setCurrentModal('nickname')}>닉네임 변경</li>
               <li onClick={() => setCurrentModal('password')}>비밀번호 변경</li>
             </ul>
+            <div css={buttonWrapperStyle}>
+              <Button onClick={() => setShowConfirm(true)}>수정완료</Button>
+            </div>
           </div>
         );
     }
@@ -143,7 +150,14 @@ const ProfileEditModal: React.FC = () => {
           )}
         </Modal>
       )}
-      <ToastContainer />
+      <ToastContainer
+        position="bottom-center"
+        limit={1}
+        closeButton={false}
+        autoClose={2000}
+        hideProgressBar
+        style={{ zIndex: 20000 }}
+      />
     </>
   );
 };
@@ -163,10 +177,15 @@ const ProfileImageModal: React.FC<{
     }
   };
 
+  const handleSubmit = () => {
+    toast.success('프로필 사진이 변경되었습니다.');
+    onBack();
+  };
+
   return (
     <div css={modalContentStyle}>
       <button css={backButtonStyle} onClick={onBack}>
-        <ChevronLeft size={24} color={colors.white} />
+        <ChevronLeft size={24} />
       </button>
       <h2 css={modalTitleStyle}>프로필 사진</h2>
       <div css={modalProfileImageWrapper}>
@@ -183,7 +202,7 @@ const ProfileImageModal: React.FC<{
         style={{ display: 'none' }}
       />
       <div css={buttonWrapperStyle}>
-        <Button onClick={onBack}>완료</Button>
+        <Button onClick={handleSubmit}>완료</Button>
       </div>
     </div>
   );
@@ -194,40 +213,76 @@ const NicknameModal: React.FC<{
   nickname: string;
   setNewNickname: (nickname: string) => void;
 }> = ({ onBack, nickname, setNewNickname }) => {
-  return (
-    <div css={modalContentStyle}>
-      <button css={backButtonStyle} onClick={onBack}>
-        <ChevronLeft size={24} color={colors.white} />
-      </button>
-      <h2 css={modalTitleStyle}>이름</h2>
-      <Input value={nickname} onChange={(e) => setNewNickname(e.target.value)} type={''} />
-      <p css={noteStyle}>이름은 14일 동안 최대 두 번까지 변경할 수 있습니다.</p>
-      <div css={buttonWrapperStyle}>
-        <Button onClick={onBack}>완료</Button>
-      </div>
-    </div>
-  );
-};
+  const [tempNickname, setTempNickname] = useState<string>(nickname);
+  const [error, setError] = useState<string>('');
 
-const PasswordChangeModal: React.FC<{ onBack: () => void }> = ({ onBack }) => {
-  const [currentPassword, setCurrentPassword] = useState<string>('');
-  const [newPassword, setNewPassword] = useState<string>('');
-  const [confirmPassword, setConfirmPassword] = useState<string>('');
+  const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newNickname = e.target.value;
+    setTempNickname(newNickname);
+    if (newNickname.length < 2 || newNickname.length > 20) {
+      setError('닉네임은 2자 이상 20자 이하여야 합니다.');
+    } else {
+      setError('');
+    }
+  };
 
   const handleSubmit = () => {
-    if (newPassword !== confirmPassword) {
-      toast.error('새 비밀번호가 일치하지 않습니다.');
-      return;
-    }
-    // Handle password change logic
+    if (error) return;
+    setNewNickname(tempNickname);
+    toast.success('닉네임이 변경되었습니다.');
     onBack();
-    toast.success('비밀번호가 성공적으로 변경되었습니다.');
   };
 
   return (
     <div css={modalContentStyle}>
       <button css={backButtonStyle} onClick={onBack}>
-        <ChevronLeft size={24} color={colors.white} />
+        <ChevronLeft size={24} />
+      </button>
+      <h2 css={modalTitleStyle}>이름</h2>
+      <Input value={tempNickname} onChange={handleNicknameChange} type="text" />
+      {error && <p css={errorStyle}>{error}</p>}
+      <p css={noteStyle}>이름은 14일 동안 최대 두 번까지 변경할 수 있습니다.</p>
+      <div css={buttonWrapperStyle}>
+        <Button onClick={handleSubmit}>완료</Button>
+      </div>
+    </div>
+  );
+};
+
+const PasswordChangeModal: React.FC<{
+  onBack: () => void;
+  onPasswordChange: (password: string) => void;
+}> = ({ onBack, onPasswordChange }) => {
+  const [currentPassword, setCurrentPassword] = useState<string>('');
+  const [newPassword, setNewPassword] = useState<string>('');
+  const [confirmPassword, setConfirmPassword] = useState<string>('');
+  const [error, setError] = useState<string>('');
+
+  const validatePassword = (password: string) => {
+    const regex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,}$/;
+    return regex.test(password);
+  };
+
+  const handleSubmit = () => {
+    if (!validatePassword(newPassword)) {
+      setError(
+        '비밀번호는 최소 6자 이상이어야 하며 숫자, 영문, 특수 문자의 조합을 포함해야 합니다.',
+      );
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setError('새 비밀번호가 일치하지 않습니다.');
+      return;
+    }
+    onPasswordChange(newPassword);
+    toast.success('비밀번호가 성공적으로 변경되었습니다.');
+    onBack();
+  };
+
+  return (
+    <div css={modalContentStyle}>
+      <button css={backButtonStyle} onClick={onBack}>
+        <ChevronLeft size={24} />
       </button>
       <h2 css={modalTitleStyle}>비밀번호 변경</h2>
       <Input
@@ -248,6 +303,7 @@ const PasswordChangeModal: React.FC<{ onBack: () => void }> = ({ onBack }) => {
         value={confirmPassword}
         onChange={(e) => setConfirmPassword(e.target.value)}
       />
+      {error && <p css={errorStyle}>{error}</p>}
       <p css={noteStyle}>
         비밀번호는 최소 6자 이상이어야 하며 숫자, 영문, 특수 문자의 조합을 포함해야 합니다.
       </p>
@@ -260,12 +316,12 @@ const PasswordChangeModal: React.FC<{ onBack: () => void }> = ({ onBack }) => {
 
 export default ProfileEditModal;
 
-// 스타일 정의
 const modalContentStyle = css`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px;
+  padding: 16px;
+  padding-top: 40px;
   border-radius: 10px;
   width: 100%;
   max-width: 420px;
@@ -372,7 +428,6 @@ const editIconButton = css`
 
 const modalTitleStyle = css`
   font-size: 24px;
-  margin-top: 25px;
   margin-bottom: 40px;
   color: ${colors.white};
 `;
@@ -384,9 +439,25 @@ const noteStyle = css`
 
 const backButtonStyle = css`
   position: absolute;
-  top: 10px;
-  left: 10px;
+  top: 16px;
+  left: 16px;
   background: none;
   border: none;
   cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  color: #888;
+  &:hover {
+    color: ${colors.white};
+  }
+`;
+
+const errorStyle = css`
+  color: ${colors.red};
+  font-size: 14px;
+  margin-top: 5px;
 `;
