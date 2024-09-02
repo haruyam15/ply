@@ -15,13 +15,13 @@ function HeaderActions() {
 
   return (
     <div css={headerActions}>
-      {realUserData?.userid === user.information.userid ? (
+      {realUserData?.userId === user.userId ? (
         <Link to={'/profile'}>
           <div className="user-info">
             <User
-              profileimage={user.information.profileimage}
-              nickname={user.information.nickname}
-              userid={user.information.userid}
+              profileImage={user.profileImage}
+              nickname={user.nickname}
+              userId={user.userId}
               size="md"
             />
           </div>

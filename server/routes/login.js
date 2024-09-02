@@ -2,12 +2,10 @@ import express from 'express';
 const router = express.Router();
 
 router.post('/login', async (req, res) => {
-  const { userid, password } = req.body;
+  const { userId, password } = req.body;
   const database = req.database;
   try {
-    const user = await database
-      .collection('users')
-      .findOne({ 'information.userid': userid, 'information.password': password });
+    const user = await database.collection('users').findOne({ userId: userId, password: password });
     if (user) {
       res.status(200).send({ message: 'Login successful', user });
     } else {
@@ -19,6 +17,3 @@ router.post('/login', async (req, res) => {
 });
 
 export default router;
-
-// 로그인 성공 curl -X GET "http://localhost:8080/api/login?userid=johndoe&password=john1234"
-// 로그인 실패 curl -X GET "http://localhost:8080/api/login?userid=invaliduser&password=invalidpass"

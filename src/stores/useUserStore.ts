@@ -1,18 +1,15 @@
 import { create } from 'zustand';
 import axios from 'axios';
 
-interface IInformation {
-  _id: string;
-  userid: string;
-  password: string;
-  profileimage: string;
-  nickname: string;
-}
-
 export interface IUser {
-  information: IInformation;
+  userId: string;
+  password: string;
+  profileImage: string;
+  nickname: string;
+  likes: string[];
   followers: string[];
   following: string[];
+  myPlaylists: string[];
 }
 
 interface State {
@@ -27,42 +24,39 @@ interface Action {
 
 const useUserStore = create<State & Action>((set, get) => ({
   userInformation: {
-    information: {
-      _id: '',
-      userid: '',
-      password: '',
-      profileimage: '',
-      nickname: '',
-    },
+    userId: '',
+    password: '',
+    profileImage: '',
+    nickname: '',
+    likes: [],
     followers: [],
     following: [],
+    myPlaylists: [],
   },
   setUser: (userData) =>
     set(() => ({
       userInformation: {
-        information: {
-          _id: userData.information._id,
-          userid: userData.information.userid,
-          password: userData.information.password,
-          profileimage: userData.information.profileimage,
-          nickname: userData.information.nickname,
-        },
+        userId: userData.userId,
+        password: userData.password,
+        profileImage: userData.profileImage,
+        likes: userData.likes,
+        nickname: userData.nickname,
         followers: userData.followers,
         following: userData.following,
+        myPlaylists: userData.myPlaylists,
       },
     })),
   clearUser: () =>
     set(() => ({
       userInformation: {
-        information: {
-          _id: '',
-          userid: '',
-          password: '',
-          profileimage: '',
-          nickname: '',
-        },
+        userId: '',
+        password: '',
+        profileImage: '',
+        likes: [],
+        nickname: '',
         followers: [],
         following: [],
+        myPlaylists: [],
       },
     })),
   fetchFollowers: async () => {

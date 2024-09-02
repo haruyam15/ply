@@ -15,45 +15,43 @@ const TESTURL = [
 ];
 
 const user: IUserData = {
-  information: {
-    userid: 'haruyam15',
-    profileimage: TESTURL[4],
-    nickname: '하루얌',
-    password: '1234',
-  },
+  userId: 'haruyam15',
+  profileImage: TESTURL[4],
+  nickname: '하루얌',
+  password: '1234',
   like: ['playlist1', 'playlist2'],
   following: [
     {
-      userid: 'Sonseongoh',
+      userId: 'Sonseongoh',
       nickname: '성오',
-      profileimage: TESTURL[0],
+      profileImage: TESTURL[0],
     },
     {
-      userid: 'dhkim511',
+      userId: 'dhkim511',
       nickname: '도형',
-      profileimage: TESTURL[1],
+      profileImage: TESTURL[1],
     },
     {
-      userid: 'love1ace',
+      userId: 'love1ace',
       nickname: '동영',
-      profileimage: TESTURL[2],
+      profileImage: TESTURL[2],
     },
     {
-      userid: 'ssumanlife',
+      userId: 'ssumanlife',
       nickname: '수민',
-      profileimage: TESTURL[3],
+      profileImage: TESTURL[3],
     },
     {
-      userid: 'abcde',
+      userId: 'abcde',
       nickname: 'hahaha',
-      profileimage: TESTURL[4],
+      profileImage: TESTURL[4],
     },
   ],
   followers: [
-    { userid: 'Sonseongoh', nickname: '성오', profileimage: TESTURL[0] },
-    { userid: 'dhkim511', nickname: '도형', profileimage: TESTURL[1] },
-    { userid: 'love1ace', nickname: '동영', profileimage: TESTURL[2] },
-    { userid: 'ssumanlife', nickname: '수민', profileimage: TESTURL[3] },
+    { userId: 'Sonseongoh', nickname: '성오', profileImage: TESTURL[0] },
+    { userId: 'dhkim511', nickname: '도형', profileImage: TESTURL[1] },
+    { userId: 'love1ace', nickname: '동영', profileImage: TESTURL[2] },
+    { userId: 'ssumanlife', nickname: '수민', profileImage: TESTURL[3] },
   ],
   myplaylist: [],
 };

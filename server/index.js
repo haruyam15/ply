@@ -2,22 +2,29 @@ import express from 'express';
 import * as dotenv from 'dotenv';
 import cors from 'cors';
 import { MongoClient } from 'mongodb';
+import youtubeRoute from './routes/youtube.js';
+import timelineRoute from './routes/timeline.js';
+import followCheckRoute from './routes/followCheck.js';
+import followDeleteRoute from './routes/followDelete.js';
+import followRoute from './routes/follow.js';
+import passwordCheckRoute from './routes/passwordCheck.js';
+import profileEditRoute from './routes/profileEdit.js';
+import profileRoute from './routes/profile.js';
+import profilePageRoute from './routes/profilePage.js';
+import followingPageRoute from './routes/followingPage.js';
+import followerPageRoute from './routes/followerPage.js';
+import playlistEditRoute from './routes/playlistEdit.js';
+import watchRoute from './routes/watch.js';
+import searchRoute from './routes/search.js';
+import playlistPageRoute from './routes/playlistPage.js';
+import likePageRoute from './routes/likePage.js';
+import playlistDeleteRoute from './routes/playlistDelete.js';
+import commentAddRoute from './routes/commentAdd.js';
+import likeDeleteRoute from './routes/likeDelete.js';
+import likeAddRoute from './routes/likeAdd.js';
 import loginRoute from './routes/login.js';
 import signupRoute from './routes/signup.js';
-import registerRoute from './routes/getPlaylist.js';
-import followersRoute from './routes/followers.js';
-import followingRoute from './routes/following.js';
-import updateProfileRoute from './routes/updateUserInfo.js';
-import userProfileRoute from './routes/userProfile.js';
-import myPlaylistDataRoute from './routes/myPlaylistData.js';
-import likedPlaylistsRoute from './routes/likedPlaylists.js';
-import createPlaylistRoute from './routes/createPlaylist.js';
-import likePlaylistRoute from './routes/like.js';
-import commentRoute from './routes/comment.js';
-import getPlaylistRoute from './routes/getPlaylist.js';
-import deletePlaylistRoute from './routes/deletePlaylist.js';
-import updateUserInfoRoute from './routes/updateUserInfo.js';
-import youtubeRoute from './routes/youtube.js';
+import signupValidate from './routes/signupValidate.js';
 
 const app = express();
 
@@ -35,7 +42,7 @@ async function connectToDB() {
   try {
     const client = await MongoClient.connect(MONGOURL);
     database = client.db(sampleDBName);
-    app.listen(PORT, () => console.log(`MongoDB listening on ${PORT}`));
+    app.listen(PORT, () => console.log(`서버가 ${PORT}에서 실행 중입니다.`));
   } catch (error) {
     console.error(error);
   }
@@ -49,42 +56,24 @@ app.use((req, res, next) => {
 
 app.use('/api', loginRoute);
 app.use('/api', signupRoute);
-app.use('/api', registerRoute);
-app.use('/api', followersRoute);
-app.use('/api', followingRoute);
-app.use('/api', updateProfileRoute);
-app.use('/api', userProfileRoute);
-app.use('/api', myPlaylistDataRoute);
-app.use('/api', likedPlaylistsRoute);
-app.use('/api', createPlaylistRoute);
-app.use('/api', likePlaylistRoute);
-app.use('/api', commentRoute);
-app.use('/api', getPlaylistRoute);
-app.use('/api', deletePlaylistRoute);
-app.use('/api', updateUserInfoRoute);
-app.use('/api', youtubeRoute);
-
-app.post('/api/register', async (req, res) => {
-  const { userid, password, nickname } = req.body;
-  if (!userid || !password || !nickname) {
-    return res.status(400).send({ message: 'All fields are required' });
-  }
-  try {
-    const newUser = {
-      id: userid,
-      information: {
-        userid,
-        password,
-        profileimage: '',
-        nickname,
-      },
-      like: [],
-      following: [],
-      followers: [],
-    };
-    const result = await database.collection('users').insertOne(newUser);
-    res.status(201).send({ message: 'User registered successfully', userId: result.insertedId });
-  } catch (error) {
-    res.status(500).send(error);
-  }
-});
+app.use('/api', signupValidate);
+app.use('/api/youtube', youtubeRoute);
+app.use('/api/timeline', timelineRoute);
+app.use('/api/followCheck', followCheckRoute);
+app.use('/api/followDelete', followDeleteRoute);
+app.use('/api/follow', followRoute);
+app.use('/api/passwordCheck', passwordCheckRoute);
+app.use('/api/profileEdit', profileEditRoute);
+app.use('/api/profile', profileRoute);
+app.use('/api/profilePage', profilePageRoute);
+app.use('/api/followingPage', followingPageRoute);
+app.use('/api/followerPage', followerPageRoute);
+app.use('/api/playlistEdit', playlistEditRoute);
+app.use('/api/watch', watchRoute);
+app.use('/api/search', searchRoute);
+app.use('/api/playlistPage', playlistPageRoute);
+app.use('/api/likePage', likePageRoute);
+app.use('/api/playlistDelete', playlistDeleteRoute);
+app.use('/api/commentAdd', commentAddRoute);
+app.use('/api/likeDelete', likeDeleteRoute);
+app.use('/api/likeAdd', likeAddRoute);

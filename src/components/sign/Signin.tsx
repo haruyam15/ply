@@ -12,18 +12,20 @@ import Input from '@/components/Input';
 import Button from '@/components/Button';
 
 interface LoginData {
-  userid: string | null;
+  userId: string | null;
   password: string | null;
 }
 
 interface RealUserData {
   _id: string;
-  userid: string;
-  profileimage: string;
+  userId: string;
+  profileImage: string;
   nickname: string;
   password: string;
+  likes: string[];
   followers: string[];
   following: string[];
+  myPlaylists: string[];
 }
 
 const storageUserData = localStorage.getItem('userInformation');
@@ -38,36 +40,37 @@ const Signin: React.FC = () => {
   const setUserData = useUserStore((state) => state.setUser);
   const idRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
-  const [loginData, setLoginData] = useState<LoginData>({ userid: null, password: null });
+  const [loginData, setLoginData] = useState<LoginData>({ userId: null, password: null });
 
   const onLogin = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const userid = idRef.current?.value ?? null;
+    const userId = idRef.current?.value ?? null;
     const password = passwordRef.current?.value ?? null;
-    setLoginData({ userid, password });
+    setLoginData({ userId, password });
   };
 
   useEffect(() => {
-    if (loginData.userid && loginData.password) {
+    if (loginData.userId && loginData.password) {
       const fetchUserData = async () => {
         try {
           const res = await axios.post('/api/login', {
-            userid: loginData.userid,
+            userId: loginData.userId,
             password: loginData.password,
           });
           const userData = res.data.user;
-          if (userData.information.userid) {
+          if (userData.userId) {
             setUserData(userData);
             localStorage.setItem(
               'userInformation',
               JSON.stringify({
-                _id: userData._id,
-                userid: userData.information.userid,
-                password: userData.information.password,
-                profileimage: userData.information.profileimage,
-                nickname: userData.information.nickname,
+                userId: userData.userId,
+                password: userData.password,
+                profileImage: userData.profileImage,
+                nickname: userData.nickname,
+                likes: userData.likes,
                 followers: userData.followers,
                 following: userData.following,
+                myPlaylists: userData.myPlaylists,
               }),
             );
             closeSigninModal('signin');
@@ -83,15 +86,14 @@ const Signin: React.FC = () => {
 
   if (realUserData) {
     const userData = {
-      information: {
-        _id: realUserData._id,
-        userid: realUserData.userid,
-        password: realUserData.password,
-        profileimage: realUserData.profileimage,
-        nickname: realUserData.nickname,
-      },
+      userId: realUserData.userId,
+      password: realUserData.password,
+      profileImage: realUserData.profileImage,
+      nickname: realUserData.nickname,
+      likes: realUserData.likes,
       followers: realUserData.followers,
       following: realUserData.following,
+      myPlaylists: realUserData.myPlaylists,
     };
     setUserData(userData);
   }

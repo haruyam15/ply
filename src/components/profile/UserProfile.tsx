@@ -11,17 +11,113 @@ interface ProfileProps {
   user: IUser;
 }
 
+export interface RealUserData {
+  userId: string;
+  profileimage: string;
+  nickname: string;
+  password: string;
+  followers: string[];
+  following: string[];
+}
+
 const UserProfile: React.FC<ProfileProps> = ({ user }) => {
   const profileModal = useModalStore((state) => state.modals);
   const openProfileModal = useModalStore((state) => state.openModal);
-  const { profileimage, nickname, userid } = user.information;
+  const closeProfileModal = useModalStore((state) => state.closeModal);
+
+  const { setUser } = useUserStore();
+  const { profileImage, nickname, userId } = user;
   const storageUserData = localStorage.getItem('userInformation');
-  const realUserData: IUserInformation | null = storageUserData
-    ? JSON.parse(storageUserData)
-    : null;
+  const realUserData: RealUserData | null = storageUserData ? JSON.parse(storageUserData) : null;
+
+  const [newProfileImage, setNewProfileImage] = useState<string>(profileImage);
+  const [newNickname, setNewNickname] = useState<string>(nickname);
+  const [newPassword, setNewPassword] = useState<string>('');
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const handleOpenProfileModal = () => {
     openProfileModal('profileEdit');
+  };
+
+  const handleCloseProfileModal = () => closeProfileModal('profileEdit');
+
+  const handleProfileUpdate = async () => {
+    try {
+      const response = await fetch('/api/updateUserInfo', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId,
+          profileimage: newProfileImage,
+          password: newPassword,
+          nickname: newNickname,
+        }),
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        setUser({
+          userId,
+          password: newPassword || user.password,
+          profileImage: newProfileImage,
+          nickname: newNickname,
+          likes: user.likes,
+          followers: user.followers,
+          following: user.following,
+          myPlaylists: user.myPlaylists,
+        });
+
+        localStorage.setItem(
+          'userInformation',
+          JSON.stringify({
+            userId,
+            profileImage: newProfileImage,
+            nickname: newNickname,
+            password: newPassword || user.password,
+            followers: user.followers,
+            following: user.following,
+          }),
+        );
+
+        handleCloseProfileModal();
+      } else {
+        console.error(result.message);
+      }
+    } catch (error) {
+      console.error('Failed to update profile:', error);
+    }
+  };
+
+  const handleImageEdit = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          setNewProfileImage(e.target?.result as string);
+        };
+        reader.readAsDataURL(file);
+      }
+    };
+    input.click();
+  };
+
+  const handleShowConfirm = () => {
+    setShowConfirm(true);
+  };
+
+  const handleConfirm = () => {
+    handleProfileUpdate();
+    setShowConfirm(false);
+  };
+
+  const handleCloseConfirm = () => {
+    setShowConfirm(false);
   };
 
   return (
@@ -38,7 +134,7 @@ const UserProfile: React.FC<ProfileProps> = ({ user }) => {
             color: `${colors.lightestGray}`,
           }}
         >
-          <p>@{userid}</p>
+          <p>@{userId}</p>
           <Link to="/follow" css={{ color: `${colors.lightestGray}` }}>
             팔로워 {user.followers?.length || 0}
           </Link>
@@ -46,7 +142,7 @@ const UserProfile: React.FC<ProfileProps> = ({ user }) => {
             플레이리스트 {user.following?.length || 0}
           </Link>
         </div>
-        {realUserData?.userid === userid ? (
+        {realUserData?.userId === userId ? (
           <button css={profileEditOrFollowerBtn} onClick={handleOpenProfileModal}>
             프로필 수정
           </button>

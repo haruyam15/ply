@@ -10,7 +10,7 @@ import Tags from '@/components/Tags';
 import User from '@/components/User';
 import { colors } from '@/styles/colors';
 import forkVideoId from '@/utils/forkVideoId';
-import useYoutubeFecth from '@/hooks/useYoutubeFetch';
+import useYoutubeFetch from '@/hooks/useYoutubeFetch';
 import useWatchData from '@/hooks/useWatchData';
 import { useEffect, useState } from 'react';
 
@@ -41,7 +41,7 @@ function PlaylistInfo() {
     data: youtubeData,
     error: youtubeError,
     isLoading: youtubeIsLoading,
-  } = useYoutubeFecth(playlistId, videoId, !!videoId);
+  } = useYoutubeFetch(videoId, !!videoId, playlistId);
 
   const {
     data: userData,
@@ -97,9 +97,9 @@ function PlaylistInfo() {
 
       <div className="owner">
         <User
-          profileimage={userData.profileimage}
+          profileImage={userData.profileImage}
           nickname={userData.nickname}
-          userid={makerId}
+          userId={makerId}
           size="lg"
         />
       </div>
