@@ -78,6 +78,10 @@ const titleStyle = css`
   font-size: 16px;
   font-weight: bold;
   color: ${colors.white};
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 `;
 
 export default VideoGridItem;
