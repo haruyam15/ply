@@ -10,44 +10,33 @@ import forkVideoId from '@/utils/forkVideoId';
 import useYoutubeFetch from '@/hooks/useYoutubeFetch';
 import useWatchDataFetch from '@/hooks/useWatchDataFetch';
 import { useEffect, useState } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
+import { useQuery } from '@tanstack/react-query';
 import useUserStore from '@/stores/useUserStore';
-
-type PostLikeType = 'likeAdd' | 'likeDelete';
+import { If } from '@/components/IfElse';
+import getIsFollowing from '@/apis/watch/getIsFollowing';
 
 function PlaylistInfo() {
-  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const playlistId = useParams().playlistId as string;
   const urlParams = new URLSearchParams(useLocation().search);
   const playingVideoId = urlParams.get('v') as string;
   const userInformation = useUserStore((state) => state.userInformation);
   const [isLike, setIsLike] = useState<boolean>(false);
-
-  console.log(userInformation);
-  const postLike = async (addOrDel: PostLikeType): Promise<{ message: string } | null> => {
-    try {
-      const response = await axios.post(
-        `http://localhost:8080/api/${addOrDel}/${userId}/${playlistId}`,
-      );
-      return response.data;
-    } catch (error) {
-      console.error(error);
-      return null;
-    }
-  };
-
-  const mutation = useMutation({
-    mutationFn: postLike,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['like'] });
-    },
-  });
+  const [videoId, setVideoId] = useState<string | null>(null);
+  const [playlistOwner, setPlaylistOwner] = useState<string | null>(null);
 
   const handleLike = () => {
-    mutation.mutate(isLike ? 'likeDelete' : 'likeAdd');
+    //postLike
     setIsLike((prev) => !prev);
+  };
+  const handleFollowing = (type: 'unfollow' | 'follow') => {
+    if (type === 'unfollow') {
+      //언팔
+      alert('언팔!');
+    } else if (type === 'follow') {
+      //팔로잉
+      alert('팔로우!');
+    }
   };
 
   const {
@@ -56,20 +45,25 @@ function PlaylistInfo() {
     error: playlistError,
   } = useWatchDataFetch(playlistId);
 
-  const [videoId, setVideoId] = useState<string>('');
-
   useEffect(() => {
     if (playlistData) {
-      const { link } = playlistData;
+      const { link, userId } = playlistData;
       setVideoId(link.map((l) => forkVideoId(l)).join(','));
+      setPlaylistOwner(userId);
     }
   }, [playlistData]);
+
+  const { data: isFollowing } = useQuery({
+    queryKey: ['followingCheck', playlistId],
+    queryFn: () => getIsFollowing(userInformation.userId, playlistOwner as string),
+    enabled: !!playlistOwner,
+  });
 
   const {
     data: youtubeData,
     error: youtubeError,
     isLoading: youtubeIsLoading,
-  } = useYoutubeFetch(videoId, !!videoId, playlistId);
+  } = useYoutubeFetch(videoId as string, !!videoId, playlistId);
 
   if (playlistLoading || youtubeIsLoading) {
     return <div></div>;
@@ -111,8 +105,17 @@ function PlaylistInfo() {
       </div>
 
       <div className="owner">
-        <User profileimage={profileImage} nickname={userName} userid={userId} size="lg" />
-        <Button>팔로잉</Button>
+        <User profileImage={profileImage} nickname={userName} userId={userId} size="lg" />
+        <If test={userId !== userInformation.userId && (isFollowing as boolean)}>
+          <If.Then>
+            <Button onClick={() => handleFollowing('unfollow')}>팔로잉 중</Button>
+          </If.Then>
+        </If>
+        <If test={userId !== userInformation.userId && (!isFollowing as boolean)}>
+          <If.Then>
+            <Button onClick={() => handleFollowing('follow')}>팔로잉</Button>
+          </If.Then>
+        </If>
       </div>
       <div className="content">
         <p>{date}</p>

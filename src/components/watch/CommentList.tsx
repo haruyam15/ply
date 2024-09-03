@@ -21,9 +21,9 @@ function CommentList({ comments }: ICommentListProps) {
           <li key={i}>
             <div className="writer-profile">
               <User
-                profileimage={profileImage}
+                profileImage={profileImage}
                 nickname={userName}
-                userid={userId}
+                userId={userId}
                 size="md"
                 onlyImage={true}
               />

@@ -4,9 +4,9 @@ import { If } from '@/components/IfElse';
 import { colors } from '@/styles/colors';
 
 interface IUserProps {
-  profileimage: string;
+  profileImage: string;
   nickname: string;
-  userid: string;
+  userId: string;
   onlyImage?: boolean;
   size?: Size;
 }
