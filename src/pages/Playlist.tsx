@@ -12,6 +12,7 @@ interface PlaylistData {
   tags: string[];
   imgUrl: string[];
   disclosureStatus: boolean;
+  id: string;
 }
 
 interface UserInformation {
@@ -122,21 +123,24 @@ const PlaylistPage: React.FC = () => {
       {error && <div css={errorStyle}>{error}</div>}
 
       <div css={gridContainerStyle}>
-        {playlists.slice(0, visibleItems).map((item, index) => (
-          <VideoGridItem
-            key={index}
-            videoId={item.imgUrl[0].split('/')[4]} // imgUrl에서 videoId 추출
-            title={item.title}
-            user={item.userId}
-            showDelete={true}
-            showEdit={true}
-            tags={item.tags}
-            profileImage={userInformation?.profileImage || ''}
-            userName={item.userId}
-            userId={item.userId}
-            imgUrl={item.imgUrl[0]}
-          />
-        ))}
+        {playlists.slice(0, visibleItems).map((item, index) => {
+          return (
+            <VideoGridItem
+              key={index}
+              videoId={item.id} // imgUrl에서 videoId 추출
+              title={item.title}
+              user={item.userId}
+              showDelete={true}
+              showEdit={true}
+              showMenuDot={true}
+              tags={item.tags}
+              profileImage={userInformation?.profileImage || ''}
+              userName={item.userId}
+              userId={item.userId}
+              imgUrl={item.imgUrl[0]}
+            />
+          );
+        })}
         {loading && Array.from({ length: 8 }).map((_, index) => <SkeletonGridItem key={index} />)}
       </div>
     </div>
