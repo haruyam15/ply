@@ -1,11 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-
 import { If } from '@/components/IfElse';
 import { colors } from '@/styles/colors';
-import { IUserInformation } from '@/types/userTypes';
 
-interface IUserProps extends Omit<IUserInformation, 'password'> {
+interface IUserProps {
+  profileImage: string;
+  nickname: string;
+  userId: string;
   onlyImage?: boolean;
   size?: Size;
 }
@@ -37,7 +38,6 @@ function User({ profileImage, nickname, userId, onlyImage = false, size = 'sm' }
 export default User;
 
 const userWrap = (size: Size) => css`
-  width: 100%;
   display: flex;
   position: relative;
   align-items: center;
