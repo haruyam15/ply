@@ -20,11 +20,13 @@ const getRandomPlaylists = async (database) => {
         { id: { $in: shuffledIds } },
         {
           projection: {
+            id: 1,
             title: 1,
             userId: 1,
             tags: 1,
             imgUrl: 1,
             disclosureStatus: 1,
+            link: 1,
           },
         },
       )
@@ -41,9 +43,12 @@ const getRandomPlaylists = async (database) => {
       userNicknames.map((user) => [user.userId, user.nickname]),
     );
 
-    const playlistsWithNickname = playlistsData.map((playlist) => ({
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const playlistsWithNickname = playlistsData.map(({ _id, link, ...playlist }) => ({
       ...playlist,
+      id: playlist.id,
       nickname: nicknameMap[playlist.userId],
+      videoCount: link ? link.length : 0,
     }));
 
     return {
