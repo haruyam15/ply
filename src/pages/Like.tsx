@@ -12,6 +12,7 @@ interface LikedPlaylistData {
   tags: string[];
   imgUrl: string[];
   disclosureStatus: boolean;
+  id: string;
 }
 
 interface UserInformation {
@@ -124,7 +125,7 @@ const Like: React.FC = () => {
         {likedPlaylists.slice(0, visibleItems).map((item, index) => (
           <VideoGridItem
             key={index}
-            videoId={item.imgUrl[0].split('/')[4]} // imgUrl에서 videoId 추출
+            videoId={item.id} // imgUrl에서 videoId 추출
             title={item.title}
             user={item.userId}
             showDelete={true}

@@ -12,7 +12,7 @@ interface PlaylistData {
   tags: string[];
   imgUrl: string[];
   disclosureStatus: boolean;
-  _id: string;
+  id: string;
 }
 
 interface UserInformation {
@@ -124,13 +124,10 @@ const PlaylistPage: React.FC = () => {
 
       <div css={gridContainerStyle}>
         {playlists.slice(0, visibleItems).map((item, index) => {
-          // videoId가 무엇인지 확인하기 위해 콘솔에 출력
-          console.log('videoId:', item._id);
-
           return (
             <VideoGridItem
               key={index}
-              videoId={item._id} // imgUrl에서 videoId 추출
+              videoId={item.id} // imgUrl에서 videoId 추출
               title={item.title}
               user={item.userId}
               showDelete={true}
