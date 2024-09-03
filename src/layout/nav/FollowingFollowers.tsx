@@ -17,7 +17,7 @@ function FollowingFollowers() {
   const [selected, setSelected] = useState<Tab>(FOLLOWERS);
   const handleTab = (e: React.MouseEvent<HTMLButtonElement>) => {
     const target = e.target as HTMLButtonElement;
-    setSelected(target.innerText.toLowerCase() as Tab);
+    setSelected(target.value.toLowerCase() as Tab);
   };
 
   return (
@@ -26,13 +26,13 @@ function FollowingFollowers() {
         <If.Then>
           <ul className="tab">
             <li>
-              <button onClick={handleTab} aria-selected={selected === FOLLOWERS}>
-                Followers
+              <button onClick={handleTab} aria-selected={selected === FOLLOWERS} value={FOLLOWERS}>
+                팔로워
               </button>
             </li>
             <li>
-              <button onClick={handleTab} aria-selected={selected === FOLLOWING}>
-                Following
+              <button onClick={handleTab} aria-selected={selected === FOLLOWING} value={FOLLOWING}>
+                팔로잉
               </button>
             </li>
           </ul>

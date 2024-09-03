@@ -1,59 +1,95 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { useQuery } from '@tanstack/react-query';
 import { Heart } from 'lucide-react';
-import { useNavigate, useParams } from 'react-router-dom';
-
-import { getUserData } from '@/apis/getUserData';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import Button from '@/components/Button';
 import Tags from '@/components/Tags';
 import User from '@/components/User';
 import { colors } from '@/styles/colors';
 import forkVideoId from '@/utils/forkVideoId';
 import useYoutubeFetch from '@/hooks/useYoutubeFetch';
-import useWatchData from '@/hooks/useWatchData';
+import useWatchDataFetch from '@/hooks/useWatchDataFetch';
 import { useEffect, useState } from 'react';
-
-//플리데이터안에 유저데이터오면 코드수정해야 함
+import { useQuery } from '@tanstack/react-query';
+import useUserStore from '@/stores/useUserStore';
+import { If } from '@/components/IfElse';
+import getIsFollowing from '@/apis/watch/getIsFollowing';
+import getIsLike from '@/apis/watch/getIsLike';
+import { useLikeUpdate } from '@/hooks/useLike';
 
 function PlaylistInfo() {
-  const playlistId = useParams().playlistId as string;
   const navigate = useNavigate();
+  const playlistId = useParams().playlistId as string;
+  const urlParams = new URLSearchParams(useLocation().search);
+  const playingVideoId = urlParams.get('v') as string;
+  const userInformation = useUserStore((state) => state.userInformation);
+  const [videoId, setVideoId] = useState<string | null>(null);
+  const [playlistOwner, setPlaylistOwner] = useState<string | null>(null);
+  const [isLike, setIsLike] = useState<boolean>(false);
+  const [isFollowing, setIsFollowing] = useState<boolean>(false);
+  const { mutate: mutateForLike } = useLikeUpdate(playlistId);
+
+  const handleEvent = {
+    like() {
+      const type = isLike ? 'likeDelete' : 'likeAdd';
+      mutateForLike({ type, userId: userInformation.userId });
+    },
+    following() {
+      if (isFollowing) {
+        //언팔
+        alert('언팔!');
+      } else {
+        //팔로잉
+        alert('팔로우!');
+      }
+    },
+  };
 
   const {
     isLoading: playlistLoading,
     data: playlistData,
     error: playlistError,
-  } = useWatchData(playlistId);
-
-  const [videoId, setVideoId] = useState<string>('');
-  const [makerId, setMakerId] = useState<string>('');
-
-  useEffect(() => {
-    if (playlistData) {
-      const { link, userId } = playlistData;
-      setVideoId(link.map((l) => forkVideoId(l)).join(','));
-      setMakerId(userId);
-    }
-  }, [playlistData]);
+  } = useWatchDataFetch(playlistId);
 
   const {
     data: youtubeData,
     error: youtubeError,
     isLoading: youtubeIsLoading,
-  } = useYoutubeFetch(videoId, !!videoId, playlistId);
+  } = useYoutubeFetch(videoId as string, !!videoId, playlistId);
 
-  const {
-    data: userData,
-    error: userError,
-    isLoading: userIsLoading,
-  } = useQuery({
-    queryKey: ['user', makerId],
-    queryFn: () => getUserData(makerId),
-    enabled: !!makerId,
+  const { data: isFollowingData, isSuccess: isFollowingSuccess } = useQuery({
+    queryKey: ['followingCheck', playlistId],
+    queryFn: () => getIsFollowing(userInformation.userId, playlistOwner as string),
+    enabled: !!playlistOwner,
   });
 
-  if (playlistLoading || youtubeIsLoading || userIsLoading) {
+  const { data: isLikeData, isSuccess: isLikeSuccess } = useQuery({
+    queryKey: ['likeCheck', playlistId],
+    queryFn: () => getIsLike(userInformation.userId, playlistId),
+    enabled: !!userInformation.userId,
+  });
+
+  useEffect(() => {
+    if (playlistData) {
+      const { link, userId } = playlistData;
+      setVideoId(link.map((l) => forkVideoId(l)).join(','));
+      setPlaylistOwner(userId);
+    }
+  }, [playlistData]);
+
+  useEffect(() => {
+    if (isLikeSuccess && isLikeData !== null) {
+      setIsLike(isLikeData);
+    }
+  }, [isLikeData, isLikeSuccess, setIsLike]);
+
+  useEffect(() => {
+    if (isFollowingSuccess && isFollowingData !== null) {
+      setIsFollowing(isFollowingData);
+    }
+  }, [isFollowingData, isFollowingSuccess, setIsFollowing]);
+
+  if (playlistLoading || youtubeIsLoading) {
     return <div></div>;
   }
 
@@ -68,40 +104,47 @@ function PlaylistInfo() {
     navigate('/');
     return null;
   }
-  if (userError) {
-    alert('유저 조회에 오류가 발생했습니다.');
-    navigate('/');
+
+  if (!youtubeData || !playlistData) {
     return null;
   }
 
-  if (!userData || !youtubeData || !playlistData) {
-    return null;
-  }
-
-  const { title, tags, content, date, like } = playlistData;
+  const { title, tags, content, date, like, userName, profileImage, userId } = playlistData;
+  const videoTitle = youtubeData.items.filter((item) => item.id === playingVideoId)[0].snippet
+    .title;
 
   return (
     <div className="playlist-info" css={playlistInfo}>
       <div className="info-header">
         <div className="title">
           <p className="playlist-title">{title}</p>
-          <p className="video-title">{youtubeData.items[0].snippet.title}</p>
+          <p className="video-title">{videoTitle}</p>
         </div>
         <div className="actions">
-          <Button size="md">
-            <Heart size="18" /> <span>{like.length}</span>
+          <Button size="md" onClick={handleEvent.like}>
+            <Heart
+              size="18"
+              fill={isLike ? colors.primaryGreen : 'transperant'}
+              strokeWidth={isLike ? '0' : '2'}
+            />
+            <span>{like}</span>
           </Button>
           <Tags tags={tags} />
         </div>
       </div>
 
       <div className="owner">
-        <User
-          profileImage={userData.profileImage}
-          nickname={userData.nickname}
-          userId={makerId}
-          size="lg"
-        />
+        <User profileImage={profileImage} nickname={userName} userId={userId} size="lg" />
+        <If test={userId !== userInformation.userId && isFollowing}>
+          <If.Then>
+            <Button onClick={() => handleEvent.following()}>팔로잉 중</Button>
+          </If.Then>
+        </If>
+        <If test={userId !== userInformation.userId && !isFollowing}>
+          <If.Then>
+            <Button onClick={() => handleEvent.following()}>팔로잉</Button>
+          </If.Then>
+        </If>
       </div>
       <div className="content">
         <p>{date}</p>
@@ -146,7 +189,10 @@ const playlistInfo = css`
   }
 
   .owner {
+    display: flex;
+    align-items: center;
     margin-bottom: 20px;
+    gap: 20px;
   }
 
   .content {
