@@ -117,7 +117,7 @@ const fList = (isExpand: boolean) => css`
 const buttonContainer = css`
   display: flex;
   justify-content: center;
-  margin-top: 10px;
+  margin-top: 20px;
 `;
 
 interface FListProps {

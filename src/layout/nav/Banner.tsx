@@ -1,4 +1,5 @@
 /** @jsxImportSource @emotion/react */
+import { colors } from '@/styles/colors';
 import { css } from '@emotion/react';
 
 function Banner() {
@@ -15,7 +16,7 @@ const banner = css`
   padding: 30px 18px 18px;
   position: relative;
   &::before {
-    background-color: #333d4b;
+    background-color: ${colors.borderGray};
     content: '';
     height: 1px;
     left: 21px;

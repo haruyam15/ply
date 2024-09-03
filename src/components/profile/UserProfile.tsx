@@ -21,7 +21,15 @@ const UserProfile: React.FC = () => {
   };
 
   return (
-    <div css={{ display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '20px' }}>
+    <div
+      css={{
+        display: 'flex',
+        justifyContent: 'left',
+        alignItems: 'center',
+        margin: '20px',
+        marginTop: '40px',
+      }}
+    >
       <img css={profileimageArea} src={profileImage} alt="Profile" />
       <div css={{ marginLeft: '30px' }}>
         <h1 css={{ fontSize: '32px' }}>{nickname}</h1>
@@ -30,7 +38,7 @@ const UserProfile: React.FC = () => {
             width: '300px',
             display: 'flex',
             justifyContent: 'space-between',
-            margin: '30px 5px 20px',
+            margin: '20px 0 20px',
             color: `${colors.lightestGray}`,
           }}
         >
@@ -66,6 +74,7 @@ const profileimageArea = css`
 const profileEditOrFollowerBtn = css`
   width: 100px;
   height: 30px;
+  margin-top: 20px;
   background-color: ${colors.gray};
   color: ${colors.white};
   font-weight: 500;

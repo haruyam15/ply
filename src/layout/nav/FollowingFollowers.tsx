@@ -1,8 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { useState } from 'react';
-
 import { css } from '@emotion/react';
-
 import { If } from '@/components/IfElse';
 import FList from '@/layout/nav/FList';
 import useNavStore from '@/stores/useNavStore';
@@ -15,9 +13,11 @@ const FOLLOWERS = 'followers';
 function FollowingFollowers() {
   const isExpand = useNavStore((state) => state.isExpand);
   const [selected, setSelected] = useState<Tab>(FOLLOWERS);
+
   const handleTab = (e: React.MouseEvent<HTMLButtonElement>) => {
     const target = e.target as HTMLButtonElement;
-    setSelected(target.innerText.toLowerCase() as Tab);
+    const tab = target.getAttribute('data-tab') as Tab;
+    setSelected(tab);
   };
 
   return (
@@ -26,12 +26,20 @@ function FollowingFollowers() {
         <If.Then>
           <ul className="tab">
             <li>
-              <button onClick={handleTab} aria-selected={selected === FOLLOWERS}>
+              <button
+                data-tab={FOLLOWERS}
+                onClick={handleTab}
+                aria-selected={selected === FOLLOWERS}
+              >
                 팔로워
               </button>
             </li>
             <li>
-              <button onClick={handleTab} aria-selected={selected === FOLLOWING}>
+              <button
+                data-tab={FOLLOWING}
+                onClick={handleTab}
+                aria-selected={selected === FOLLOWING}
+              >
                 팔로잉
               </button>
             </li>
@@ -62,7 +70,7 @@ const tabWrap = css`
   box-sizing: border-box;
 
   &::before {
-    background-color: ${colors.darkestGray};
+    background-color: ${colors.borderGray};
     content: '';
     height: 1px;
     left: 21px;
@@ -81,8 +89,6 @@ const tabWrap = css`
       position: relative;
     }
     li:hover {
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 6px;
       cursor: pointer;
     }
     button {
