@@ -5,6 +5,7 @@ const router = express.Router();
 const getRandomPlaylists = async (database) => {
   try {
     const playlistCollection = database.collection('playListData');
+    const userCollection = database.collection('users');
 
     // 모든 플레이리스트 ID 가져오기
     const allPlaylists = await playlistCollection.find({}, { projection: { id: 1 } }).toArray();
@@ -17,13 +18,37 @@ const getRandomPlaylists = async (database) => {
     const playlistsData = await playlistCollection
       .find(
         { id: { $in: shuffledIds } },
-        { projection: { title: 1, userId: 1, tags: 1, imgUrl: 1, disclosureStatus: 1, _id: 0 } },
+        {
+          projection: {
+            title: 1,
+            userId: 1,
+            tags: 1,
+            imgUrl: 1,
+            disclosureStatus: 1,
+          },
+        },
       )
       .toArray();
 
+    // 플레이리스트 제작자의 닉네임 가져오기
+    const userIds = [...new Set(playlistsData.map((playlist) => playlist.userId))];
+    const userNicknames = await userCollection
+      .find({ userId: { $in: userIds } })
+      .project({ userId: 1, nickname: 1 })
+      .toArray();
+
+    const nicknameMap = Object.fromEntries(
+      userNicknames.map((user) => [user.userId, user.nickname]),
+    );
+
+    const playlistsWithNickname = playlistsData.map((playlist) => ({
+      ...playlist,
+      nickname: nicknameMap[playlist.userId],
+    }));
+
     return {
       success: true,
-      data: playlistsData,
+      data: playlistsWithNickname,
     };
   } catch (error) {
     console.error('플레이리스트 데이터 처리 중 오류 발생:', error);
@@ -54,5 +79,4 @@ router.use((err, req, res) => {
 export default router;
 
 // 테스트 명령어:
-
 // curl -X GET http://localhost:8080/api/search
