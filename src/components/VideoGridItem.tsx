@@ -1,12 +1,13 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-
+import { useMemo } from 'react';
 import { colors } from '@/styles/colors';
 
 import Cover from './Cover';
 import MenuDot from './MenuDot';
 import Tags from './Tags';
 import User from './User';
+import forkVideoId from '@/utils/forkVideoId'; // 추가된 부분
 
 interface VideoGridItemProps {
   videoId: string;
@@ -16,13 +17,14 @@ interface VideoGridItemProps {
   showDelete: boolean;
   showMenuDot?: boolean;
   tags: string[];
-  profileImage: string; // 추가된 프로필 이미지
-  userName: string; // 추가된 사용자 이름
-  userId: string; // 추가된 사용자 ID
-  imgUrl: string; // 썸네일 이미지 URL 추가
+  profileImage: string;
+  userName: string;
+  userId: string;
+  imgUrl: string;
 }
 
 const VideoGridItem: React.FC<VideoGridItemProps> = ({
+  videoId,
   title,
   showEdit = false,
   showDelete = true,
@@ -33,9 +35,18 @@ const VideoGridItem: React.FC<VideoGridItemProps> = ({
   userId,
   imgUrl,
 }) => {
+  // 유튜브 영상 ID를 추출
+  const youtubeVideoId = useMemo(() => forkVideoId(imgUrl), [imgUrl]);
+
   return (
     <div css={gridItemStyle}>
-      <Cover imageSrc={imgUrl} playListLength={8} />
+      {/* Cover 컴포넌트에 videoId와 youtubeVideoId를 전달 */}
+      <Cover
+        imageSrc={imgUrl}
+        playListLength={8}
+        playListId={videoId}
+        youtubeVideoId={youtubeVideoId}
+      />
       <div css={descriptionStyle}>
         <div css={infoStyle}>
           <h3 css={titleStyle}>{title}</h3>
