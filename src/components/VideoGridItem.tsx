@@ -14,6 +14,7 @@ interface VideoGridItemProps {
   user: string;
   showEdit: boolean;
   showDelete: boolean;
+  showMenuDot?: boolean;
   tags: string[];
   profileImage: string; // 추가된 프로필 이미지
   userName: string; // 추가된 사용자 이름
@@ -25,6 +26,7 @@ const VideoGridItem: React.FC<VideoGridItemProps> = ({
   title,
   showEdit = false,
   showDelete = true,
+  showMenuDot = false,
   tags,
   profileImage,
   userName,
@@ -40,9 +42,11 @@ const VideoGridItem: React.FC<VideoGridItemProps> = ({
           {/* User 컴포넌트에 사용자 정보 전달 */}
           <User profileImage={profileImage} nickname={userName} userId={userId} onlyImage={false} />
         </div>
-        <div>
-          <MenuDot showEdit={showEdit} showDelete={showDelete} />
-        </div>
+        {showMenuDot && (
+          <div>
+            <MenuDot showEdit={showEdit} showDelete={showDelete} />
+          </div>
+        )}
       </div>
       <Tags tags={tags} />
     </div>

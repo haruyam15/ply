@@ -130,6 +130,7 @@ const PlaylistPage: React.FC = () => {
             user={item.userId}
             showDelete={true}
             showEdit={true}
+            showMenuDot={true}
             tags={item.tags}
             profileImage={userInformation?.profileImage || ''}
             userName={item.userId}
