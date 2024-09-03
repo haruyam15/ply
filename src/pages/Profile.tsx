@@ -2,18 +2,15 @@
 import { css } from '@emotion/react';
 import UserProfile from '@/components/profile/UserProfile';
 import { colors } from '@/styles/colors';
-import { Music, Headphones, Star, Clock, Users } from 'lucide-react';
+import { Video, Heart } from 'lucide-react';
 
 function Profile() {
   return (
     <div css={containerStyle}>
       <UserProfile />
       <div css={menuBoxStyle}>
-        <MenuItem icon={<Music size={18} />} label="내 플레이리스트" />
-        <MenuItem icon={<Headphones size={18} />} label="최근 들은 곡" />
-        <MenuItem icon={<Star size={18} />} label="좋아요한 곡" />
-        <MenuItem icon={<Clock size={18} />} label="감상 기록" />
-        <MenuItem icon={<Users size={18} />} label="팔로잉 아티스트" />
+        <MenuItem icon={<Video size={18} />} label="내 플레이리스트" />
+        <MenuItem icon={<Heart size={18} />} label="좋아요한 플레이리스트" />
       </div>
       {/* 여기에 선택된 메뉴에 따른 컨텐츠를 표시할 수 있습니다 */}
     </div>
@@ -36,10 +33,12 @@ const containerStyle = css`
 const menuBoxStyle = css`
   width: 100%;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start; /* 메뉴 항목을 왼쪽으로 정렬 */
+  gap: 120px; /* 메뉴 항목 간의 간격을 조정 */
   border-bottom: 1px solid ${colors.borderGray};
   box-sizing: border-box;
-  padding: 15px 0;
+  padding: 40px;
+  padding-bottom: 10px;
   font-size: 16px;
   font-weight: 500;
 `;
@@ -50,7 +49,7 @@ const menuItemStyle = css`
   cursor: pointer;
   color: ${colors.lightGray};
   transition: color 0.3s ease;
-  margin-top: 20px;
+  margin-top: 40px;
 
   &:hover {
     color: ${colors.primaryGreen};
@@ -58,5 +57,5 @@ const menuItemStyle = css`
 `;
 
 const menuLabelStyle = css`
-  margin-left: 8px;
+  margin-left: 10px;
 `;

@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { css } from '@emotion/react';
 import { ChevronLeft, Pencil } from 'lucide-react';
 import Modal from '@/components/Modal';
@@ -16,6 +16,7 @@ const ProfileEditModal: React.FC = () => {
   const [currentModal, setCurrentModal] = useState<
     'main' | 'profileImage' | 'nickname' | 'password'
   >('main');
+
   const { modals, closeModal } = useModalStore();
   const { setUser } = useUserStore();
   const userInformation: IUser = useUserStore((state) => state.userInformation);
@@ -24,6 +25,14 @@ const ProfileEditModal: React.FC = () => {
   const [newNickname, setNewNickname] = useState<string>(nickname);
   const [newPassword, setNewPassword] = useState<string>('');
   const [showConfirm, setShowConfirm] = useState(false);
+
+  useEffect(() => {
+    // 컴포넌트 마운트 시 로컬 스토리지에서 이미지 로드
+    const storedImage = localStorage.getItem('profileImage');
+    if (storedImage) {
+      setNewProfileImage(storedImage);
+    }
+  }, []);
 
   const handleProfileUpdate = async () => {
     try {
@@ -131,7 +140,7 @@ const ProfileEditModal: React.FC = () => {
               <li onClick={() => setCurrentModal('password')}>비밀번호 변경</li>
             </ul>
             <div css={buttonWrapperStyle}>
-              <Button onClick={() => setShowConfirm(true)}>수정완료</Button>
+              <Button onClick={() => setShowConfirm(true)}>수정하기</Button>
             </div>
           </div>
         );
@@ -172,11 +181,22 @@ const ProfileImageModal: React.FC<{
 }> = ({ onBack, profileimage, setNewProfileImage }) => {
   const handleProfileImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
+      const file = event.target.files[0];
       const reader = new FileReader();
-      reader.onload = (e) => {
-        setNewProfileImage(e.target?.result as string);
+
+      reader.onloadend = () => {
+        if (typeof reader.result === 'string') {
+          // 로컬 스토리지에 이미지 저장
+          localStorage.setItem('profileImage', reader.result);
+
+          // 이미지 URL 생성 (실제로는 로컬 스토리지에 저장된 데이터를 가리키는 가상의 URL)
+          const imageUrl = `localStorageImage_${Date.now()}`;
+          setNewProfileImage(imageUrl);
+          toast.success('이미지가 성공적으로 저장되었습니다.');
+        }
       };
-      reader.readAsDataURL(event.target.files[0]);
+
+      reader.readAsDataURL(file);
     }
   };
 
@@ -188,9 +208,9 @@ const ProfileImageModal: React.FC<{
   return (
     <div css={modalContentStyle}>
       <button css={backButtonStyle} onClick={onBack}>
-        <ChevronLeft size={24} />
+        <ChevronLeft size={28} />
       </button>
-      <h2 css={modalTitleStyle}>프로필 사진</h2>
+      <h2 css={modalTitleStyle}>프로필 사진 변경</h2>
       <div css={modalProfileImageWrapper}>
         <img src={profileimage} alt="Profile" css={modalProfileImage} />
         <button css={editIconButton} onClick={() => document.getElementById('fileInput')?.click()}>
@@ -205,7 +225,7 @@ const ProfileImageModal: React.FC<{
         style={{ display: 'none' }}
       />
       <div css={buttonWrapperStyle}>
-        <Button onClick={handleSubmit}>완료</Button>
+        <Button onClick={handleSubmit}>변경하기</Button>
       </div>
     </div>
   );
@@ -239,14 +259,14 @@ const NicknameModal: React.FC<{
   return (
     <div css={modalContentStyle}>
       <button css={backButtonStyle} onClick={onBack}>
-        <ChevronLeft size={24} />
+        <ChevronLeft size={28} />
       </button>
-      <h2 css={modalTitleStyle}>이름</h2>
+      <h2 css={modalTitleStyle}>닉네임 변경</h2>
       <Input value={tempNickname} onChange={handleNicknameChange} type="text" />
       {error && <p css={errorStyle}>{error}</p>}
       <p css={noteStyle}>이름은 14일 동안 최대 두 번까지 변경할 수 있습니다.</p>
       <div css={buttonWrapperStyle}>
-        <Button onClick={handleSubmit}>완료</Button>
+        <Button onClick={handleSubmit}>변경하기</Button>
       </div>
     </div>
   );
@@ -306,7 +326,7 @@ const PasswordChangeModal: React.FC<{
   return (
     <div css={modalContentStyle}>
       <button css={backButtonStyle} onClick={onBack}>
-        <ChevronLeft size={24} />
+        <ChevronLeft size={28} />
       </button>
       <h2 css={modalTitleStyle}>비밀번호 변경</h2>
       <Input
@@ -332,7 +352,7 @@ const PasswordChangeModal: React.FC<{
         비밀번호는 최소 6자 이상이어야 하며 숫자, 영문, 특수 문자의 조합을 포함해야 합니다.
       </p>
       <div css={buttonWrapperStyle}>
-        <Button onClick={handleSubmit}>비밀번호 변경</Button>
+        <Button onClick={handleSubmit}>변경하기</Button>
       </div>
     </div>
   );
@@ -420,6 +440,9 @@ const buttonWrapperStyle = css`
 
 const modalProfileImageWrapper = css`
   position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const modalProfileImage = css`
@@ -453,6 +476,9 @@ const modalTitleStyle = css`
   font-size: 24px;
   margin-bottom: 40px;
   color: ${colors.white};
+  text-align: center;
+  justify-content: center;
+  align-items: center;
 `;
 
 const noteStyle = css`
@@ -462,21 +488,14 @@ const noteStyle = css`
 
 const backButtonStyle = css`
   position: absolute;
-  top: 16px;
-  left: 16px;
-  background: none;
+  top: 0;
+  left: -30px;
+  background-color: transparent;
   border: none;
+  outline: none;
   cursor: pointer;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
   color: #888;
-  &:hover {
-    color: ${colors.white};
-  }
+  padding: 11px;
 `;
 
 const errorStyle = css`
