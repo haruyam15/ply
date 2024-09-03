@@ -13,6 +13,7 @@ interface PlaylistData {
   imgUrl: string[];
   disclosureStatus: boolean;
   id: string;
+  videoCount: number;
 }
 
 interface UserInformation {
@@ -138,6 +139,7 @@ const PlaylistPage: React.FC = () => {
               userName={item.userId}
               userId={item.userId}
               imgUrl={item.imgUrl[0]}
+              videoCount={item.videoCount}
             />
           );
         })}

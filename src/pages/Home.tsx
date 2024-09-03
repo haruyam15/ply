@@ -17,6 +17,7 @@ interface PlaylistData {
   imgUrl: string[];
   disclosureStatus: boolean;
   id: string;
+  videoCount: number;
 }
 
 interface UserInformation {
@@ -189,6 +190,7 @@ const Home: React.FC = () => {
             userName={item.userId}
             userId={item.userId}
             imgUrl={item.imgUrl[0]}
+            videoCount={item.videoCount}
           />
         ))}
         {loading &&
@@ -214,6 +216,7 @@ const Home: React.FC = () => {
             userName={item.userId}
             userId={item.userId}
             imgUrl={item.imgUrl[0]} // imgUrl 배열에서 첫 번째 요소 사용
+            videoCount={item.videoCount}
           />
         ))}
         {loading &&

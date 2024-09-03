@@ -21,6 +21,7 @@ interface VideoGridItemProps {
   userName: string;
   userId: string;
   imgUrl: string;
+  videoCount: number;
 }
 
 const VideoGridItem: React.FC<VideoGridItemProps> = ({
@@ -34,6 +35,7 @@ const VideoGridItem: React.FC<VideoGridItemProps> = ({
   userName,
   userId,
   imgUrl,
+  videoCount,
 }) => {
   // 유튜브 영상 ID를 추출
   const youtubeVideoId = useMemo(() => forkVideoId(imgUrl), [imgUrl]);
@@ -43,7 +45,7 @@ const VideoGridItem: React.FC<VideoGridItemProps> = ({
       {/* Cover 컴포넌트에 videoId와 youtubeVideoId를 전달 */}
       <Cover
         imageSrc={imgUrl}
-        playListLength={8}
+        playListLength={videoCount}
         playListId={videoId}
         youtubeVideoId={youtubeVideoId}
       />
