@@ -1,22 +1,36 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { colors } from '@/styles/colors';
-import { IComment } from '@/types/playlistTypes';
 import { EllipsisVertical } from 'lucide-react';
 import User from '@/components/User';
+import useWatchDataFetch from '@/hooks/useWatchDataFetch';
+import { useNavigate, useParams } from 'react-router-dom';
 
-interface ICommentListProps {
-  comments: IComment[];
-}
+function CommentList() {
+  const navigate = useNavigate();
+  const playlistId = useParams().playlistId as string;
+  const { isLoading, data, error } = useWatchDataFetch(playlistId, 'comment');
 
-function CommentList({ comments }: ICommentListProps) {
+  if (isLoading) {
+    return <></>;
+  }
+  if (error) {
+    console.error(error);
+    navigate('/');
+  }
+
+  if (!data) {
+    return null;
+  }
+
+  if (data.comments.length === 0) {
+    return <div css={emptyComment}>댓글이 없습니다.</div>;
+  }
+
   return (
     <ul css={commentsList} className="comments-list">
-      {comments.map((comment, i) => {
+      {data.comments.map((comment, i) => {
         const { userId, userName, profileImage, commentText, createdAt } = comment;
-        // if (!userId) {
-        //   return;
-        // }
         return (
           <li key={i}>
             <div className="writer-profile">
@@ -90,4 +104,9 @@ const commentsList = css`
       border-radius: 6px;
     }
   }
+`;
+
+const emptyComment = css`
+  padding: 10px 0;
+  text-align: center;
 `;
