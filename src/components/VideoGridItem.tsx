@@ -1,13 +1,12 @@
 /** @jsxImportSource @emotion/react */
+import React from 'react';
 import { css } from '@emotion/react';
-import { useMemo } from 'react';
 import { colors } from '@/styles/colors';
-
 import Cover from './Cover';
 import MenuDot from './MenuDot';
 import Tags from './Tags';
 import User from './User';
-import forkVideoId from '@/utils/forkVideoId'; // 추가된 부분
+import forkVideoId from '@/utils/forkVideoId';
 
 interface VideoGridItemProps {
   videoId: string;
@@ -37,12 +36,15 @@ const VideoGridItem: React.FC<VideoGridItemProps> = ({
   imgUrl,
   videoCount,
 }) => {
-  // 유튜브 영상 ID를 추출
-  const youtubeVideoId = useMemo(() => forkVideoId(imgUrl), [imgUrl]);
+  const youtubeVideoId = forkVideoId(imgUrl);
+
+  const handleDeleteItem = (index: number) => {
+    console.log(`삭제할 항목 인덱스: ${index}`);
+    // 이곳에서 상태 업데이트나 다른 삭제 후 처리 작업을 수행할 수 있습니다.
+  };
 
   return (
     <div css={gridItemStyle}>
-      {/* Cover 컴포넌트에 videoId와 youtubeVideoId를 전달 */}
       <Cover
         imageSrc={imgUrl}
         playListLength={videoCount}
@@ -52,12 +54,16 @@ const VideoGridItem: React.FC<VideoGridItemProps> = ({
       <div css={descriptionStyle}>
         <div css={infoStyle}>
           <h3 css={titleStyle}>{title}</h3>
-          {/* User 컴포넌트에 사용자 정보 전달 */}
           <User profileImage={profileImage} nickname={userName} userId={userId} onlyImage={false} />
         </div>
         {showMenuDot && (
           <div>
-            <MenuDot showEdit={showEdit} showDelete={showDelete} />
+            <MenuDot
+              showEdit={showEdit}
+              showDelete={showDelete}
+              deleteItem={handleDeleteItem}
+              playlistDataId={videoId} // playlistDataId 전달
+            />
           </div>
         )}
       </div>
