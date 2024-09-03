@@ -13,10 +13,15 @@ const getFollowerPageInfo = async (userId, database) => {
     const followerInfo = await Promise.all(
       user.followers.map(async (followerId) => {
         const followerUser = await database.collection('users').findOne({ userId: followerId });
+
+        if (!followerUser) {
+          return null; // 사용자 정보가 없으면 null 반환
+        }
+
         return {
-          profileImage: followerUser.profileImage,
-          userName: followerUser.nickname,
-          followers: followerUser.followers.length,
+          profileImage: followerUser.profileImage || '', // profileImage가 없을 경우 빈 문자열 반환
+          userName: followerUser.nickname || 'Unknown', // nickname이 없을 경우 'Unknown' 반환
+          followers: followerUser.followers ? followerUser.followers.length : 0,
           myPlaylist: followerUser.myPlaylists ? followerUser.myPlaylists.length : 0,
         };
       }),
@@ -24,7 +29,7 @@ const getFollowerPageInfo = async (userId, database) => {
 
     return {
       success: true,
-      followerPageInfo: followerInfo,
+      followerPageInfo: followerInfo.filter((info) => info !== null), // null이 아닌 정보만 반환
     };
   } catch (error) {
     console.error('팔로워 페이지 정보 조회 중 오류 발생:', error);
