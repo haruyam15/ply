@@ -13,3 +13,11 @@ function useYoutubeFetch(videoId: string, enabled: boolean, playlistId?: string)
 }
 
 export default useYoutubeFetch;
+
+export function useMultipleYoutubeFetch(videoIds: string[]) {
+  return useQuery({
+    queryKey: ['youtube', videoIds],
+    queryFn: () => Promise.all(videoIds.map((id: string) => getYoutubeData(id))),
+    enabled: videoIds.length > 0,
+  });
+}
