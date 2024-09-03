@@ -141,7 +141,7 @@ const Timeline: React.FC = () => {
             profileImage={userInformation?.profileImage || ''}
             userName={userInformation?.userName || ''}
             userId={userInformation?.userId || ''}
-            imgUrl={item.imgUrl} // imgUrl을 VideoGridItem에 전달
+            imgUrl={item.imgUrl[0]} // imgUrl을 VideoGridItem에 전달
           />
         ))}
         {loading && Array.from({ length: 8 }).map((_, index) => <SkeletonGridItem key={index} />)}
