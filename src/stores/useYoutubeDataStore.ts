@@ -1,11 +1,11 @@
 import { create } from 'zustand';
 
 export interface IYoutubelistData {
-  id: string;
-  title: string;
+  id?: string;
+  title?: string;
   link?: string[];
-  imgUrl: string[];
-  channelTitle: string;
+  imgUrl?: string[];
+  channelTitle?: string;
 }
 
 interface State {
