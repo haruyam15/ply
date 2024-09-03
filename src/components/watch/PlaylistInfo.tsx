@@ -12,8 +12,8 @@ import useWatchDataFetch from '@/hooks/useWatchDataFetch';
 import { useEffect, useState } from 'react';
 import useUserStore from '@/stores/useUserStore';
 import { If } from '@/components/IfElse';
-import { useLikeCheck, useLikeUpdate } from '@/hooks/useLike';
-import { useFollowingCheck, useFollowingUpdate } from '@/hooks/useFollowing';
+import { useLikeCheck, useLikeUpdate } from '@/hooks/watch/useLike';
+import { useFollowingCheck, useFollowingUpdate } from '@/hooks/watch/useFollowing';
 
 function PlaylistInfo() {
   const navigate = useNavigate();

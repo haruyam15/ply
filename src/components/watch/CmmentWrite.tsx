@@ -6,7 +6,7 @@ import { adjustTextAreaHeight } from '@/utils/adjustTextAreaHeight';
 import Button from '@/components/Button';
 import User from '@/components/User';
 import useUserStore from '@/stores/useUserStore';
-import { useCommentAdd } from '@/hooks/useComment';
+import { useCommentAdd } from '@/hooks/watch/useComment';
 import { useParams } from 'react-router-dom';
 import getDate from '@/utils/getDate';
 
