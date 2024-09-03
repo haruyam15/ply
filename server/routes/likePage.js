@@ -14,7 +14,7 @@ const getLikePageInfo = async (userId, database) => {
     const likedPlaylistsData = await database
       .collection('playListData')
       .find({ id: { $in: likedPlaylistIds } })
-      .project({ title: 1, userId: 1, tags: 1, imgUrl: 1, disclosureStatus: 1 })
+      .project({ id: 1, title: 1, userId: 1, tags: 1, imgUrl: 1, disclosureStatus: 1, link: 1 })
       .toArray();
 
     // 플레이리스트 제작자의 닉네임 가져오기
@@ -28,9 +28,13 @@ const getLikePageInfo = async (userId, database) => {
     const nicknameMap = Object.fromEntries(
       userNicknames.map((user) => [user.userId, user.nickname]),
     );
-    const playlistsWithNickname = likedPlaylistsData.map((playlist) => ({
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const playlistsWithNickname = likedPlaylistsData.map(({ _id, link, ...playlist }) => ({
       ...playlist,
+      id: playlist.id,
       nickname: nicknameMap[playlist.userId],
+      videoCount: link ? link.length : 0,
     }));
 
     return {
