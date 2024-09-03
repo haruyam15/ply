@@ -14,14 +14,31 @@ const getPlaylistPageInfo = async (userId, database) => {
     const playlistsData = await database
       .collection('playListData')
       .find({ id: { $in: playlistIds } })
-      .project({ title: 1, userId: 1, tags: 1, imgUrl: 1, disclosureStatus: 1, _id: 0 })
+      .project({ title: 1, userId: 1, tags: 1, imgUrl: 1, disclosureStatus: 1 })
       .toArray();
+
+    // 플레이리스트 제작자의 닉네임 가져오기
+    const userIds = [...new Set(playlistsData.map((playlist) => playlist.userId))];
+    const userNicknames = await database
+      .collection('users')
+      .find({ userId: { $in: userIds } })
+      .project({ userId: 1, nickname: 1 })
+      .toArray();
+
+    const nicknameMap = Object.fromEntries(
+      userNicknames.map((user) => [user.userId, user.nickname]),
+    );
+
+    const playlistsWithNickname = playlistsData.map((playlist) => ({
+      ...playlist,
+      nickname: nicknameMap[playlist.userId],
+    }));
 
     return {
       success: true,
       playlistPageInfo: {
         profileImage: user.profileImage,
-        playlists: playlistsData,
+        playlists: playlistsWithNickname,
       },
     };
   } catch (error) {
