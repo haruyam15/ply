@@ -10,12 +10,10 @@ import forkVideoId from '@/utils/forkVideoId';
 import useYoutubeFetch from '@/hooks/useYoutubeFetch';
 import useWatchDataFetch from '@/hooks/useWatchDataFetch';
 import { useEffect, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
 import useUserStore from '@/stores/useUserStore';
 import { If } from '@/components/IfElse';
-import getIsFollowing from '@/apis/watch/getIsFollowing';
-import getIsLike from '@/apis/watch/getIsLike';
-import { useLikeUpdate } from '@/hooks/useLike';
+import { useLikeCheck, useLikeUpdate } from '@/hooks/useLike';
+import { useFollowingCheck, useFollowingUpdate } from '@/hooks/useFollowing';
 
 function PlaylistInfo() {
   const navigate = useNavigate();
@@ -23,32 +21,18 @@ function PlaylistInfo() {
   const urlParams = new URLSearchParams(useLocation().search);
   const playingVideoId = urlParams.get('v') as string;
   const userInformation = useUserStore((state) => state.userInformation);
+  const { mutate: mutateForLike } = useLikeUpdate(playlistId);
+  const { mutate: mutateForFollowing } = useFollowingUpdate(playlistId);
   const [videoId, setVideoId] = useState<string | null>(null);
   const [playlistOwner, setPlaylistOwner] = useState<string | null>(null);
   const [isLike, setIsLike] = useState<boolean>(false);
   const [isFollowing, setIsFollowing] = useState<boolean>(false);
-  const { mutate: mutateForLike } = useLikeUpdate(playlistId);
-
-  const handleEvent = {
-    like() {
-      const type = isLike ? 'likeDelete' : 'likeAdd';
-      mutateForLike({ type, userId: userInformation.userId });
-    },
-    following() {
-      if (isFollowing) {
-        //언팔
-        alert('언팔!');
-      } else {
-        //팔로잉
-        alert('팔로우!');
-      }
-    },
-  };
 
   const {
     isLoading: playlistLoading,
     data: playlistData,
     error: playlistError,
+    refetch: playlistRefetch,
   } = useWatchDataFetch(playlistId);
 
   const {
@@ -57,17 +41,18 @@ function PlaylistInfo() {
     isLoading: youtubeIsLoading,
   } = useYoutubeFetch(videoId as string, !!videoId, playlistId);
 
-  const { data: isFollowingData, isSuccess: isFollowingSuccess } = useQuery({
-    queryKey: ['followingCheck', playlistId],
-    queryFn: () => getIsFollowing(userInformation.userId, playlistOwner as string),
-    enabled: !!playlistOwner,
-  });
+  const { data: isFollowingData, isSuccess: isFollowingSuccess } = useFollowingCheck(
+    playlistId,
+    userInformation.userId,
+    playlistOwner as string,
+    !!playlistOwner,
+  );
 
-  const { data: isLikeData, isSuccess: isLikeSuccess } = useQuery({
-    queryKey: ['likeCheck', playlistId],
-    queryFn: () => getIsLike(userInformation.userId, playlistId),
-    enabled: !!userInformation.userId,
-  });
+  const { data: isLikeData, isSuccess: isLikeSuccess } = useLikeCheck(
+    playlistId,
+    userInformation.userId,
+    !!userInformation.userId,
+  );
 
   useEffect(() => {
     if (playlistData) {
@@ -78,16 +63,35 @@ function PlaylistInfo() {
   }, [playlistData]);
 
   useEffect(() => {
+    playlistRefetch();
+  }, [isLikeData, playlistRefetch]);
+
+  useEffect(() => {
     if (isLikeSuccess && isLikeData !== null) {
       setIsLike(isLikeData);
     }
-  }, [isLikeData, isLikeSuccess, setIsLike]);
+  }, [isLikeData, isLikeSuccess, setIsLike, isLike]);
 
   useEffect(() => {
     if (isFollowingSuccess && isFollowingData !== null) {
       setIsFollowing(isFollowingData);
     }
   }, [isFollowingData, isFollowingSuccess, setIsFollowing]);
+
+  const handleEvent = {
+    like() {
+      const type = isLike ? 'likeDelete' : 'likeAdd';
+      mutateForLike({ type, userId: userInformation.userId });
+    },
+    following() {
+      const type = isFollowing ? 'followDelete' : 'follow';
+      mutateForFollowing({
+        type,
+        followerUserId: userInformation.userId,
+        targetUserId: playlistOwner as string,
+      });
+    },
+  };
 
   if (playlistLoading || youtubeIsLoading) {
     return <div></div>;
@@ -109,7 +113,7 @@ function PlaylistInfo() {
     return null;
   }
 
-  const { title, tags, content, date, like, userName, profileImage, userId } = playlistData;
+  const { title, tags, content, date, userName, profileImage, userId, like } = playlistData;
   const videoTitle = youtubeData.items.filter((item) => item.id === playingVideoId)[0].snippet
     .title;
 
@@ -137,12 +141,12 @@ function PlaylistInfo() {
         <User profileImage={profileImage} nickname={userName} userId={userId} size="lg" />
         <If test={userId !== userInformation.userId && isFollowing}>
           <If.Then>
-            <Button onClick={() => handleEvent.following()}>팔로잉 중</Button>
+            <Button onClick={handleEvent.following}>팔로잉 중</Button>
           </If.Then>
         </If>
         <If test={userId !== userInformation.userId && !isFollowing}>
           <If.Then>
-            <Button onClick={() => handleEvent.following()}>팔로잉</Button>
+            <Button onClick={handleEvent.following}>팔로잉</Button>
           </If.Then>
         </If>
       </div>

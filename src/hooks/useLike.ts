@@ -1,10 +1,19 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { updateLike } from '@/apis/watch/postLike';
+import getIsLike from '@/apis/watch/getIsLike';
+import updateLike from '@/apis/watch/updateLike';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 interface ILikeUpdateProps {
   type: 'likeAdd' | 'likeDelete';
   userId: string;
 }
+
+export const useLikeCheck = (playlistId: string, userId: string, enabled: boolean) => {
+  return useQuery({
+    queryKey: ['likeCheck', playlistId],
+    queryFn: () => getIsLike(userId, playlistId),
+    enabled: enabled,
+  });
+};
 
 export const useLikeUpdate = (playlistId: string) => {
   const queryClient = useQueryClient();
@@ -13,7 +22,6 @@ export const useLikeUpdate = (playlistId: string) => {
       const response = await updateLike(type, userId, playlistId);
       return response;
     },
-    // onMutate: async () => {},
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['likeCheck', playlistId] });
     },
