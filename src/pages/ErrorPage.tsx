@@ -55,7 +55,6 @@ const containerStyle = css`
   justify-content: center;
   min-height: 100vh;
   background-color: ${colors.black};
-  font-family: Arial, sans-serif;
   text-align: center;
   padding: 20px;
   color: ${colors.white};

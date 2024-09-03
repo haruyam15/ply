@@ -39,10 +39,10 @@ export default Search;
 const search = (isFocus: boolean) => css`
   width: calc(100% - 660px);
   left: 50%;
-  max-width: 400px;
-  min-width: 161px;
+  max-width: 600px;
+  min-width: 361px;
   position: absolute;
-  top: 11px;
+  top: 13px;
   -webkit-transform: translateX(-50%);
   transform: translateX(-50%);
   z-index: 11100;
