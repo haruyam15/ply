@@ -30,5 +30,13 @@ export interface PlaylistDataStore {
 export interface NewPlaylistData extends PlaylistDataStore {
   userId: string;
   link: (string | undefined)[];
-  imgUrl: string[];
+  imgUrl: (string | undefined)[];
+}
+export interface UserPlyDataStore extends PlaylistDataStore {
+  comments: IComment[];
+  content: string;
+  date: string;
+  userName: string;
+  profileImage: string;
+  imgUrl: (string | undefined)[];
 }

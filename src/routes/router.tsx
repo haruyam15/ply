@@ -51,7 +51,7 @@ export const router = createBrowserRouter([
         element: <Search />,
       },
       {
-        path: '/createplaylist',
+        path: '/createplaylist/:id?',
         element: <CreatePlaylist />,
       },
     ],
