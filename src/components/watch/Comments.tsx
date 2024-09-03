@@ -1,18 +1,18 @@
 import { If } from '@/components/IfElse';
 import CommentWrite from '@/components/watch/CmmentWrite';
 import CommentList from '@/components/watch/CommentList';
-import useWatchData from '@/hooks/useWatchData';
+import useWatchDataFetch from '@/hooks/useWatchDataFetch';
 import { useNavigate, useParams } from 'react-router-dom';
 
 function Comments() {
   const navigate = useNavigate();
   const playlistId = useParams().playlistId as string;
-  const { isLoading, data, error } = useWatchData(playlistId);
+  const { isLoading, data, error } = useWatchDataFetch(playlistId);
   if (isLoading) {
     return <></>;
   }
   if (error) {
-    alert('플레이리스트 데이터를 불러오는데 실패했습니다.');
+    console.error(error);
     navigate('/');
   }
 

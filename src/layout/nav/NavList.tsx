@@ -72,7 +72,8 @@ const navList = (isExpand: boolean) => css`
 			text-align: center;
 			box-sizing: border-box;
 			span{
-				margin-left:0
+				margin-left:0;
+        display:block
 			}
       }
     `}

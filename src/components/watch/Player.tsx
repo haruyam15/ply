@@ -1,32 +1,14 @@
 /** @jsxImportSource @emotion/react */
-import useWatchData from '@/hooks/useWatchData';
-import useNowPlayingStore from '@/stores/useNowPlayingStore';
-import forkVideoId from '@/utils/forkVideoId';
 import { css } from '@emotion/react';
-import { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 function Player() {
-  const playlistId = useParams().playlistId as string;
-  const playingVideoId = useNowPlayingStore((state) => state.playingVideoId);
-  const setPlayingVideoId = useNowPlayingStore((state) => state.setPlayingVideoId);
-  const { data } = useWatchData(playlistId);
-
-  useEffect(() => {
-    if (data) {
-      const now = forkVideoId(data.link[0]) as string;
-      setPlayingVideoId(now);
-    }
-  }, [data, setPlayingVideoId]);
+  const urlParams = new URLSearchParams(useLocation().search);
+  const playingVideoId = urlParams.get('v') as string;
 
   return (
-    <div className="player" css={player}>
-      <iframe
-        src={`https://www.youtube.com/embed/${playingVideoId}`}
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        referrerPolicy="strict-origin-when-cross-origin"
-        allowFullScreen
-      ></iframe>
+    <div className="player" css={player} key={playingVideoId}>
+      <iframe src={`https://www.youtube.com/embed/${playingVideoId}`} allowFullScreen></iframe>
     </div>
   );
 }

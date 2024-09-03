@@ -2,52 +2,37 @@
 import { css } from '@emotion/react';
 import { colors } from '@/styles/colors';
 import { IComment } from '@/types/playlistTypes';
-import { IUserInformation } from '@/types/userTypes';
-import { useEffect, useState } from 'react';
 import { EllipsisVertical } from 'lucide-react';
-import { getUserData } from '@/apis/getUserData';
 import User from '@/components/User';
-
-type UsersData = Pick<IUserInformation, 'profileImage' | 'nickname'> | null;
 
 interface ICommentListProps {
   comments: IComment[];
 }
 
 function CommentList({ comments }: ICommentListProps) {
-  const [commentUsersData, setCommentUsersData] = useState<UsersData[]>([]);
-  useEffect(() => {
-    const getCommentUsersData = async () => {
-      const data = await Promise.all(
-        comments.map((comment) => getUserData(comment.commentsWriter).then((res) => res)),
-      );
-      setCommentUsersData(data);
-    };
-
-    getCommentUsersData();
-  }, [comments]);
   return (
     <ul css={commentsList} className="comments-list">
       {comments.map((comment, i) => {
-        if (!commentUsersData[i]) {
-          return <li key={i}></li>;
-        }
+        const { userId, userName, profileImage, commentText, createdAt } = comment;
+        // if (!userId) {
+        //   return;
+        // }
         return (
           <li key={i}>
             <div className="writer-profile">
               <User
-                profileImage={commentUsersData[i].profileImage}
-                nickname={commentUsersData[i].nickname}
-                userId={comment.commentsWriter}
+                profileImage={profileImage}
+                nickname={userName}
+                userId={userId}
                 size="md"
                 onlyImage={true}
               />
             </div>
             <div className="detail">
               <p className="writer">
-                {commentUsersData[i].nickname} <span> {comment.commentsDate}</span>
+                {userName} <span> {createdAt}</span>
               </p>
-              <div className="comment">{comment.commentsContent}</div>
+              <div className="comment">{commentText}</div>
             </div>
             <div className="more">
               <button>

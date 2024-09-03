@@ -4,7 +4,6 @@ import Comments from '@/components/watch/Comments';
 import Player from '@/components/watch/Player';
 import PlaylistInfo from '@/components/watch/PlaylistInfo';
 import VideoList from '@/components/watch/VideoList';
-
 function Watch() {
   return (
     <div className="watch" css={watch}>
