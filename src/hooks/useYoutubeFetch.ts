@@ -5,13 +5,11 @@ function useYoutubeFetch(videoId: string, enabled: boolean, playlistId?: string)
   if (!playlistId) {
     playlistId = videoId;
   }
-  const { error, data, isLoading } = useQuery({
+  return useQuery({
     queryKey: ['youtube', playlistId],
     queryFn: () => getYoutubeData(videoId),
     enabled: enabled,
   });
-
-  return { error, data, isLoading };
 }
 
 export default useYoutubeFetch;
