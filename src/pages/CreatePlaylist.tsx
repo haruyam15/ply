@@ -49,7 +49,6 @@ const CreatePlaylist = () => {
         const res = await axios.get(`/api/watch/${id}`);
         const data = res.data;
         if (data) {
-          console.log(data);
           const youtubeIdList = data.link?.map((url: string) => forkVideoId(url));
           setVideoIdList(youtubeIdList);
           setUserPlyData(data);
