@@ -32,7 +32,7 @@ const Confirm: React.FC<ConfirmDialogProps> = ({
       cancelButtonText: '아니요',
       customClass: {
         confirmButton: 'custom-confirm-button',
-        cancelButton: 'custom-cancel-button', // 추가
+        cancelButton: 'custom-cancel-button',
         title: 'custom-title',
         popup: 'custom-popup',
       },
@@ -57,32 +57,37 @@ export const ConfirmStyles = css`
     z-index: 15000 !important; // Modal의 z-index보다 높게 설정
   }
 
-  .custom-confirm-button {
-    width: 100px;
+  .custom-confirm-button,
+  .custom-cancel-button {
+    width: 120px;
     height: 40px;
-    border-radius: 8px;
-    margin: 30px 20px 20px 0;
+    border-radius: 10px;
+    margin: 25px 15px 20px 15px;
     color: #ffffff !important;
-    font-size: 18px !important;
+    font-size: 16px !important;
+    font-weight: 500;
+  }
+
+  .custom-confirm-button {
+    background-color: #1ee13c !important;
   }
 
   .custom-cancel-button {
-    /* 추가 */
-    width: 100px;
-    height: 40px;
-    border-radius: 8px;
-    margin: 30px 0 20px 20px;
-    color: #ffffff !important;
-    font-size: 18px !important;
+    background-color: #7e7e7e !important;
   }
 
   .custom-title {
-    margin: 50px 0 30px 0 !important;
-    font-size: 24px !important;
+    margin: 40px 0 20px 0 !important;
+    font-size: 22px !important;
     color: #ffffff !important;
+    font-weight: bold;
+    text-align: center;
   }
 
   .custom-popup {
-    background-color: #131516 !important;
+    background-color: #232323 !important;
+    padding: 20px 40px;
+    border-radius: 10px;
+    color: #888888;
   }
 `;
