@@ -13,6 +13,7 @@ interface PlaylistData {
   tags: string[];
   imgUrl: string; // imgUrl 속성 추가
   disclosureStatus: string;
+  videoCount: number;
 }
 
 interface UserInformation {
@@ -140,6 +141,7 @@ const Timeline: React.FC = () => {
             userName={userInformation?.userName || ''}
             userId={userInformation?.userId || ''}
             imgUrl={item.imgUrl[0]} // imgUrl을 VideoGridItem에 전달
+            videoCount={item.videoCount}
           />
         ))}
         {loading && Array.from({ length: 8 }).map((_, index) => <SkeletonGridItem key={index} />)}

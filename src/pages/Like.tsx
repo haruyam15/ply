@@ -13,6 +13,7 @@ interface LikedPlaylistData {
   imgUrl: string[];
   disclosureStatus: boolean;
   id: string;
+  videoCount: number;
 }
 
 interface UserInformation {
@@ -134,6 +135,7 @@ const Like: React.FC = () => {
             userName={item.userId} // userName을 userId로 대체
             userId={item.userId}
             imgUrl={item.imgUrl[0]} // imgUrl 배열에서 첫 번째 요소 사용
+            videoCount={item.videoCount}
           />
         ))}
         {loading && Array.from({ length: 8 }).map((_, index) => <SkeletonGridItem key={index} />)}
