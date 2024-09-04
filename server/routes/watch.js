@@ -13,13 +13,15 @@ const getPlaylistDetails = async (playlistDataId, database) => {
     const user = await database.collection('users').findOne({ userId: playlist.userId });
 
     const commentsWithUserInfo = await Promise.all(
-      playlist.comments.map(async (comment) => {
-        const commentUser = await database.collection('users').findOne({ userId: comment.userId });
+      (playlist.comments || []).map(async (comment) => {
+        const commentUser = await database
+          .collection('users')
+          .findOne({ userId: comment.commentsWriter });
         return {
-          commentId: comment.commentId,
-          userId: comment.userId,
-          commentText: comment.commentText,
-          createdAt: comment.createdAt,
+          _id: comment._id,
+          commentsContent: comment.commentsContent,
+          commentsDate: comment.commentsDate,
+          commentsWriter: comment.commentsWriter,
           profileImage: commentUser ? commentUser.profileImage : null,
           userName: commentUser ? commentUser.nickname : null,
         };
@@ -32,7 +34,7 @@ const getPlaylistDetails = async (playlistDataId, database) => {
         title: playlist.title,
         content: playlist.content,
         link: playlist.link,
-        like: playlist.like.length,
+        like: playlist.like ? playlist.like.length : 0,
         comments: commentsWithUserInfo,
         userId: playlist.userId,
         date: playlist.date,
