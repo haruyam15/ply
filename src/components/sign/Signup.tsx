@@ -16,6 +16,7 @@ import Button from '@/components/Button';
 
 import 'react-toastify/dist/ReactToastify.css';
 import useUserDataFetch from '@/hooks/useUserDataFetch';
+
 export interface SignupData {
   nickname?: string | null;
   userId: string | null;
@@ -30,7 +31,6 @@ const Signup: React.FC = () => {
     userId: null,
     password: null,
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const nameRef = useRef<HTMLInputElement>(null);
   const idRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
@@ -43,7 +43,6 @@ const Signup: React.FC = () => {
       userId: idRef.current?.value ?? null,
       password: passwordRef.current?.value ?? null,
     });
-    setIsSubmitting(true);
   };
 
   const checkbox = document.getElementById('check') as HTMLInputElement;
