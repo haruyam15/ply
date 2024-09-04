@@ -6,9 +6,9 @@ const useNewPlaylist = () => {
   return useMutation<
     number | null,
     Error,
-    { playlistData: NewPlaylistData; type: string; id: string | undefined }
+    { playlistData: NewPlaylistData; type: string; playlistId: string | undefined }
   >({
-    mutationFn: ({ playlistData, type, id }) => plyData(playlistData, type, id),
+    mutationFn: ({ playlistData, type, playlistId }) => plyData(playlistData, type, playlistId),
   });
 };
 export default useNewPlaylist;
