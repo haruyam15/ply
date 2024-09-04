@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import DraggableItem from '@/components/createPlaylist/DraggableItem';
+import DraggableItem from '@/components/managePlaylist/DraggableItem';
 import usePlaylistDataStore from '@/stores/useYoutubeDataStore';
 import { css } from '@emotion/react';
 import { MessageCircleWarning } from 'lucide-react';
