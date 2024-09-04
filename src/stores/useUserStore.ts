@@ -1,21 +1,10 @@
 import { create } from 'zustand';
-
-export interface IUser {
-  userId: string;
-  password: string;
-  profileImage: string;
-  nickname: string;
-  likes: string[];
-  followers: string[];
-  following: string[];
-  myPlaylists: string[];
-}
-
+import { IUserData } from '@/types/userTypes';
 interface State {
-  userInformation: IUser;
+  userInformation: IUserData;
 }
 interface Action {
-  setUser: (userData: IUser) => void;
+  setUser: (userData: IUserData) => void;
   clearUser: () => void;
 }
 

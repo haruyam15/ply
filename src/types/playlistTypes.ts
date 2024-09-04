@@ -10,6 +10,7 @@ export interface IPlaylist {
   imgUrl: string[];
   profileImage: string;
   userName: string;
+  disclosureStatus?: boolean;
 }
 
 export interface IComment {
@@ -34,7 +35,6 @@ export interface NewPlaylistData extends PlaylistDataStore {
 }
 export interface UserPlyDataStore extends PlaylistDataStore {
   comments: IComment[];
-  content: string;
   date: string;
   userName: string;
   profileImage: string;
