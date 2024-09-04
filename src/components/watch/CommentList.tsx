@@ -27,10 +27,18 @@ function CommentList() {
     return <div css={emptyComment}>댓글이 없습니다.</div>;
   }
 
+  const sortedComments = data.comments.reverse();
+
   return (
     <ul css={commentsList} className="comments-list">
-      {data.comments.map((comment, i) => {
-        const { userId, userName, profileImage, commentText, createdAt } = comment;
+      {sortedComments.map((comment, i) => {
+        const {
+          commentsWriter: userId,
+          userName,
+          profileImage,
+          commentsContent: commentText,
+          commentsDate: createdAt,
+        } = comment;
         return (
           <li key={i}>
             <div className="writer-profile">
