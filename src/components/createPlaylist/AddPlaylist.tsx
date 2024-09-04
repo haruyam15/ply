@@ -8,10 +8,10 @@ import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useSta
 import useYoutubeDataStore from '@/stores/useYoutubeDataStore';
 import forkVideoId from '@/utils/forkVideoId';
 import useYoutubeFetch from '@/hooks/useYoutubeFetch';
-import { PlaylistDataStore, UserPlyDataStore } from '@/types/playlistTypes';
+import { PlaylistDataStore, IPlaylist } from '@/types/playlistTypes';
 
 interface AddPlaylistProps {
-  userPlyData: UserPlyDataStore | null;
+  userPlyData: IPlaylist | null | undefined;
 }
 interface AddPlaylistRef {
   getPlaylistData: () => PlaylistDataStore;
@@ -49,6 +49,7 @@ const AddPlaylist = forwardRef<AddPlaylistRef, AddPlaylistProps>(({ userPlyData 
   }, [title, content, tags]);
 
   const handleUrl = useCallback(async () => {
+    console.log('222');
     if (url.current?.value) {
       const newVideoId = forkVideoId(url.current.value);
       if (newVideoId) {
@@ -88,7 +89,7 @@ const AddPlaylist = forwardRef<AddPlaylistRef, AddPlaylistProps>(({ userPlyData 
       setImgUrl(imgUrlArr);
       setContent(userPlyData.content);
       setTags(userPlyData.tags);
-      setDisclosureStatus(userPlyData.disclosureStatus);
+      setDisclosureStatus(userPlyData.disclosureStatus as boolean);
     }
   }, [userPlyData]);
 

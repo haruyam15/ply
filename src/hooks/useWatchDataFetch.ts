@@ -1,7 +1,7 @@
 import { getWatchData } from '@/apis/getWatchData';
 import { useQuery } from '@tanstack/react-query';
 
-function useWatchDataFetch(playlistId: string, enabled?: boolean, optionalKey?: string) {
+function useWatchDataFetch(playlistId: string, optionalKey?: string, enabled?: boolean) {
   const queryKey = ['watch', ...(optionalKey ? [optionalKey] : []), playlistId];
   return useQuery({
     queryKey: queryKey,
