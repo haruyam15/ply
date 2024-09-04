@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { useRef, useEffect, useState } from 'react';
@@ -13,7 +14,7 @@ import { PlaylistDataStore, UserPlyDataStore } from '@/types/playlistTypes';
 import { useNavigate, useParams } from 'react-router-dom';
 import forkVideoId from '@/utils/forkVideoId';
 import useYoutubeFetch from '@/hooks/useYoutubeFetch';
-import useWatchData from '@/hooks/useWatchDataFetch';
+import useWatchDataFetch from '@/hooks/useWatchDataFetch';
 
 const CreatePlaylist = () => {
   const [playlistId, setPlaylistId] = useState('');
@@ -27,7 +28,11 @@ const CreatePlaylist = () => {
   const { mutate } = useNewPlaylist();
   const navigate = useNavigate();
   const { data: youtubeResults, isLoading } = useYoutubeFetch(videoIdList, !!videoIdList);
-  const { data: fetchUserPlyData, error: fetchUserPlyDataError } = useWatchData(playlistId);
+  const { data: fetchUserPlyData, error: fetchUserPlyDataError } = useWatchDataFetch(
+    playlistId,
+    !!playlistId,
+    'Edit',
+  );
 
   useEffect(() => {
     if (!isLoading && youtubeResults?.items) {
@@ -43,25 +48,32 @@ const CreatePlaylist = () => {
         setYouTubelistData(youtubedata);
       });
     }
-  }, [youtubeResults, isLoading, setYouTubelistData]);
+  }, [youtubeResults]);
 
-  if (id) {
-    setPlaylistId(id);
-    if (fetchUserPlyData) {
-      const arrLinkToString = fetchUserPlyData.link
-        ?.map((url: string) => forkVideoId(url))
-        .filter(Boolean)
-        .join(',');
-      setVideoIdList(arrLinkToString);
-      setUserPlyData(fetchUserPlyData as UserPlyDataStore);
-    } else if (fetchUserPlyDataError) {
-      toast.error('플레이리스트 정보를 불러오는데 실패했습니다.');
-      setTimeout(() => {
-        history.back();
-      }, 2000);
+  useEffect(() => {
+    if (id) {
+      setPlaylistId(id);
+      if (fetchUserPlyData) {
+        const arrLinkToString = fetchUserPlyData.link
+          ?.map((url: string) => forkVideoId(url))
+          .filter(Boolean)
+          .join(',');
+        setVideoIdList(arrLinkToString);
+        setUserPlyData(fetchUserPlyData as UserPlyDataStore);
+      } else if (fetchUserPlyDataError) {
+        toast.error('플레이리스트 정보를 불러오는데 실패했습니다.');
+        setTimeout(() => {
+          history.back();
+        }, 2000);
+      }
     }
-    setPlaylistId('');
-  }
+  }, [id]);
+
+  useEffect(() => {
+    if (userPlyData) {
+      setPlaylistId('');
+    }
+  }, [userPlyData]);
 
   const handleValidation = (type: string) => {
     if (playlistDataToAdd.current?.getPlaylistData()?.title === '') {

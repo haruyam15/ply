@@ -7,17 +7,14 @@ import Signup from '@/components/sign/Signup';
 import User from '@/components/User';
 import useModalStore from '@/stores/useModalStore';
 import useUserStore from '@/stores/useUserStore';
-import { IUserData } from '@/types/userTypes';
 
 function HeaderActions() {
   const openSigninModal = useModalStore((state) => state.openModal);
   const user = useUserStore((state) => state.userInformation);
-  const storageUserData = localStorage.getItem('userInformation');
-  const realUserData: IUserData | null = storageUserData ? JSON.parse(storageUserData) : null;
 
   return (
     <div css={headerActions}>
-      {realUserData?.userId === user.userId ? (
+      {user?.userId ? (
         <Link to={'/profile'}>
           <div className="user-info">
             <User

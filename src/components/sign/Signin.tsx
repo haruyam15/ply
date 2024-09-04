@@ -1,12 +1,11 @@
 /** @jsxImportSource @emotion/react */
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { css } from '@emotion/react';
 import Modal from '@/components/Modal';
 import useModalStore from '@/stores/useModalStore';
 import useUserStore from '@/stores/useUserStore';
 import { colors } from '@/styles/colors';
 import useUserDataFetch from '@/hooks/useUserDataFetch';
-import { IUserData } from '@/types/userTypes';
 
 const Signin: React.FC = () => {
   const signinModal = useModalStore((state) => state.modals);
@@ -16,24 +15,6 @@ const Signin: React.FC = () => {
   const idRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
   const { mutateAsync } = useUserDataFetch();
-
-  const storageUserData = localStorage.getItem('userInformation');
-  const realUserData: IUserData | null = storageUserData ? JSON.parse(storageUserData) : null;
-  useEffect(() => {
-    if (realUserData) {
-      const userData = {
-        userId: realUserData.userId,
-        password: realUserData.password,
-        profileImage: realUserData.profileImage,
-        nickname: realUserData.nickname,
-        likes: realUserData.likes,
-        followers: realUserData.followers,
-        following: realUserData.following,
-        myPlaylists: realUserData.myPlaylists,
-      };
-      setUserData(userData);
-    }
-  }, [realUserData, setUserData]);
 
   const onLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -46,21 +27,8 @@ const Signin: React.FC = () => {
           password,
         };
         const userData = await mutateAsync({ api: 'login', userData: fetchUserData });
-        if (typeof userData !== 'number') {
+        if (typeof userData !== 'number' && userData !== null) {
           setUserData(userData);
-          localStorage.setItem(
-            'userInformation',
-            JSON.stringify({
-              userId: userData.userId,
-              password: userData.password,
-              profileImage: userData.profileImage,
-              nickname: userData.nickname,
-              likes: userData.likes,
-              followers: userData.followers,
-              following: userData.following,
-              myPlaylists: userData.myPlaylists,
-            }),
-          );
           closeSigninModal('signin');
           location.reload();
         }
