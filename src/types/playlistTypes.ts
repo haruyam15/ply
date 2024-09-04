@@ -14,9 +14,9 @@ export interface IPlaylist {
 }
 
 export interface IComment {
-  userId: string;
-  commentText: string;
-  createdAt: string;
+  commentsWriter: string;
+  commentsContent: string;
+  commentsDate: string;
   profileImage: string;
   userName: string;
 }
