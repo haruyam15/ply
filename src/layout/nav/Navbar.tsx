@@ -1,16 +1,17 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-
-import { realUserData } from '@/components/sign/Signin';
 import Banner from '@/layout/nav/Banner';
 import FollowingFollowers from '@/layout/nav/FollowingFollowers';
 import Logout from '@/layout/nav/Logout';
 import NavList from '@/layout/nav/NavList';
 import NavTop from '@/layout/nav/NavTop';
 import useNavStore from '@/stores/useNavStore';
+import { IUserData } from '@/types/userTypes';
 
 function Navbar() {
   const isExpand = useNavStore((state) => state.isExpand);
+  const storageUserData = localStorage.getItem('userInformation');
+  const realUserData: IUserData | null = storageUserData ? JSON.parse(storageUserData) : null;
 
   return (
     <nav css={nav(isExpand)}>
