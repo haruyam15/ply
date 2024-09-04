@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { css } from '@emotion/react';
 import { ChevronLeft, Pencil } from 'lucide-react';
 import Modal from '@/components/Modal';
@@ -25,14 +25,6 @@ const ProfileEditModal: React.FC = () => {
   const [newNickname, setNewNickname] = useState<string>(nickname);
   const [newPassword, setNewPassword] = useState<string>('');
   const [showConfirm, setShowConfirm] = useState(false);
-
-  useEffect(() => {
-    // 컴포넌트 마운트 시 로컬 스토리지에서 이미지 로드
-    const storedImage = localStorage.getItem('profileImage');
-    if (storedImage) {
-      setNewProfileImage(storedImage);
-    }
-  }, []);
 
   const handleProfileUpdate = async () => {
     try {
@@ -186,13 +178,8 @@ const ProfileImageModal: React.FC<{
 
       reader.onloadend = () => {
         if (typeof reader.result === 'string') {
-          // 로컬 스토리지에 이미지 저장
-          localStorage.setItem('profileImage', reader.result);
-
-          // 이미지 URL 생성 (실제로는 로컬 스토리지에 저장된 데이터를 가리키는 가상의 URL)
-          const imageUrl = `localStorageImage_${Date.now()}`;
-          setNewProfileImage(imageUrl);
-          toast.success('이미지가 성공적으로 저장되었습니다.');
+          setNewProfileImage(reader.result);
+          toast.success('이미지가 성공적으로 선택되었습니다.');
         }
       };
 
@@ -432,7 +419,8 @@ const buttonWrapperStyle = css`
     font-size: 20px;
     cursor: pointer;
     &:hover {
-      background-color: #1ba034;
+      background-color: ${colors.primaryGreen};
+      opacity: 0.8;
       border: none;
     }
   }
@@ -455,7 +443,7 @@ const modalProfileImage = css`
 `;
 
 const editIconButton = css`
-  background-color: ${colors.lightGray};
+  background-color: ${colors.gray};
   border: none;
   border-radius: 50%;
   width: 32px;
@@ -468,7 +456,7 @@ const editIconButton = css`
   bottom: 0;
   right: 0;
   &:hover {
-    background-color: #00cc75;
+    background-color: ${colors.primaryGreen};
   }
 `;
 

@@ -19,6 +19,7 @@ const getFollowerPageInfo = async (userId, database) => {
         }
 
         return {
+          userId: followerUser.userId, // userId를 포함하여 반환
           profileImage: followerUser.profileImage || '', // profileImage가 없을 경우 빈 문자열 반환
           userName: followerUser.nickname || 'Unknown', // nickname이 없을 경우 'Unknown' 반환
           followers: followerUser.followers ? followerUser.followers.length : 0,

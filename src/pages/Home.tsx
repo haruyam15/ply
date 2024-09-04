@@ -288,8 +288,8 @@ const SeeMore = css`
   border: none;
   background: none;
   padding: 4px;
-  color: inherit;
-  font: inherit;
+  color: ${colors.lightestGray};
+  font-size: 16px;
 
   &:hover {
     background-color: ${colors.darkestGray};

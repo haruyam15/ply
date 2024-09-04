@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
 import { useEffect } from 'react';
-
 import { css, Global } from '@emotion/react';
 import Swal from 'sweetalert2';
 
@@ -54,26 +53,28 @@ export default Confirm;
 
 export const ConfirmStyles = css`
   .swal2-container {
-    z-index: 15000 !important; // Modal의 z-index보다 높게 설정
+    z-index: 21000; /* 기존 z-index 유지 */
   }
 
-  .custom-confirm-button,
+  .custom-confirm-button {
+    width: 120px;
+    height: 40px;
+    border-radius: 10px;
+    margin: 25px 15px 20px 15px;
+    color: #ffffff !important;
+    font-size: 18px !important;
+    font-weight: 500;
+    background-color: #1ee13c !important;
+  }
+
   .custom-cancel-button {
     width: 120px;
     height: 40px;
     border-radius: 10px;
     margin: 25px 15px 20px 15px;
     color: #ffffff !important;
-    font-size: 16px !important;
+    font-size: 18px !important;
     font-weight: 500;
-  }
-
-  .custom-confirm-button {
-    background-color: #1ee13c !important;
-  }
-
-  .custom-cancel-button {
-    background-color: #7e7e7e !important;
   }
 
   .custom-title {
@@ -85,9 +86,7 @@ export const ConfirmStyles = css`
   }
 
   .custom-popup {
-    background-color: #232323 !important;
-    padding: 20px 40px;
-    border-radius: 10px;
-    color: #888888;
+    background-color: #333 !important;
+    border-radius: 10px !important;
   }
 `;

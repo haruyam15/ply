@@ -1,10 +1,13 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { Link } from 'react-router-dom';
 
 function Logo() {
   return (
     <h1 css={logo}>
-      <img src="/assets/images/logo.png" />
+      <Link to="/">
+        <img src="/assets/images/logo.png" alt="Logo" />
+      </Link>
     </h1>
   );
 }
@@ -21,5 +24,9 @@ const logo = css`
 
   img {
     width: 110px;
+  }
+
+  a {
+    display: block;
   }
 `;

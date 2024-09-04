@@ -83,7 +83,7 @@ function FList({ tab }: FListProps) {
       </ul>
       {hasMore && (
         <div css={buttonContainer}>
-          <Button size={isExpand ? 'sm' : 'md'} onClick={handleMoreClick}>
+          <Button size={isExpand ? 'sm' : 'sm'} onClick={handleMoreClick}>
             {isExpand ? '더보기' : '...'}
           </Button>
         </div>

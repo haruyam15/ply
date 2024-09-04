@@ -115,7 +115,7 @@ const PlaylistPage: React.FC = () => {
       <TitleHeader
         profileImage={userInformation?.profileImage || '없음'}
         nickname={userInformation?.userName || '손성오'}
-        actionText="Playlist"
+        actionText="플레이리스트"
         showAddPlaylistButton={true}
       />
 

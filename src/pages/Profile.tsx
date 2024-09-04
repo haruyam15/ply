@@ -1,61 +1,152 @@
 /** @jsxImportSource @emotion/react */
+import { useState, useEffect } from 'react';
 import { css } from '@emotion/react';
 import UserProfile from '@/components/profile/UserProfile';
 import { colors } from '@/styles/colors';
 import { Video, Heart } from 'lucide-react';
+import VideoGridItem from '@/components/VideoGridItem';
+import useUserStore from '@/stores/useUserStore';
+
+interface PlaylistItem {
+  imgUrl: string[];
+  title: string;
+  userId: string;
+  nickname: string;
+  profileImage: string;
+  tags: string[];
+}
 
 function Profile() {
+  const { userInformation } = useUserStore();
+  const [selectedTab, setSelectedTab] = useState('playlist');
+  const [playlists, setPlaylists] = useState<PlaylistItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchPlaylists = async () => {
+      try {
+        setLoading(true);
+        let response;
+        if (selectedTab === 'playlist') {
+          response = await fetch(`/api/playlistPage/${userInformation.userId}`);
+        } else {
+          response = await fetch(`/api/likePage/${userInformation.userId}`);
+        }
+
+        if (!response.ok) {
+          throw new Error('플레이리스트를 가져오는 중 오류 발생');
+        }
+
+        const data = await response.json();
+        const filteredPlaylists: PlaylistItem[] =
+          selectedTab === 'playlist' ? data.playlists : data.likedPlaylists;
+
+        setPlaylists(filteredPlaylists);
+      } catch (error) {
+        console.error('플레이리스트를 가져오는 중 오류 발생:', error);
+        setError('플레이리스트를 가져오는 중 오류가 발생했습니다.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPlaylists();
+  }, [selectedTab, userInformation.userId]);
+
   return (
     <div css={containerStyle}>
       <UserProfile />
-      <div css={menuBoxStyle}>
-        <MenuItem icon={<Video size={18} />} label="내 플레이리스트" />
-        <MenuItem icon={<Heart size={18} />} label="좋아요한 플레이리스트" />
+      <div css={tabsStyle}>
+        <button
+          css={[tabStyle, selectedTab === 'playlist' && activeTabStyle]}
+          onClick={() => setSelectedTab('playlist')}
+        >
+          <Video size={18} />내 플레이리스트
+        </button>
+        <button
+          css={[tabStyle, selectedTab === 'likedPlaylist' && activeTabStyle]}
+          onClick={() => setSelectedTab('likedPlaylist')}
+        >
+          <Heart size={18} />
+          좋아요한 플레이리스트
+        </button>
       </div>
-      {/* 여기에 선택된 메뉴에 따른 컨텐츠를 표시할 수 있습니다 */}
+      <div css={contentStyle}>
+        {loading ? (
+          <p>로딩 중...</p>
+        ) : error ? (
+          <p>{error}</p>
+        ) : (
+          <div css={gridContainerStyle}>
+            {playlists.map((item, index) => (
+              <VideoGridItem
+                key={index}
+                videoId={item.imgUrl[0].split('/')[4]}
+                title={item.title}
+                user={item.userId}
+                showEdit={false}
+                showDelete={false}
+                tags={item.tags || []}
+                profileImage={item.profileImage || ''}
+                userName={item.nickname || ''}
+                userId={item.userId || ''}
+                imgUrl={item.imgUrl[0]}
+              />
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
 
-const MenuItem = ({ icon, label }: { icon: React.ReactNode; label: string }) => (
-  <div css={menuItemStyle}>
-    {icon}
-    <span css={menuLabelStyle}>{label}</span>
-  </div>
-);
-
-export default Profile;
-
-const containerStyle = css`
-  margin: 0 40px;
-`;
-
-const menuBoxStyle = css`
-  width: 100%;
+const tabsStyle = css`
   display: flex;
-  justify-content: flex-start; /* 메뉴 항목을 왼쪽으로 정렬 */
-  gap: 120px; /* 메뉴 항목 간의 간격을 조정 */
-  border-bottom: 1px solid ${colors.borderGray};
-  box-sizing: border-box;
-  padding: 40px;
-  padding-bottom: 10px;
-  font-size: 16px;
-  font-weight: 500;
+  justify-content: space-around;
+  margin-top: 60px;
+  margin-bottom: 30px;
+  background-color: ${colors.black};
+  border-radius: 10px;
+  overflow: hidden;
 `;
 
-const menuItemStyle = css`
+const tabStyle = css`
+  flex: 1;
+  padding: 15px 0;
+  font-size: 18px;
+  font-weight: bold;
+  color: ${colors.lightGray};
+  text-align: center;
+  cursor: pointer;
+  transition:
+    background-color 0.3s,
+    color 0.3s;
   display: flex;
   align-items: center;
-  cursor: pointer;
-  color: ${colors.lightGray};
-  transition: color 0.3s ease;
-  margin-top: 40px;
-
-  &:hover {
-    color: ${colors.primaryGreen};
-  }
+  justify-content: center;
+  gap: 12px;
 `;
 
-const menuLabelStyle = css`
-  margin-left: 10px;
+const activeTabStyle = css`
+  color: ${colors.primaryGreen};
+  border-bottom: 2px solid ${colors.primaryGreen};
+  wid
 `;
+
+const containerStyle = css`
+  margin: 0 20px;
+`;
+
+const contentStyle = css`
+  margin-top: 20px;
+`;
+
+const gridContainerStyle = css`
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  padding: 20px;
+`;
+
+export default Profile;

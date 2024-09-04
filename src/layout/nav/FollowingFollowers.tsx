@@ -39,11 +39,11 @@ function FollowingFollowers() {
         </If.Then>
         <If.Else>
           <div className="f-wrap">
-            <p>Following</p>
+            <p>팔로잉</p>
             <FList tab={selected} />
           </div>
           <div className="f-wrap">
-            <p>Followers</p>
+            <p>팔로워</p>
             <FList tab={selected} />
           </div>
         </If.Else>
@@ -96,7 +96,7 @@ const tabWrap = css`
     }
     button[aria-selected='true']::after {
       content: '';
-      height: 3px;
+      height: 2px;
       position: absolute;
       left: 10px;
       right: 10px;

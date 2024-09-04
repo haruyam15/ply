@@ -1,18 +1,42 @@
 /** @jsxImportSource @emotion/react */
+import { useEffect } from 'react';
 import { css } from '@emotion/react';
 import { Link } from 'react-router-dom';
 import useModalStore from '@/stores/useModalStore';
 import useUserStore from '@/stores/useUserStore';
 import { colors } from '@/styles/colors';
 import ProfileEditModal from './ProfileEditModal';
+import axios from 'axios';
 
 const UserProfile: React.FC = () => {
   const profileModal = useModalStore((state) => state.modals);
   const openProfileModal = useModalStore((state) => state.openModal);
 
   const user = useUserStore((state) => state.userInformation);
+  const setUser = useUserStore((state) => state.setUser);
   const storageUserData = localStorage.getItem('userInformation');
   const realUserData = storageUserData ? JSON.parse(storageUserData) : null;
+
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      try {
+        const response = await axios.get(`/api/profilePage/${user.userId}`);
+        if (response.data) {
+          setUser({
+            ...user,
+            followers: response.data.followers,
+            myPlaylists: response.data.myPlaylistCount,
+          });
+        }
+      } catch (error) {
+        console.error('프로필 데이터를 가져오는 중 오류 발생:', error);
+      }
+    };
+
+    if (user.userId) {
+      fetchProfileData();
+    }
+  }, [user.userId, setUser, user]);
 
   const { profileImage, nickname, userId } = user;
 
@@ -27,7 +51,7 @@ const UserProfile: React.FC = () => {
         justifyContent: 'left',
         alignItems: 'center',
         margin: '20px',
-        marginTop: '40px',
+        marginTop: '80px',
       }}
     >
       <img css={profileimageArea} src={profileImage} alt="Profile" />
@@ -82,6 +106,6 @@ const profileEditOrFollowerBtn = css`
   border-radius: 15px;
   cursor: pointer;
   &:hover {
-    background-color: #878787;
+    background-color: ${colors.primaryGreen};
   }
 `;
