@@ -5,30 +5,7 @@ import Modal from '@/components/Modal';
 import useModalStore from '@/stores/useModalStore';
 import useUserStore from '@/stores/useUserStore';
 import { colors } from '@/styles/colors';
-import Input from '@/components/Input';
-import Button from '@/components/Button';
-
-interface LoginData {
-  userId: string | null;
-  password: string | null;
-}
-
-interface RealUserData {
-  _id: string;
-  userId: string;
-  profileImage: string;
-  nickname: string;
-  password: string;
-  likes: string[];
-  followers: string[];
-  following: string[];
-  myPlaylists: string[];
-}
-
-const storageUserData = localStorage.getItem('userInformation');
-export const realUserData: RealUserData | null = storageUserData
-  ? JSON.parse(storageUserData)
-  : null;
+import useUserDataFetch from '@/hooks/useUserDataFetch';
 
 const Signin: React.FC = () => {
   const signinModal = useModalStore((state) => state.modals);
@@ -63,37 +40,29 @@ const Signin: React.FC = () => {
 
   const children: React.ReactNode = (
     <>
-      <h2 css={{ margin: '40px 0 40px', fontSize: '28px' }}>로그인</h2>
+      <h2 css={{ margin: '40px 0 20px', fontSize: '28px' }}>Login</h2>
       <form css={{ width: '330px' }} onSubmit={(e) => onLogin(e)}>
         <div css={idAndPasswordArea}>
-          <Input css={idAndPassword} ref={idRef} type="text" required />
-          <label>아이디</label>
+          <input css={idAndPassword} ref={idRef} type="text" required />
+          <label>ID</label>
         </div>
         <div css={idAndPasswordArea}>
-          <Input css={idAndPassword} ref={passwordRef} type="password" required />
-          <label>비밀번호</label>
+          <input css={idAndPassword} ref={passwordRef} type="password" required />
+          <label>Password</label>
         </div>
         <div css={{ fontSize: '14px' }}>
           <label
-            css={{
-              cursor: 'pointer',
-              accentColor: `${colors.primaryGreen}`,
-            }}
+            css={{ cursor: 'pointer', accentColor: `${colors.primaryGreen}` }}
             htmlFor="remember"
           >
-            <input
-              css={{ cursor: 'pointer', marginRight: '10px' }}
-              type="checkBox"
-              id="remember"
-              defaultChecked
-            />
-            아이디 기억하기
+            <input css={{ cursor: 'pointer' }} type="checkBox" id="remember" defaultChecked />
+            Remember ID
           </label>
         </div>
         <div>
-          <Button css={submitBtn} type="submit">
-            로그인
-          </Button>
+          <button css={submitBtn} type="submit">
+            Login
+          </button>
         </div>
       </form>
       <p css={{ fontSize: '14px', marginBottom: '40px' }}>
@@ -104,7 +73,7 @@ const Signin: React.FC = () => {
             openSigninModal('signup');
           }}
         >
-          회원가입
+          Sign Up now
         </button>
       </p>
     </>
@@ -124,42 +93,40 @@ export const idAndPasswordArea = css`
   position: relative;
   label {
     position: absolute;
-    top: 14px;
+    top: 30px;
     left: 10px;
+    color: #888;
     transition: all 0.3s ease;
-    color: ${colors.placeHolderGray};
   }
   input:focus + label,
   input:valid + label {
-    top: -20px;
-    color: ${colors.placeHolderGray};
-    font-size: 16px;
+    top: -5px;
+    color: #fff;
+    font-size: 14px;
   }
 `;
-
 export const idAndPassword = css`
   width: 100%;
+  height: 40px;
   border: none;
   border-radius: 10px;
-  margin-bottom: 30px;
+  margin: 15px 0 20px;
   outline: none;
-  padding: 12px;
+  padding: 0 10px;
   box-sizing: border-box;
-  background-color: ${colors.inputGray};
+  background-color: ${colors.white};
 `;
-
 export const modalMovementBtn = css`
-  margin: 20px 0 0 20px;
+  margin-left: 5px;
   background-color: transparent;
   border: none;
   cursor: pointer;
   color: ${colors.primaryGreen};
 `;
-
 export const submitBtn = css`
   width: 100%;
   height: 40px;
-  margin: 15px 0 25px;
+  margin: 5px 0 25px;
   border: none;
   border-radius: 10px;
   background-color: ${colors.primaryGreen};
@@ -168,7 +135,6 @@ export const submitBtn = css`
   font-weight: 600;
   cursor: pointer;
   &:hover {
-    background-color: ${colors.primaryGreen};
-    opacity: 0.8;
+    background-color: #00ffa2e2;
   }
 `;
