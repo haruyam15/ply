@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
 import { useState } from 'react';
-
 import { css } from '@emotion/react';
 import { EllipsisVertical, Pencil, Trash2 } from 'lucide-react';
 
@@ -11,8 +10,7 @@ import Confirm from './Confirm';
 interface MenuDotProps {
   showEdit?: boolean;
   showDelete?: boolean;
-  deleteItem?: (index: number) => void;
-  index?: number;
+  deleteItem?: (id: string) => void; // 타입 수정: (index: number) => void 에서 (id: string) => void로 변경
   playlistDataId?: string; // 삭제할 playlist의 ID
 }
 
@@ -20,8 +18,7 @@ const MenuDot: React.FC<MenuDotProps> = ({
   showEdit = true,
   showDelete = true,
   deleteItem,
-  index,
-  playlistDataId, // 삭제할 playlist의 ID를 받아옴
+  playlistDataId,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
@@ -48,8 +45,8 @@ const MenuDot: React.FC<MenuDotProps> = ({
 
       if (response.ok) {
         console.log('삭제 성공');
-        if (deleteItem && index !== undefined) {
-          deleteItem(index); // 삭제 콜백 실행
+        if (deleteItem && playlistDataId) {
+          deleteItem(playlistDataId); // 삭제 콜백 실행
         }
       } else {
         console.error('삭제 실패:', await response.json());
@@ -92,8 +89,6 @@ const MenuDot: React.FC<MenuDotProps> = ({
           text="정말 삭제하시겠습니까?"
           onConfirm={handleConfirm}
           onClose={handleCloseConfirm}
-          deleteItem={deleteItem}
-          index={index}
         />
       )}
     </div>
