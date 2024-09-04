@@ -4,7 +4,6 @@ import { css } from '@emotion/react';
 import { Link } from 'react-router-dom';
 import useModalStore from '@/stores/useModalStore';
 import useUserStore from '@/stores/useUserStore';
-import useUserStore from '@/stores/useUserStore';
 import { colors } from '@/styles/colors';
 import ProfileEditModal from './ProfileEditModal';
 import axios from 'axios';
@@ -15,8 +14,6 @@ const UserProfile: React.FC = () => {
 
   const user = useUserStore((state) => state.userInformation);
   const setUser = useUserStore((state) => state.setUser);
-  const storageUserData = localStorage.getItem('userInformation');
-  const realUserData = storageUserData ? JSON.parse(storageUserData) : null;
 
   useEffect(() => {
     const fetchProfileData = async () => {
