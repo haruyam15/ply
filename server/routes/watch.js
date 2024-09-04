@@ -43,6 +43,7 @@ const getPlaylistDetails = async (playlistDataId, database) => {
         imgUrl: playlist.imgUrl,
         profileImage: user ? user.profileImage : null,
         userName: user ? user.nickname : null,
+        disclosureStatus: playlist.disclosureStatus,
       },
     };
   } catch (error) {

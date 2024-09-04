@@ -1,50 +1,35 @@
 import { create } from 'zustand';
 import { IUserData } from '@/types/userTypes';
+import { persist } from 'zustand/middleware';
 interface State {
   userInformation: IUserData;
 }
 interface Action {
   setUser: (userData: IUserData) => void;
-  clearUser: () => void;
 }
 
-const useUserStore = create<State & Action>((set) => ({
-  userInformation: {
-    userId: '',
-    password: '',
-    profileImage: '',
-    nickname: '',
-    likes: [],
-    followers: [],
-    following: [],
-    myPlaylists: [],
-  },
-  setUser: (userData) =>
-    set(() => ({
-      userInformation: {
-        userId: userData.userId,
-        password: userData.password,
-        profileImage: userData.profileImage,
-        likes: userData.likes,
-        nickname: userData.nickname,
-        followers: userData.followers,
-        following: userData.following,
-        myPlaylists: userData.myPlaylists,
-      },
-    })),
-  clearUser: () =>
-    set(() => ({
+const useUserStore = create(
+  persist<State & Action>(
+    (set) => ({
       userInformation: {
         userId: '',
         password: '',
         profileImage: '',
-        likes: [],
         nickname: '',
+        likes: [],
         followers: [],
         following: [],
         myPlaylists: [],
       },
-    })),
-}));
+      setUser: (userData: IUserData) =>
+        set(() => ({
+          userInformation: userData,
+        })),
+    }),
+    {
+      name: 'userInformation',
+    },
+  ),
+);
 
 export default useUserStore;

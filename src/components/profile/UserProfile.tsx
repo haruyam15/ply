@@ -7,12 +7,13 @@ import Button from '@/components/Button';
 import Input from '@/components/Input';
 import Modal from '@/components/Modal';
 import useModalStore from '@/stores/useModalStore';
-import useUserStore, { IUser } from '@/stores/useUserStore';
+import useUserStore from '@/stores/useUserStore';
 import { colors } from '@/styles/colors';
 import Confirm, { ConfirmStyles } from '@/components/Confirm';
+import { IUserData } from '@/types/userTypes';
 
 interface ProfileProps {
-  user: IUser;
+  user: IUserData;
 }
 
 export interface RealUserData {
@@ -28,11 +29,8 @@ const UserProfile: React.FC<ProfileProps> = ({ user }) => {
   const profileModal = useModalStore((state) => state.modals);
   const openProfileModal = useModalStore((state) => state.openModal);
   const closeProfileModal = useModalStore((state) => state.closeModal);
-
-  const { setUser } = useUserStore();
+  const setUser = useUserStore((state) => state.setUser);
   const { profileImage, nickname, userId } = user;
-  const storageUserData = localStorage.getItem('userInformation');
-  const realUserData: RealUserData | null = storageUserData ? JSON.parse(storageUserData) : null;
 
   const [newProfileImage, setNewProfileImage] = useState<string>(profileImage);
   const [newNickname, setNewNickname] = useState<string>(nickname);
@@ -74,19 +72,6 @@ const UserProfile: React.FC<ProfileProps> = ({ user }) => {
           following: user.following,
           myPlaylists: user.myPlaylists,
         });
-
-        localStorage.setItem(
-          'userInformation',
-          JSON.stringify({
-            userId,
-            profileImage: newProfileImage,
-            nickname: newNickname,
-            password: newPassword || user.password,
-            followers: user.followers,
-            following: user.following,
-          }),
-        );
-
         handleCloseProfileModal();
       } else {
         console.error(result.message);
@@ -149,7 +134,7 @@ const UserProfile: React.FC<ProfileProps> = ({ user }) => {
             플레이리스트 {user.following?.length || 0}
           </Link>
         </div>
-        {realUserData?.userId === userId ? (
+        {user?.userId === userId ? (
           <button css={profileEditOrFollowerBtn} onClick={handleOpenProfileModal}>
             프로필 수정
           </button>

@@ -6,12 +6,11 @@ import Logout from '@/layout/nav/Logout';
 import NavList from '@/layout/nav/NavList';
 import NavTop from '@/layout/nav/NavTop';
 import useNavStore from '@/stores/useNavStore';
-import { IUserData } from '@/types/userTypes';
+import useUserStore from '@/stores/useUserStore';
 
 function Navbar() {
   const isExpand = useNavStore((state) => state.isExpand);
-  const storageUserData = localStorage.getItem('userInformation');
-  const realUserData: IUserData | null = storageUserData ? JSON.parse(storageUserData) : null;
+  const user = useUserStore((state) => state.userInformation);
 
   return (
     <nav css={nav(isExpand)}>
@@ -21,7 +20,7 @@ function Navbar() {
           <NavList />
           <FollowingFollowers />
           {isExpand && <Banner />}
-          {realUserData ? <Logout /> : null}
+          {user?.userId ? <Logout /> : null}
         </div>
       </div>
     </nav>

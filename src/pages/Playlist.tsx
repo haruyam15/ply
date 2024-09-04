@@ -1,10 +1,10 @@
 /** @jsxImportSource @emotion/react */
 import { useEffect, useState } from 'react';
 import { css } from '@emotion/react';
-
 import SkeletonGridItem from '@/components/SkeletonGridItem';
 import TitleHeader from '@/components/TitleHeader';
 import VideoGridItem from '@/components/VideoGridItem';
+import useUserStore from '@/stores/useUserStore';
 
 interface PlaylistData {
   title: string;
@@ -27,14 +27,13 @@ const PlaylistPage: React.FC = () => {
   const [playlists, setPlaylists] = useState<PlaylistData[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [userInformation, setUserInformation] = useState<UserInformation | null>(null);
+  const user = useUserStore((state) => state.userInformation);
 
-  const userInformationString = localStorage.getItem('userInformation');
   let userId: string | null = null;
 
-  if (userInformationString) {
+  if (user.userId) {
     try {
-      const userInformation = JSON.parse(userInformationString);
-      userId = userInformation.userId;
+      userId = user.userId;
     } catch (e) {
       console.error('로컬 스토리지에서 사용자 정보를 파싱하는 중 오류 발생:', e);
     }
