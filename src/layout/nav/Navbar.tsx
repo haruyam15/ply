@@ -7,6 +7,7 @@ import NavList from '@/layout/nav/NavList';
 import NavTop from '@/layout/nav/NavTop';
 import useNavStore from '@/stores/useNavStore';
 import useUserStore from '@/stores/useUserStore';
+import { colors } from '@/styles/colors';
 
 function Navbar() {
   const isExpand = useNavStore((state) => state.isExpand);
