@@ -1,35 +1,12 @@
 /** @jsxImportSource @emotion/react */
-import { useEffect, useRef, useState } from 'react';
-
+import { useEffect, useRef } from 'react';
 import { css } from '@emotion/react';
-import axios from 'axios';
-
 import Modal from '@/components/Modal';
 import useModalStore from '@/stores/useModalStore';
 import useUserStore from '@/stores/useUserStore';
 import { colors } from '@/styles/colors';
-
-interface LoginData {
-  userId: string | null;
-  password: string | null;
-}
-
-interface RealUserData {
-  _id: string;
-  userId: string;
-  profileImage: string;
-  nickname: string;
-  password: string;
-  likes: string[];
-  followers: string[];
-  following: string[];
-  myPlaylists: string[];
-}
-
-const storageUserData = localStorage.getItem('userInformation');
-export const realUserData: RealUserData | null = storageUserData
-  ? JSON.parse(storageUserData)
-  : null;
+import useUserDataFetch from '@/hooks/useUserDataFetch';
+import { IUserData } from '@/types/userTypes';
 
 const Signin: React.FC = () => {
   const signinModal = useModalStore((state) => state.modals);
@@ -38,63 +15,60 @@ const Signin: React.FC = () => {
   const setUserData = useUserStore((state) => state.setUser);
   const idRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
-  const [loginData, setLoginData] = useState<LoginData>({ userId: null, password: null });
+  const { mutateAsync } = useUserDataFetch();
 
-  const onLogin = (e: React.FormEvent<HTMLFormElement>) => {
+  const storageUserData = localStorage.getItem('userInformation');
+  const realUserData: IUserData | null = storageUserData ? JSON.parse(storageUserData) : null;
+  useEffect(() => {
+    if (realUserData) {
+      const userData = {
+        userId: realUserData.userId,
+        password: realUserData.password,
+        profileImage: realUserData.profileImage,
+        nickname: realUserData.nickname,
+        likes: realUserData.likes,
+        followers: realUserData.followers,
+        following: realUserData.following,
+        myPlaylists: realUserData.myPlaylists,
+      };
+      setUserData(userData);
+    }
+  }, [realUserData, setUserData]);
+
+  const onLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const userId = idRef.current?.value ?? null;
     const password = passwordRef.current?.value ?? null;
-    setLoginData({ userId, password });
-  };
-
-  useEffect(() => {
-    if (loginData.userId && loginData.password) {
-      const fetchUserData = async () => {
-        try {
-          const res = await axios.post('/api/login', {
-            userId: loginData.userId,
-            password: loginData.password,
-          });
-          const userData = res.data.user;
-          if (userData.userId) {
-            setUserData(userData);
-            localStorage.setItem(
-              'userInformation',
-              JSON.stringify({
-                userId: userData.userId,
-                password: userData.password,
-                profileImage: userData.profileImage,
-                nickname: userData.nickname,
-                likes: userData.likes,
-                followers: userData.followers,
-                following: userData.following,
-                myPlaylists: userData.myPlaylists,
-              }),
-            );
-            closeSigninModal('signin');
-            location.reload();
-          }
-        } catch (error) {
-          console.error(error);
+    if (userId && password) {
+      try {
+        const fetchUserData = {
+          userId,
+          password,
+        };
+        const userData = await mutateAsync({ api: 'login', userData: fetchUserData });
+        if (typeof userData !== 'number') {
+          setUserData(userData);
+          localStorage.setItem(
+            'userInformation',
+            JSON.stringify({
+              userId: userData.userId,
+              password: userData.password,
+              profileImage: userData.profileImage,
+              nickname: userData.nickname,
+              likes: userData.likes,
+              followers: userData.followers,
+              following: userData.following,
+              myPlaylists: userData.myPlaylists,
+            }),
+          );
+          closeSigninModal('signin');
+          location.reload();
         }
-      };
-      fetchUserData();
+      } catch (error) {
+        console.error(error);
+      }
     }
-  }, [loginData, setUserData, closeSigninModal]);
-
-  if (realUserData) {
-    const userData = {
-      userId: realUserData.userId,
-      password: realUserData.password,
-      profileImage: realUserData.profileImage,
-      nickname: realUserData.nickname,
-      likes: realUserData.likes,
-      followers: realUserData.followers,
-      following: realUserData.following,
-      myPlaylists: realUserData.myPlaylists,
-    };
-    setUserData(userData);
-  }
+  };
 
   const children: React.ReactNode = (
     <>

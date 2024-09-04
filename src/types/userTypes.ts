@@ -5,10 +5,10 @@ export interface IUserData {
   password: string;
   profileImage: string;
   nickname: string;
-  like: string[];
+  likes: string[];
   following: FollowingFollowers[];
   followers: FollowingFollowers[];
-  myplaylist: IPlaylist[];
+  myPlaylists: IPlaylist[];
 }
 
 export interface IUserInformation {
