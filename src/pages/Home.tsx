@@ -42,12 +42,16 @@ const Home: React.FC = () => {
     if (user.userId) {
       try {
         fetchUserInformation(user.userId);
-        fetchTimelineData(user.userId);
-        fetchExploreData(); // 탐색 데이터 가져오기
+        fetchTimelineData(user.userId); // 로그인한 경우에만 타임라인 데이터 가져오기
       } catch (e) {
         console.error('로컬 스토리지에서 사용자 정보를 파싱하는 중 오류 발생:', e);
       }
+    } else {
+      setLoading(false); // 로그인하지 않은 경우에도 로딩 상태 종료
     }
+
+    // 탐색 데이터는 로그인 여부와 관계없이 항상 가져오기
+    fetchExploreData();
 
     const handleScroll = () => {
       const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
@@ -165,18 +169,50 @@ const Home: React.FC = () => {
         </Slider>
       </div>
 
+      {/* 타임라인 섹션을 조건부로 렌더링 */}
+      {user.userId && (
+        <>
+          <div css={TimeLineStyle}>
+            <div>타임라인</div>
+            <button onClick={navigateToTimeline} css={SeeMore}>
+              더보기
+            </button>
+          </div>
+
+          <div css={gridContainerStyle}>
+            {playlists.slice(0, visibleItems).map((item, index) => (
+              <VideoGridItem
+                key={index}
+                videoId={item.id}
+                title={item.title}
+                user={item.userId}
+                showDelete={true}
+                showEdit={true}
+                tags={item.tags}
+                profileImage={userInformation?.profileImage || ''}
+                userName={item.userId}
+                userId={item.userId}
+                imgUrl={item.imgUrl[0]}
+                videoCount={item.videoCount}
+              />
+            ))}
+            {loading &&
+              !playlists.length &&
+              Array.from({ length: 8 }).map((_, index) => <SkeletonGridItem key={index} />)}
+          </div>
+        </>
+      )}
+
+      {/* 탐색 섹션은 항상 표시 */}
       <div css={TimeLineStyle}>
-        <div>타임라인</div>
-        <button onClick={navigateToTimeline} css={SeeMore}>
-          더보기
-        </button>
+        <div>탐색</div>
       </div>
 
       <div css={gridContainerStyle}>
-        {playlists.slice(0, visibleItems).map((item, index) => (
+        {exploreData.slice(0, exploreVisibleItems).map((item, index) => (
           <VideoGridItem
             key={index}
-            videoId={item.id} // imgUrl에서 videoId 추출
+            videoId={item.id}
             title={item.title}
             user={item.userId}
             showDelete={true}
@@ -186,32 +222,6 @@ const Home: React.FC = () => {
             userName={item.userId}
             userId={item.userId}
             imgUrl={item.imgUrl[0]}
-            videoCount={item.videoCount}
-          />
-        ))}
-        {loading &&
-          !playlists.length &&
-          Array.from({ length: 8 }).map((_, index) => <SkeletonGridItem key={index} />)}
-      </div>
-
-      <div css={TimeLineStyle}>
-        <div>탐색</div>
-      </div>
-
-      <div css={gridContainerStyle}>
-        {exploreData.slice(0, exploreVisibleItems).map((item, index) => (
-          <VideoGridItem
-            key={index}
-            videoId={item.id} // imgUrl에서 videoId 추출
-            title={item.title}
-            user={item.userId}
-            showDelete={true}
-            showEdit={true}
-            tags={item.tags}
-            profileImage={userInformation?.profileImage || ''}
-            userName={item.userId}
-            userId={item.userId}
-            imgUrl={item.imgUrl[0]} // imgUrl 배열에서 첫 번째 요소 사용
             videoCount={item.videoCount}
           />
         ))}
@@ -299,11 +309,11 @@ const SeeMore = css`
 
 const gridContainerStyle = css`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* 가로로 자동 조정 */
-  grid-auto-rows: minmax(250px, auto); /* 세로로 자동 조정 */
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-auto-rows: minmax(250px, auto);
   gap: 20px;
   padding: 20px;
-  width: 100%; /* 그리드 컨테이너의 너비를 100%로 설정 */
+  width: 100%;
   box-sizing: border-box;
 
   @media (min-width: 600px) {
