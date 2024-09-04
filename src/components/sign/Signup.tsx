@@ -1,6 +1,5 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 /** @jsxImportSource @emotion/react */
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import Modal from '@/components/Modal';
@@ -16,10 +15,11 @@ import Input from '@/components/Input';
 import Button from '@/components/Button';
 
 import 'react-toastify/dist/ReactToastify.css';
-interface SignupData {
-  nickname: string | null;
+import useUserDataFetch from '@/hooks/useUserDataFetch';
+export interface SignupData {
+  nickname?: string | null;
   userId: string | null;
-  password: string | null;
+  password?: string | null;
 }
 
 const Signup: React.FC = () => {
@@ -34,6 +34,7 @@ const Signup: React.FC = () => {
   const nameRef = useRef<HTMLInputElement>(null);
   const idRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
+  const { mutateAsync } = useUserDataFetch();
 
   const onSignup = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -50,12 +51,13 @@ const Signup: React.FC = () => {
   const addNewUser = async () => {
     if (newUser.userId && newUser.nickname && newUser.password && checkbox?.checked) {
       try {
-        const res = await axios.post('/api/register', {
+        const userData = {
           userId: newUser.userId,
           nickname: newUser.nickname,
           password: newUser.password,
-        });
-        if (res.status === 201) {
+        };
+        const res = await mutateAsync({ api: 'register', userData });
+        if (res === 201) {
           toast.success('가입이 완료되었습니다.');
           openSigninModal('signin');
         }
@@ -66,38 +68,33 @@ const Signup: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    const validation = async () => {
-      if (newUser.userId && !checkbox?.checked && signinModal.modalState) {
-        toast.error('모두 확인하였는지 체크해주세요.');
-        setIsSubmitting(false);
-        return;
-      } else {
-        try {
-          const res = await axios.post('/api/validate', {
-            userId: newUser.userId,
-            nickname: newUser.nickname,
-          });
-          if (res.status === 200) {
-            addNewUser();
-          }
-        } catch (error) {
-          if (axios.isAxiosError(error)) {
-            if (error.response && error.response.status === 400) {
-              const { field } = error.response.data;
-              if (field === 'userId') {
-                toast.error('중복된 ID 입니다.');
-              } else if (field === 'nickname') {
-                toast.error('중복된 닉네임입니다.');
-              }
+  const validation = async () => {
+    if (newUser.nickname && newUser.userId && !checkbox?.checked && signinModal.modalState) {
+      toast.error('모두 확인하였는지 체크해주세요.');
+    } else {
+      try {
+        const userData = {
+          userId: newUser.userId,
+          nickname: newUser.nickname,
+        };
+        const res = await mutateAsync({ api: 'validate', userData });
+        if (res === 200) {
+          addNewUser();
+        }
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          if (error.response && error.response.status === 400) {
+            const { field } = error.response.data;
+            if (field === 'userId') {
+              toast.error('중복된 ID 입니다.');
+            } else if (field === 'nickname') {
+              toast.error('중복된 닉네임입니다.');
             }
           }
         }
       }
-      setIsSubmitting(false);
-    };
-    validation();
-  }, [isSubmitting]);
+    }
+  };
 
   const children: React.ReactNode = (
     <>
@@ -129,7 +126,7 @@ const Signup: React.FC = () => {
             모두 확인 하셨습니까?
           </label>
         </div>
-        <Button css={submitBtn} type="submit">
+        <Button css={submitBtn} type="submit" onClick={validation}>
           가입하기
         </Button>
       </form>

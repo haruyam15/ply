@@ -1,17 +1,16 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-
-import { realUserData } from '@/components/sign/Signin';
 import Banner from '@/layout/nav/Banner';
 import FollowingFollowers from '@/layout/nav/FollowingFollowers';
 import Logout from '@/layout/nav/Logout';
 import NavList from '@/layout/nav/NavList';
 import NavTop from '@/layout/nav/NavTop';
 import useNavStore from '@/stores/useNavStore';
-import { colors } from '@/styles/colors';
+import useUserStore from '@/stores/useUserStore';
 
 function Navbar() {
   const isExpand = useNavStore((state) => state.isExpand);
+  const user = useUserStore((state) => state.userInformation);
 
   return (
     <nav css={nav(isExpand)}>
@@ -21,7 +20,7 @@ function Navbar() {
           <NavList />
           <FollowingFollowers />
           {isExpand && <Banner />}
-          {realUserData ? <Logout /> : null}
+          {user?.userId ? <Logout /> : null}
         </div>
       </div>
     </nav>

@@ -13,6 +13,7 @@ interface MenuDotProps {
   showDelete?: boolean;
   deleteItem?: (index: number) => void;
   index?: number;
+  playlistDataId?: string; // 삭제할 playlist의 ID
 }
 
 const MenuDot: React.FC<MenuDotProps> = ({
@@ -20,6 +21,7 @@ const MenuDot: React.FC<MenuDotProps> = ({
   showDelete = true,
   deleteItem,
   index,
+  playlistDataId, // 삭제할 playlist의 ID를 받아옴
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
@@ -38,8 +40,25 @@ const MenuDot: React.FC<MenuDotProps> = ({
     setIsConfirmOpen(true);
   };
 
-  const handleConfirm = () => {
-    setIsConfirmOpen(false);
+  const handleConfirm = async () => {
+    try {
+      const response = await fetch(`/api/playlistDelete/${playlistDataId}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        console.log('삭제 성공');
+        if (deleteItem && index !== undefined) {
+          deleteItem(index); // 삭제 콜백 실행
+        }
+      } else {
+        console.error('삭제 실패:', await response.json());
+      }
+    } catch (error) {
+      console.error('삭제 요청 중 오류 발생:', error);
+    } finally {
+      setIsConfirmOpen(false);
+    }
   };
 
   const handleCloseConfirm = () => {

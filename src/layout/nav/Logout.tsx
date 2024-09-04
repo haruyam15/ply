@@ -9,12 +9,11 @@ import { colors } from '@/styles/colors';
 
 function Logout() {
   const isExpand = useNavStore((state) => state.isExpand);
-  const clearUserData = useUserStore((state) => state.clearUser);
+  const clearStoreage = useUserStore.persist.clearStorage;
   const navigate = useNavigate();
 
   const handleClick = () => {
-    clearUserData();
-    localStorage.removeItem('userInformation');
+    clearStoreage();
     navigate('/');
     location.reload();
   };

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { useRef, useEffect, useState } from 'react';
@@ -10,53 +11,64 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import useNewPlaylist from '@/hooks/useNewPlaylist';
 import { PlaylistDataStore } from '@/types/playlistTypes';
-import { useParams } from 'react-router-dom';
-import axios from 'axios';
+import { useNavigate, useParams } from 'react-router-dom';
 import forkVideoId from '@/utils/forkVideoId';
-import { useMultipleYoutubeFetch } from '@/hooks/useYoutubeFetch';
+import useYoutubeFetch from '@/hooks/useYoutubeFetch';
+import useWatchDataFetch from '@/hooks/useWatchDataFetch';
 
 const CreatePlaylist = () => {
-  const [videoIdList, setVideoIdList] = useState([]);
-  const [userPlyData, setUserPlyData] = useState(null);
+  const [videoIdList, setVideoIdList] = useState('');
   const userData = useUserStore((state) => state.userInformation);
   const addedPlaylist = useYoutubeDataStore((state) => state.youTubelistData);
   const setYouTubelistData = useYoutubeDataStore((state) => state.setYouTubelistData);
   const playlistDataToAdd = useRef<{ getPlaylistData: () => PlaylistDataStore }>(null);
-  const { id } = useParams() as { id: string };
+  const { playlistId } = useParams() as { playlistId: string };
   const { mutate } = useNewPlaylist();
-
-  const { data: youtubeResults, isLoading } = useMultipleYoutubeFetch(videoIdList);
+  const navigate = useNavigate();
+  const { data: youtubeResults, isLoading: isYoutubeLoading } = useYoutubeFetch(
+    videoIdList,
+    !!videoIdList,
+  );
+  const {
+    data: userPlyData,
+    error: fetchUserPlyDataError,
+    isLoading: isUserPlyLoading,
+  } = useWatchDataFetch(playlistId, 'Edit', !!playlistId);
 
   useEffect(() => {
-    if (!isLoading && youtubeResults) {
-      setVideoIdList([]);
-      youtubeResults.forEach((result) => {
+    if (!isYoutubeLoading && youtubeResults?.items) {
+      setVideoIdList('');
+      youtubeResults.items.forEach((result) => {
         const youtubedata: IYoutubelistData = {
-          id: result?.items[0].id,
-          title: result?.items[0].snippet.title,
-          link: [`https://www.youtube.com/watch?v=${result?.items[0].id}`],
-          imgUrl: [`${result?.items[0].snippet.thumbnails.medium.url}`],
-          channelTitle: result?.items[0].snippet.channelTitle,
+          id: result?.id,
+          title: result?.snippet.title,
+          link: [`https://www.youtube.com/watch?v=${result?.id}`],
+          imgUrl: [`${result?.snippet.thumbnails.medium.url}`],
+          channelTitle: result?.snippet.channelTitle,
         };
         setYouTubelistData(youtubedata);
       });
     }
-  }, [youtubeResults, isLoading, setYouTubelistData]);
+  }, [youtubeResults]);
 
   useEffect(() => {
-    const fetchPlaylistData = async () => {
-      if (id) {
-        const res = await axios.get(`/api/watch/${id}`);
-        const data = res.data;
-        if (data) {
-          const youtubeIdList = data.link?.map((url: string) => forkVideoId(url));
-          setVideoIdList(youtubeIdList);
-          setUserPlyData(data);
-        }
+    if (playlistId) {
+      if (userPlyData) {
+        const arrLinkToString = userPlyData.link
+          ?.map((url: string) => forkVideoId(url))
+          .filter(Boolean)
+          .join(',');
+        setVideoIdList(arrLinkToString);
+      } else if (fetchUserPlyDataError) {
+        toast.error('플레이리스트 정보를 불러오는데 실패했습니다.');
+        setTimeout(() => {
+          history.back();
+        }, 2000);
       }
-    };
-    fetchPlaylistData();
-  }, [id]);
+    }
+  }, [playlistId]);
+
+  if (isUserPlyLoading) return null;
 
   const handleValidation = (type: string) => {
     if (playlistDataToAdd.current?.getPlaylistData()?.title === '') {
@@ -70,7 +82,7 @@ const CreatePlaylist = () => {
     }
   };
 
-  const fetchCreatePlaylistData = async (type: string) => {
+  const fetchCreatePlaylistData = (type: string) => {
     if (playlistDataToAdd.current?.getPlaylistData()) {
       const playlistData = {
         userId: userData.userId,
@@ -82,14 +94,14 @@ const CreatePlaylist = () => {
         imgUrl: addedPlaylist.map((item) => item.imgUrl?.[0]),
       };
       try {
-        mutate({ playlistData, type, id });
+        mutate({ playlistData, type, playlistId });
         if (type === '추가') {
           toast.success('플레이리스트가 생성되었습니다.');
         } else if (type === '수정') {
           toast.success('플레이리스트가 수정되었습니다.');
         }
         setTimeout(() => {
-          history.back();
+          navigate('/playlist');
         }, 2000);
       } catch (error) {
         toast.error('플레이리스트 업데이트 중 오류가 발생하였습니다. 다시 시도해주세요.');
@@ -97,6 +109,7 @@ const CreatePlaylist = () => {
       }
     }
   };
+
   return (
     <div css={{ margin: '5px 15px 0 0' }}>
       <h2 css={{ fontSize: '22px', marginBottom: '20px' }}>새 플레이리스트 추가</h2>
@@ -110,7 +123,7 @@ const CreatePlaylist = () => {
               size="md"
               background={true}
               onClick={() => {
-                if (id) {
+                if (playlistId) {
                   handleValidation('수정');
                 } else {
                   handleValidation('추가');

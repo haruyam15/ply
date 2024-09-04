@@ -5,10 +5,10 @@ import { useNavigate } from 'react-router-dom';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-
 import SkeletonGridItem from '@/components/SkeletonGridItem';
 import VideoGridItem from '@/components/VideoGridItem';
 import { colors } from '@/styles/colors';
+import useUserStore from '@/stores/useUserStore';
 
 interface PlaylistData {
   title: string;
@@ -16,6 +16,8 @@ interface PlaylistData {
   tags: string[];
   imgUrl: string[];
   disclosureStatus: boolean;
+  id: string;
+  videoCount: number;
 }
 
 interface UserInformation {
@@ -34,17 +36,13 @@ const Home: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [userInformation, setUserInformation] = useState<UserInformation | null>(null);
   const [hasMoreExplore, setHasMoreExplore] = useState(true); // 탐색 데이터의 무한 스크롤 상태 관리
+  const user = useUserStore((state) => state.userInformation);
 
   useEffect(() => {
-    const userInformationString = localStorage.getItem('userInformation');
-    let userId: string | null = null;
-
-    if (userInformationString) {
+    if (user.userId) {
       try {
-        const userInformation = JSON.parse(userInformationString);
-        userId = userInformation.userId as string;
-        fetchUserInformation(userId);
-        fetchTimelineData(userId);
+        fetchUserInformation(user.userId);
+        fetchTimelineData(user.userId);
         fetchExploreData(); // 탐색 데이터 가져오기
       } catch (e) {
         console.error('로컬 스토리지에서 사용자 정보를 파싱하는 중 오류 발생:', e);
@@ -178,7 +176,7 @@ const Home: React.FC = () => {
         {playlists.slice(0, visibleItems).map((item, index) => (
           <VideoGridItem
             key={index}
-            videoId={item.imgUrl[0].split('/')[4]} // imgUrl에서 videoId 추출
+            videoId={item.id} // imgUrl에서 videoId 추출
             title={item.title}
             user={item.userId}
             showDelete={true}
@@ -188,6 +186,7 @@ const Home: React.FC = () => {
             userName={item.userId}
             userId={item.userId}
             imgUrl={item.imgUrl[0]}
+            videoCount={item.videoCount}
           />
         ))}
         {loading &&
@@ -203,7 +202,7 @@ const Home: React.FC = () => {
         {exploreData.slice(0, exploreVisibleItems).map((item, index) => (
           <VideoGridItem
             key={index}
-            videoId={item.imgUrl[0].split('/')[4]} // imgUrl에서 videoId 추출
+            videoId={item.id} // imgUrl에서 videoId 추출
             title={item.title}
             user={item.userId}
             showDelete={true}
@@ -213,6 +212,7 @@ const Home: React.FC = () => {
             userName={item.userId}
             userId={item.userId}
             imgUrl={item.imgUrl[0]} // imgUrl 배열에서 첫 번째 요소 사용
+            videoCount={item.videoCount}
           />
         ))}
         {loading &&

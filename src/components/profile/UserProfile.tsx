@@ -4,6 +4,7 @@ import { css } from '@emotion/react';
 import { Link } from 'react-router-dom';
 import useModalStore from '@/stores/useModalStore';
 import useUserStore from '@/stores/useUserStore';
+import useUserStore from '@/stores/useUserStore';
 import { colors } from '@/styles/colors';
 import ProfileEditModal from './ProfileEditModal';
 import axios from 'axios';
@@ -74,7 +75,7 @@ const UserProfile: React.FC = () => {
             플레이리스트 {user.myPlaylists?.length || 0}
           </Link>
         </div>
-        {realUserData?.userId === userId ? (
+        {user?.userId === userId ? (
           <button css={profileEditOrFollowerBtn} onClick={handleOpenProfileModal}>
             프로필 수정
           </button>
