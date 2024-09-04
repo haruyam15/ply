@@ -4,6 +4,7 @@ import { persist } from 'zustand/middleware';
 interface State {
   userInformation: IUserData;
 }
+
 interface Action {
   setUser: (userData: IUserData) => void;
 }

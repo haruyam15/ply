@@ -122,7 +122,7 @@ const Timeline: React.FC = () => {
       <TitleHeader
         profileImage={userInformation?.profileImage || '없음'}
         nickname={userInformation?.userName || '손성오'}
-        actionText="Timeline"
+        actionText="타임라인"
       />
 
       {error && <div css={errorStyle}>{error}</div>}

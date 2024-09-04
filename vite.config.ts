@@ -16,4 +16,5 @@ export default defineConfig({
   resolve: {
     alias: [{ find: '@', replacement: '/src' }],
   },
+  assetsInclude: ['**/*.woff', '**/*.woff2'],
 });

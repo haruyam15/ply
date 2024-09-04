@@ -226,6 +226,7 @@ const Home: React.FC = () => {
 // 스타일 정의
 const containerStyle = css`
   width: 100%;
+  background-color: ${colors.black};
   margin: 0 auto;
   margin-top: 40px;
 `;
@@ -287,8 +288,8 @@ const SeeMore = css`
   border: none;
   background: none;
   padding: 4px;
-  color: inherit;
-  font: inherit;
+  color: ${colors.lightestGray};
+  font-size: 16px;
 
   &:hover {
     background-color: ${colors.darkestGray};

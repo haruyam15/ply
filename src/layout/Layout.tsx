@@ -7,6 +7,7 @@ import useResponsiveNav from '@/hooks/useResponsivNav';
 import Header from '@/layout/header/Header';
 import Navbar from '@/layout/nav/Navbar';
 import useNavStore from '@/stores/useNavStore';
+import { colors } from '@/styles/colors';
 
 function Layout() {
   const isExpand = useNavStore((state) => state.isExpand);
@@ -29,6 +30,7 @@ export default Layout;
 const wrap = css`
   min-height: 100vh;
   min-width: 950px;
+  background-color: ${colors.black};
 `;
 
 const container = (isExpand: boolean) => css`

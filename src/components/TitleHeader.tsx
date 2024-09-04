@@ -22,9 +22,8 @@ const TitleHeader: React.FC<TitleHeaderProps> = ({
       <div css={headerStyle}>
         <div css={textContainerStyle}>
           <img src={profileImage} alt={`${nickname} 프로필 이미지`} css={profileImageStyle} />
-          <span css={nicknameStyle}>
-            {nickname}님의 {actionText}
-          </span>
+          <span css={nicknameStyle}>{nickname}</span>
+          <div css={actionTextStyle}>님의 {actionText}</div>
         </div>
         {showAddPlaylistButton && ( // showAddPlaylistButton이 true일 때만 버튼 표시
           <button css={addButtonStyle}>
@@ -66,8 +65,15 @@ const profileImageStyle = css`
 
 const nicknameStyle = css`
   font-size: 18px;
-  font-weight: bold;
-  color: #ffffff;
+  font-weight: 500;
+  color: ${colors.white};
+`;
+
+const actionTextStyle = css`
+  font-size: 16px;
+  color: ${colors.lightestGray};
+  margin-left: 4px;
+  margin-top: 4px;
 `;
 
 const addButtonStyle = css`
@@ -89,18 +95,20 @@ const addButtonStyle = css`
 
 const iconStyle = css`
   margin-right: 4px; /* 아이콘과 텍스트 사이 간격 */
+  color: ${colors.lightestGray};
 `;
 
 const buttonTextStyle = css`
-  font-size: 18px; /* 텍스트 스타일을 닉네임과 맞춤 */
+  margin-right: 10px;
+  font-size: 16px; /* 텍스트 스타일을 닉네임과 맞춤 */
   font-weight: bold;
-  color: #ffffff;
+  color: ${colors.lightestGray};
 `;
 
 const lineStyle = css`
   width: 100%;
   height: 1px;
-  background-color: #ffffff;
+  background-color: ${colors.borderGray};
   margin-top: 8px;
 `;
 

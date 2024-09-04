@@ -4,7 +4,7 @@ import { X } from 'lucide-react';
 import { colors } from '@/styles/colors';
 
 interface TagsProps {
-  tags: string[];
+  tags?: string[];
   deletable?: boolean;
   position?: boolean;
   onClick?: (index: number) => void;
@@ -12,7 +12,7 @@ interface TagsProps {
 function Tags({ tags = [], deletable = false, position = false, onClick }: TagsProps) {
   return (
     <ul css={tagWrap(deletable, position)}>
-      {tags.map((tag, index) => (
+      {tags?.map((tag, index) => (
         <li key={index}>
           {tag}
           {deletable && onClick && (

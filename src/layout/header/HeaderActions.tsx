@@ -45,7 +45,8 @@ const headerActions = css`
   height: 100%;
   display: flex;
   justify-content: flex-end;
-  padding-right: 20px;
+  margin-top: 3px;
+  padding-right: 30px;
   box-sizing: border-box;
   align-items: center;
 `;

@@ -21,7 +21,7 @@ function Logout() {
     <div css={logout(isExpand)}>
       <button className="btn-logout" onClick={handleClick}>
         <LogOut />
-        <span>Logout</span>
+        <span>로그아웃</span>
       </button>
     </div>
   );

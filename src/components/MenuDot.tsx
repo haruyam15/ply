@@ -73,13 +73,13 @@ const MenuDot: React.FC<MenuDotProps> = ({
       {isOpen && (
         <div css={dropdownMenuStyle}>
           {showEdit && (
-            <div css={menuItemStyle} onClick={handleEdit}>
+            <div css={editItemStyle} onClick={handleEdit}>
               <Pencil />
               <p css={menuTextStyle}>수정</p>
             </div>
           )}
           {showDelete && (
-            <div css={menuItemStyle} onClick={handleDelete}>
+            <div css={deleteItemStyle} onClick={handleDelete}>
               <Trash2 />
               <p css={menuTextStyle}>삭제</p>
             </div>
@@ -115,24 +115,38 @@ const dropdownMenuStyle = css`
   top: 30px;
   right: 0;
   background-color: ${colors.lightblack};
-  border: 1px solid #ddd;
+  border: 1px solid ${colors.borderGray};
   border-radius: 5px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   z-index: 1000;
   min-width: 80px;
 `;
 
-const menuItemStyle = css`
+const editItemStyle = css`
   display: flex;
   justify-content: space-between;
   padding: 8px 12px;
   cursor: pointer;
   font-size: 12px;
   color: ${colors.white};
-  border-bottom: 1px solid #6d6d6d;
+  border-bottom: 1px solid #4a4a4a;
 
   &:hover {
-    background-color: ${colors.lightGray};
+    background-color: ${colors.gray};
+    border-radius: 5px 5px 0 0;
+  }
+`;
+
+const deleteItemStyle = css`
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 12px;
+  color: ${colors.white};
+
+  &:hover {
+    background-color: ${colors.gray};
+    border-radius: 0 0 5px 5px;
   }
 `;
 

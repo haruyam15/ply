@@ -116,7 +116,7 @@ const Like: React.FC = () => {
       <TitleHeader
         profileImage={userInformation?.profileImage || '없음'}
         nickname={userInformation?.userName || '손성오'}
-        actionText="Liked Playlists"
+        actionText="좋아요한 플레이리스트"
       />
 
       {error && <div css={errorStyle}>{error}</div>}

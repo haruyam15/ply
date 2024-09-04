@@ -12,4 +12,5 @@ export const colors = {
   white: '#FFFFFF',
   inputGray: '#333333',
   placeHolderGray: '#888888',
+  borderGray: '#4a4a4a',
 };

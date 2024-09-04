@@ -7,6 +7,7 @@ import NavList from '@/layout/nav/NavList';
 import NavTop from '@/layout/nav/NavTop';
 import useNavStore from '@/stores/useNavStore';
 import useUserStore from '@/stores/useUserStore';
+import { colors } from '@/styles/colors';
 
 function Navbar() {
   const isExpand = useNavStore((state) => state.isExpand);
@@ -39,7 +40,7 @@ const nav = (isExpand: boolean) => css`
   z-index: 12000;
 
   .nav-inner {
-    background-color: #141517;
+    background-color: ${colors.black};
     display: flex;
     flex-direction: column;
     height: 100%;

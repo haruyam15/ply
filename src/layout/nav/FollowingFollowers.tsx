@@ -1,8 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { useState } from 'react';
-
 import { css } from '@emotion/react';
-
 import { If } from '@/components/IfElse';
 import FList from '@/layout/nav/FList';
 import useNavStore from '@/stores/useNavStore';
@@ -15,6 +13,7 @@ const FOLLOWERS = 'followers';
 function FollowingFollowers() {
   const isExpand = useNavStore((state) => state.isExpand);
   const [selected, setSelected] = useState<Tab>(FOLLOWERS);
+
   const handleTab = (e: React.MouseEvent<HTMLButtonElement>) => {
     const target = e.target as HTMLButtonElement;
     setSelected(target.value.toLowerCase() as Tab);
@@ -40,11 +39,11 @@ function FollowingFollowers() {
         </If.Then>
         <If.Else>
           <div className="f-wrap">
-            <p>Following</p>
+            <p>팔로잉</p>
             <FList tab={selected} />
           </div>
           <div className="f-wrap">
-            <p>Followers</p>
+            <p>팔로워</p>
             <FList tab={selected} />
           </div>
         </If.Else>
@@ -62,7 +61,7 @@ const tabWrap = css`
   box-sizing: border-box;
 
   &::before {
-    background-color: ${colors.darkestGray};
+    background-color: ${colors.borderGray};
     content: '';
     height: 1px;
     left: 21px;
@@ -81,30 +80,28 @@ const tabWrap = css`
       position: relative;
     }
     li:hover {
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 6px;
       cursor: pointer;
     }
     button {
       width: 100%;
       display: block;
       padding: 10px 10px 13px;
-      color: ${colors.gray};
+      color: ${colors.lightestGray};
     }
     button:hover {
       color: ${colors.lightestGray};
     }
     button[aria-selected='true'] {
-      color: ${colors.lightestGray};
+      color: ${colors.primaryGreen};
     }
     button[aria-selected='true']::after {
       content: '';
-      height: 3px;
+      height: 2px;
       position: absolute;
       left: 10px;
       right: 10px;
       bottom: 1px;
-      background-color: ${colors.white};
+      background-color: ${colors.primaryGreen};
       border-radius: 2px;
       box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
     }
