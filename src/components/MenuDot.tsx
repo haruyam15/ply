@@ -23,7 +23,7 @@ const MenuDot: React.FC<MenuDotProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
-  const { loading, error, deletePlaylist } = useDeletePlaylist();
+  const { error, deletePlaylist } = useDeletePlaylist();
 
   const toggleMenu = () => {
     setIsOpen((prev) => !prev);
