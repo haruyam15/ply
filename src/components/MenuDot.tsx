@@ -1,17 +1,18 @@
-/** @jsxImportSource @emotion/react */
+// components/MenuDot.tsx
 
+/** @jsxImportSource @emotion/react */
 import { useState } from 'react';
 import { css } from '@emotion/react';
 import { EllipsisVertical, Pencil, Trash2 } from 'lucide-react';
-
-import { colors } from '@/styles/colors';
+import useDeletePlaylist from '@/hooks/useDeletePlaylist';
 import Confirm from './Confirm';
+import { colors } from '@/styles/colors';
 
 interface MenuDotProps {
   showEdit?: boolean;
   showDelete?: boolean;
-  deleteItem?: (id: string) => void; // 타입 수정: (index: number) => void 에서 (id: string) => void로 변경
-  playlistDataId?: string; // 삭제할 playlist의 ID
+  deleteItem?: (id: string) => void;
+  playlistDataId?: string;
 }
 
 const MenuDot: React.FC<MenuDotProps> = ({
@@ -22,6 +23,7 @@ const MenuDot: React.FC<MenuDotProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const { loading, error, deletePlaylist } = useDeletePlaylist();
 
   const toggleMenu = () => {
     setIsOpen((prev) => !prev);
@@ -37,25 +39,15 @@ const MenuDot: React.FC<MenuDotProps> = ({
     setIsConfirmOpen(true);
   };
 
-  const handleConfirm = async () => {
-    try {
-      const response = await fetch(`/api/playlistDelete/${playlistDataId}`, {
-        method: 'DELETE',
-      });
-
-      if (response.ok) {
-        console.log('삭제 성공');
-        if (deleteItem && playlistDataId) {
-          deleteItem(playlistDataId); // 삭제 콜백 실행
+  const handleConfirm = () => {
+    if (playlistDataId) {
+      deletePlaylist(playlistDataId, () => {
+        if (deleteItem) {
+          deleteItem(playlistDataId);
         }
-      } else {
-        console.error('삭제 실패:', await response.json());
-      }
-    } catch (error) {
-      console.error('삭제 요청 중 오류 발생:', error);
-    } finally {
-      setIsConfirmOpen(false);
+      });
     }
+    setIsConfirmOpen(false);
   };
 
   const handleCloseConfirm = () => {
@@ -91,6 +83,7 @@ const MenuDot: React.FC<MenuDotProps> = ({
           onClose={handleCloseConfirm}
         />
       )}
+      {error && <p css={errorTextStyle}>{error}</p>}
     </div>
   );
 };
@@ -147,6 +140,12 @@ const deleteItemStyle = css`
 
 const menuTextStyle = css`
   margin-top: 8px;
+`;
+
+const errorTextStyle = css`
+  color: red;
+  font-size: 12px;
+  margin-top: 5px;
 `;
 
 export default MenuDot;
