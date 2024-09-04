@@ -2,8 +2,8 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { useRef, useEffect, useState } from 'react';
-import AddPlaylist from '@/components/createPlaylist/AddPlaylist';
-import PlaylistChart from '@/components/createPlaylist/PlaylistChart';
+import AddPlaylist from '@/components/managePlaylist/AddPlaylist';
+import PlaylistChart from '@/components/managePlaylist/PlaylistChart';
 import Button from '@/components/Button';
 import useYoutubeDataStore, { IYoutubelistData } from '@/stores/useYoutubeDataStore';
 import useUserStore from '@/stores/useUserStore';
@@ -16,7 +16,7 @@ import forkVideoId from '@/utils/forkVideoId';
 import useYoutubeFetch from '@/hooks/useYoutubeFetch';
 import useWatchDataFetch from '@/hooks/useWatchDataFetch';
 
-const CreatePlaylist = () => {
+const ManagePlaylist = () => {
   const [videoIdList, setVideoIdList] = useState('');
   const userData = useUserStore((state) => state.userInformation);
   const addedPlaylist = useYoutubeDataStore((state) => state.youTubelistData);
@@ -25,50 +25,41 @@ const CreatePlaylist = () => {
   const { playlistId } = useParams() as { playlistId: string };
   const { mutate } = useNewPlaylist();
   const navigate = useNavigate();
-  const { data: youtubeResults, isLoading: isYoutubeLoading } = useYoutubeFetch(
-    videoIdList,
-    !!videoIdList,
+  const { data: youtubeResults } = useYoutubeFetch(videoIdList, !!videoIdList);
+  const { data: userPlyData, error: fetchUserPlyDataError } = useWatchDataFetch(
+    playlistId,
+    'Edit',
+    !!playlistId,
   );
-  const {
-    data: userPlyData,
-    error: fetchUserPlyDataError,
-    isLoading: isUserPlyLoading,
-  } = useWatchDataFetch(playlistId, 'Edit', !!playlistId);
 
   useEffect(() => {
-    if (!isYoutubeLoading && youtubeResults?.items) {
+    youtubeResults?.items.forEach((data) => {
+      const youtubedata: IYoutubelistData = {
+        id: data?.id,
+        title: data?.snippet.title,
+        link: [`https://www.youtube.com/watch?v=${data?.id}`],
+        imgUrl: [`${data?.snippet.thumbnails.medium.url}`],
+        channelTitle: data?.snippet.channelTitle,
+      };
+      setYouTubelistData(youtubedata);
       setVideoIdList('');
-      youtubeResults.items.forEach((result) => {
-        const youtubedata: IYoutubelistData = {
-          id: result?.id,
-          title: result?.snippet.title,
-          link: [`https://www.youtube.com/watch?v=${result?.id}`],
-          imgUrl: [`${result?.snippet.thumbnails.medium.url}`],
-          channelTitle: result?.snippet.channelTitle,
-        };
-        setYouTubelistData(youtubedata);
-      });
-    }
-  }, [youtubeResults]);
+    });
+  }, [youtubeResults, videoIdList]);
 
   useEffect(() => {
-    if (playlistId) {
-      if (userPlyData) {
-        const arrLinkToString = userPlyData.link
-          ?.map((url: string) => forkVideoId(url))
-          .filter(Boolean)
-          .join(',');
-        setVideoIdList(arrLinkToString);
-      } else if (fetchUserPlyDataError) {
-        toast.error('플레이리스트 정보를 불러오는데 실패했습니다.');
-        setTimeout(() => {
-          history.back();
-        }, 2000);
-      }
+    if (playlistId && userPlyData) {
+      const arrLinkToString = userPlyData.link
+        ?.map((url: string) => forkVideoId(url))
+        .filter(Boolean)
+        .join(',');
+      setVideoIdList(arrLinkToString);
+    } else if (fetchUserPlyDataError) {
+      toast.error('플레이리스트 정보를 불러오는데 실패했습니다.');
+      setTimeout(() => {
+        history.back();
+      }, 2000);
     }
-  }, [playlistId]);
-
-  if (isUserPlyLoading) return null;
+  }, [playlistId, userPlyData]);
 
   const handleValidation = (type: string) => {
     if (playlistDataToAdd.current?.getPlaylistData()?.title === '') {
@@ -112,7 +103,9 @@ const CreatePlaylist = () => {
 
   return (
     <div css={{ margin: '5px 15px 0 0' }}>
-      <h2 css={{ fontSize: '22px', marginBottom: '20px' }}>새 플레이리스트 추가</h2>
+      <h2 css={{ fontSize: '22px', marginBottom: '20px' }}>
+        {userPlyData ? '내' : '새'} 플레이리스트 {userPlyData ? '수정' : '추가'}
+      </h2>
       <div css={{ display: 'flex' }}>
         <AddPlaylist ref={playlistDataToAdd} userPlyData={userPlyData} />
         <div css={{ width: 'calc(100% - 450px)', position: 'relative' }}>
@@ -146,7 +139,7 @@ const CreatePlaylist = () => {
   );
 };
 
-export default CreatePlaylist;
+export default ManagePlaylist;
 
 const btnArea = css`
   display: flex;

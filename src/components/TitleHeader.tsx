@@ -3,6 +3,7 @@
 import { colors } from '@/styles/colors';
 import { css } from '@emotion/react';
 import { CirclePlus } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 interface TitleHeaderProps {
   profileImage: string;
@@ -17,6 +18,7 @@ const TitleHeader: React.FC<TitleHeaderProps> = ({
   actionText,
   showAddPlaylistButton = false,
 }) => {
+  const navigate = useNavigate();
   return (
     <div css={headerContainerStyle}>
       <div css={headerStyle}>
@@ -26,7 +28,7 @@ const TitleHeader: React.FC<TitleHeaderProps> = ({
           <div css={actionTextStyle}>님의 {actionText}</div>
         </div>
         {showAddPlaylistButton && ( // showAddPlaylistButton이 true일 때만 버튼 표시
-          <button css={addButtonStyle}>
+          <button css={addButtonStyle} onClick={() => navigate('/managePlaylist')}>
             <CirclePlus size={18} css={iconStyle} /> {/* 아이콘 추가 */}
             <span css={buttonTextStyle}>추가</span>
           </button>
