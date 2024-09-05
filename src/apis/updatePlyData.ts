@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { NewPlaylistData } from '@/types/playlistTypes';
 
-export const plyData = async (
+export const updatePlyData = async (
   playlistData: NewPlaylistData,
   type: string,
   playlistId: string | undefined,
