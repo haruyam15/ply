@@ -64,7 +64,7 @@ const UserProfile: React.FC = () => {
             color: `${colors.lightestGray}`,
           }}
         >
-          <p>@{userId}</p>
+          <p>{userId}</p>
           <Link to="/follow" css={{ color: `${colors.lightestGray}` }}>
             팔로워 {user.followers?.length || 0}
           </Link>

@@ -117,7 +117,7 @@ const ProfileEditModal: React.FC = () => {
               <img src={newProfileImage} alt="Profile" css={profileImageStyle} />
               <div css={profileTextStyle}>
                 <h2>{newNickname}</h2>
-                <span>@{userId}</span>
+                <span>{userId}</span>
               </div>
             </div>
             <ul css={listStyle}>
