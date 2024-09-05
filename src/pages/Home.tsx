@@ -29,7 +29,7 @@ interface UserInformation {
 const Home: React.FC = () => {
   const navigate = useNavigate();
   const [visibleItems, setVisibleItems] = useState(8); // 타임라인의 초기 항목 수
-  const [exploreVisibleItems, setExploreVisibleItems] = useState(4); // 탐색의 초기 항목 수
+  const [exploreVisibleItems, setExploreVisibleItems] = useState(8); // 탐색의 초기 항목 수
   const [loading, setLoading] = useState(true); // 초기 로딩 상태
   const [playlists, setPlaylists] = useState<PlaylistData[]>([]);
   const [exploreData, setExploreData] = useState<PlaylistData[]>([]);
