@@ -17,7 +17,7 @@ const ProfileEditModal: React.FC = () => {
   const [currentModal, setCurrentModal] = useState<
     'main' | 'profileImage' | 'nickname' | 'password'
   >('main');
-
+  const [isModalVisible, setIsModalVisible] = useState(true);
   const { modals, closeModal } = useModalStore();
   const { setUser } = useUserStore();
   const userInformation: IUserData = useUserStore((state) => state.userInformation);
@@ -79,10 +79,17 @@ const ProfileEditModal: React.FC = () => {
   const handleConfirm = () => {
     handleProfileUpdate();
     setShowConfirm(false);
+    setIsModalVisible(true);
+  };
+
+  const handleShowConfirm = () => {
+    setShowConfirm(true);
+    setIsModalVisible(false);
   };
 
   const handleCloseConfirm = () => {
     setShowConfirm(false);
+    setIsModalVisible(false);
   };
 
   const renderModalContent = () => {
@@ -126,7 +133,7 @@ const ProfileEditModal: React.FC = () => {
               <li onClick={() => setCurrentModal('password')}>비밀번호 변경</li>
             </ul>
             <div css={buttonWrapperStyle}>
-              <Button onClick={() => setShowConfirm(true)}>수정하기</Button>
+              <Button onClick={handleShowConfirm}>적용하기</Button>
             </div>
           </div>
         );
@@ -136,17 +143,16 @@ const ProfileEditModal: React.FC = () => {
   return (
     <>
       {modals.modalName === 'profileEdit' && modals.modalState && (
-        <Modal modalName="profileEdit">
-          {renderModalContent()}
+        <>
+          {isModalVisible && <Modal modalName="profileEdit">{renderModalContent()}</Modal>}
           {showConfirm && (
             <Confirm
-              title="프로필 수정"
               text="정말로 수정하시겠습니까?"
               onConfirm={handleConfirm}
               onClose={handleCloseConfirm}
             />
           )}
-        </Modal>
+        </>
       )}
       <ToastContainer
         position="bottom-center"
@@ -173,7 +179,6 @@ const ProfileImageModal: React.FC<{
       reader.onloadend = () => {
         if (typeof reader.result === 'string') {
           setNewProfileImage(reader.result);
-          toast.success('이미지가 성공적으로 선택되었습니다.');
         }
       };
 
@@ -357,10 +362,7 @@ const PasswordChangeModal: React.FC<{
         value={confirmPassword}
         onChange={(e) => setConfirmPassword(e.target.value)}
       />
-      {<p css={errorStyle(!!error)}>{error || ' '}</p>}
-      <p css={noteStyle}>
-        비밀번호는 최소 6자 이상이어야 하며 숫자, 영문, 특수 문자의 조합을 포함해야 합니다.
-      </p>
+      {<p css={passwordErrorStyle(!!error)}>{error || ' '}</p>}
       <div css={buttonWrapperStyle}>
         <Button onClick={handleSubmit}>변경하기</Button>
       </div>
@@ -493,11 +495,6 @@ const modalTitleStyle = css`
   align-items: center;
 `;
 
-const noteStyle = css`
-  font-size: 12px;
-  color: ${colors.gray};
-`;
-
 const backButtonStyle = css`
   position: absolute;
   top: 0;
@@ -515,7 +512,17 @@ const errorStyle = (isVisible: boolean) => css`
   font-size: 14px;
   margin-top: 5px;
   height: 20px;
-  visibility: ${isVisible ? 'visible' : 'hidden'}; /* isVisible 상태에 따라 visibility 설정 */
+  visibility: ${isVisible ? 'visible' : 'hidden'};
+  white-space: nowrap;
+  text-align: center;
+`;
+
+const passwordErrorStyle = (isVisible: boolean) => css`
+  color: ${colors.red};
+  font-size: 12px;
+  margin-top: 5px;
+  height: 20px;
+  visibility: ${isVisible ? 'visible' : 'hidden'};
   white-space: nowrap;
   text-align: center;
 `;

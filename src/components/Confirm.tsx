@@ -4,7 +4,6 @@ import { css, Global } from '@emotion/react';
 import Swal from 'sweetalert2';
 
 interface ConfirmDialogProps {
-  title: string;
   text: string;
   onConfirm: () => void;
   onClose: () => void;
@@ -12,27 +11,18 @@ interface ConfirmDialogProps {
   index?: number;
 }
 
-const Confirm: React.FC<ConfirmDialogProps> = ({
-  title,
-  text,
-  onConfirm,
-  onClose,
-  index,
-  deleteItem,
-}) => {
+const Confirm: React.FC<ConfirmDialogProps> = ({ text, onConfirm, onClose, index, deleteItem }) => {
   useEffect(() => {
     Swal.fire({
-      title,
       text,
       showCancelButton: true,
-      confirmButtonColor: '#00FFA3',
-      cancelButtonColor: '#7E7E7E',
+      confirmButtonColor: '#00cc75',
+      cancelButtonColor: '#6B6B6B',
       confirmButtonText: '예',
       cancelButtonText: '아니요',
       customClass: {
         confirmButton: 'custom-confirm-button',
         cancelButton: 'custom-cancel-button',
-        title: 'custom-title',
         popup: 'custom-popup',
       },
     }).then((result) => {
@@ -44,7 +34,7 @@ const Confirm: React.FC<ConfirmDialogProps> = ({
       }
       onClose();
     });
-  }, [title, text, onConfirm, onClose, deleteItem, index]);
+  }, [text, onConfirm, onClose, deleteItem, index]);
 
   return <Global styles={ConfirmStyles} />;
 };
@@ -53,7 +43,7 @@ export default Confirm;
 
 export const ConfirmStyles = css`
   .swal2-container {
-    z-index: 21000; /* 기존 z-index 유지 */
+    z-index: 21000;
   }
 
   .custom-confirm-button {
@@ -64,7 +54,7 @@ export const ConfirmStyles = css`
     color: #ffffff !important;
     font-size: 18px !important;
     font-weight: 500;
-    background-color: #1ee13c !important;
+    background-color: #00cc75 !important;
   }
 
   .custom-cancel-button {
@@ -77,16 +67,12 @@ export const ConfirmStyles = css`
     font-weight: 500;
   }
 
-  .custom-title {
-    margin: 40px 0 20px 0 !important;
-    font-size: 22px !important;
-    color: #ffffff !important;
-    font-weight: bold;
-    text-align: center;
-  }
-
   .custom-popup {
-    background-color: #333 !important;
+    padding: 20px !important;
+    padding-top: 40px !important;
+    background-color: #222 !important; /* 팝업 배경을 어두운 회색으로 변경 */
     border-radius: 10px !important;
+    color: #ffffff !important;
+    font-size: 18px !important;
   }
 `;

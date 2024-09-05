@@ -74,7 +74,7 @@ const Follow: React.FC = () => {
           <div css={userInfoStyle}>
             <h2 css={nicknameStyle}>{user.userName}</h2>
             <div css={userDetailsStyle}>
-              <p>@{user.userId}</p>
+              <p>{user.userId}</p>
               <p>팔로워 {user.followers}</p>
               <p>플레이리스트 {user.myPlaylist}</p>
             </div>
