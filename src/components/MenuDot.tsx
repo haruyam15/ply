@@ -1,5 +1,4 @@
 /** @jsxImportSource @emotion/react */
-
 import { useState } from 'react';
 import { css } from '@emotion/react';
 import { EllipsisVertical, Pencil, Trash2 } from 'lucide-react';
@@ -10,8 +9,8 @@ import Confirm from './Confirm';
 interface MenuDotProps {
   showEdit?: boolean;
   showDelete?: boolean;
-  deleteItem?: (index: number) => void; // 타입: (index: number) => void로 수정
-  index?: number; // 삭제할 항목의 index
+  deleteItem?: (index: number) => void;
+  index?: number;
   videoId: string;
 }
 
@@ -25,7 +24,7 @@ const MenuDot: React.FC<MenuDotProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
-  const { deletePlaylist } = useDeletePlaylist(); // useDeletePlaylist에서 deletePlaylist 가져오기
+  const { deletePlaylist } = useDeletePlaylist();
 
   const toggleMenu = () => {
     setIsOpen((prev) => !prev);
@@ -44,13 +43,15 @@ const MenuDot: React.FC<MenuDotProps> = ({
   const handleConfirm = async () => {
     try {
       if (index !== undefined && videoId) {
-        // videoId가 있는지 확인
-        // 서버에 삭제 요청
         await deletePlaylist(videoId, () => {
           if (deleteItem) {
-            deleteItem(index); // 삭제 콜백 실행 (index 전달)
+            deleteItem(index);
           }
         });
+      } else {
+        if (index !== undefined && deleteItem) {
+          deleteItem(index);
+        }
       }
     } catch (error) {
       console.error('삭제 요청 중 오류 발생:', error);
