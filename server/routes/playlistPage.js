@@ -17,7 +17,6 @@ const getPlaylistPageInfo = async (userId, database) => {
       .project({ id: 1, title: 1, userId: 1, tags: 1, imgUrl: 1, disclosureStatus: 1, link: 1 })
       .toArray();
 
-    // 플레이리스트 제작자의 닉네임 가져오기
     const userIds = [...new Set(playlistsData.map((playlist) => playlist.userId))];
     const userNicknames = await database
       .collection('users')
@@ -29,7 +28,6 @@ const getPlaylistPageInfo = async (userId, database) => {
       userNicknames.map((user) => [user.userId, user.nickname]),
     );
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const playlistsWithNickname = playlistsData.map(({ _id, link, ...playlist }) => ({
       ...playlist,
       id: playlist.id,
@@ -37,11 +35,13 @@ const getPlaylistPageInfo = async (userId, database) => {
       videoCount: link ? link.length : 0,
     }));
 
+    const reversedPlaylists = playlistsWithNickname.reverse();
+
     return {
       success: true,
       playlistPageInfo: {
         profileImage: user.profileImage,
-        playlists: playlistsWithNickname,
+        playlists: reversedPlaylists,
       },
     };
   } catch (error) {
