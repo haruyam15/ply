@@ -147,6 +147,8 @@ const Home: React.FC = () => {
     slidesToShow: 1,
     slidesToScroll: 1,
     arrows: true,
+    autoplay: true,
+    autoplaySpeed: 2000,
   };
 
   const navigateToTimeline = () => {
@@ -157,11 +159,11 @@ const Home: React.FC = () => {
     <div css={containerStyle}>
       <div css={[carouselStyle, slickArrowStyle]}>
         <Slider {...settings}>
-          {['pERDk4KoW-s', 'dQw4w9WgXcQ', 'C0DPdy98e4c'].map((videoId, index) => (
+          {['C0C6wvNl14w', 'ZncbtRo7RXs', 'phuiiNCxRMg'].map((videoId, index) => (
             <div key={index} css={slideStyle}>
               <img
                 src={`https://img.youtube.com/vi/${videoId}/hqdefault.jpg`}
-                alt={`video ${index + 1}`}
+                alt={`캐러셀이미지`}
                 css={thumbnailStyle}
               />
             </div>
@@ -257,7 +259,7 @@ const slideStyle = css`
 
 const thumbnailStyle = css`
   width: 80%;
-  height: 300px;
+  height: 350px;
   object-fit: cover;
   display: block;
   margin: 0 auto;
