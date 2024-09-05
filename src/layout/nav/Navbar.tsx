@@ -19,7 +19,7 @@ function Navbar() {
         <NavTop />
         <div className="scroll-area">
           <NavList />
-          <FollowingFollowers />
+          {user?.userId ? <FollowingFollowers /> : null}
           {isExpand && <Banner />}
           {user?.userId ? <Logout /> : null}
         </div>
