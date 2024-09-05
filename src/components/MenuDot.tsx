@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
 import { useState } from 'react';
-
 import { css } from '@emotion/react';
 import { EllipsisVertical, Pencil, Trash2 } from 'lucide-react';
 
@@ -11,9 +10,8 @@ import Confirm from './Confirm';
 interface MenuDotProps {
   showEdit?: boolean;
   showDelete?: boolean;
-  deleteItem?: (index: number) => void;
-  index?: number;
-  playlistDataId?: string; // 삭제할 playlist의 ID
+  deleteItem?: (index: number) => void; // 타입: (index: number) => void로 수정
+  index?: number; // 삭제할 항목의 index
 }
 
 const MenuDot: React.FC<MenuDotProps> = ({
@@ -21,7 +19,6 @@ const MenuDot: React.FC<MenuDotProps> = ({
   showDelete = true,
   deleteItem,
   index,
-  playlistDataId, // 삭제할 playlist의 ID를 받아옴
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
@@ -42,17 +39,10 @@ const MenuDot: React.FC<MenuDotProps> = ({
 
   const handleConfirm = async () => {
     try {
-      const response = await fetch(`/api/playlistDelete/${playlistDataId}`, {
-        method: 'DELETE',
-      });
-
-      if (response.ok) {
-        console.log('삭제 성공');
-        if (deleteItem && index !== undefined) {
-          deleteItem(index); // 삭제 콜백 실행
-        }
-      } else {
-        console.error('삭제 실패:', await response.json());
+      // 실제 API 호출은 index가 아닌 id를 사용해야 할 수도 있지만,
+      // 여기서는 index를 기반으로 삭제를 처리합니다.
+      if (deleteItem && index !== undefined) {
+        deleteItem(index); // 삭제 콜백 실행 (index 전달)
       }
     } catch (error) {
       console.error('삭제 요청 중 오류 발생:', error);
@@ -92,8 +82,6 @@ const MenuDot: React.FC<MenuDotProps> = ({
           text="정말 삭제하시겠습니까?"
           onConfirm={handleConfirm}
           onClose={handleCloseConfirm}
-          deleteItem={deleteItem}
-          index={index}
         />
       )}
     </div>

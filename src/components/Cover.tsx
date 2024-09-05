@@ -35,6 +35,10 @@ const coverStyle = css`
   width: 100%;
   height: 140px;
   cursor: pointer;
+
+  &:hover img {
+    filter: brightness(30%); /* 이미지 어둡게 */
+  }
 `;
 
 const coverImageStyle = css`
@@ -42,6 +46,7 @@ const coverImageStyle = css`
   height: 100%;
   object-fit: cover;
   border-radius: 12px;
+  transition: filter 0.2s ease; /* 부드러운 전환 효과 */
 `;
 
 const overlayTextStyle = css`

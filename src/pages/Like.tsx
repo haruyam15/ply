@@ -136,6 +136,7 @@ const Like: React.FC = () => {
             userId={item.userId}
             imgUrl={item.imgUrl[0]} // imgUrl 배열에서 첫 번째 요소 사용
             videoCount={item.videoCount}
+            index={index}
           />
         ))}
         {loading && Array.from({ length: 8 }).map((_, index) => <SkeletonGridItem key={index} />)}

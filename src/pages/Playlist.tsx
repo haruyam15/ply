@@ -95,6 +95,10 @@ const PlaylistPage: React.FC = () => {
     fetchPlaylistData();
   }, [userId]);
 
+  const handleDeleteItem = (index: number) => {
+    setPlaylists((prevPlaylists) => prevPlaylists.filter((_, i) => i !== index));
+  };
+
   useEffect(() => {
     const handleScroll = () => {
       const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
@@ -127,7 +131,7 @@ const PlaylistPage: React.FC = () => {
           return (
             <VideoGridItem
               key={index}
-              videoId={item.id} // imgUrl에서 videoId 추출
+              videoId={item.id}
               title={item.title}
               user={item.userId}
               showDelete={true}
@@ -139,6 +143,8 @@ const PlaylistPage: React.FC = () => {
               userId={item.userId}
               imgUrl={item.imgUrl[0]}
               videoCount={item.videoCount}
+              index={index}
+              deleteItem={handleDeleteItem} // 삭제 콜백 함수 전달
             />
           );
         })}

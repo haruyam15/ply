@@ -21,6 +21,8 @@ interface VideoGridItemProps {
   userId: string;
   imgUrl: string;
   videoCount: number;
+  index: number; // 추가: 각 항목의 index 전달
+  deleteItem?: (index: number) => void; // 타입 수정: (index: number) => void로 수정
 }
 
 const VideoGridItem: React.FC<VideoGridItemProps> = ({
@@ -35,13 +37,10 @@ const VideoGridItem: React.FC<VideoGridItemProps> = ({
   userId,
   imgUrl,
   videoCount,
+  index,
+  deleteItem,
 }) => {
   const youtubeVideoId = forkVideoId(imgUrl);
-
-  const handleDeleteItem = (index: number) => {
-    console.log(`삭제할 항목 인덱스: ${index}`);
-    // 이곳에서 상태 업데이트나 다른 삭제 후 처리 작업을 수행할 수 있습니다.
-  };
 
   return (
     <div css={gridItemStyle}>
@@ -61,8 +60,8 @@ const VideoGridItem: React.FC<VideoGridItemProps> = ({
             <MenuDot
               showEdit={showEdit}
               showDelete={showDelete}
-              deleteItem={handleDeleteItem}
-              playlistDataId={videoId} // playlistDataId 전달
+              deleteItem={deleteItem} // 삭제 함수 전달
+              index={index} // index 전달
             />
           </div>
         )}
