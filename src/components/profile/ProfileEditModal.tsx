@@ -365,6 +365,7 @@ const profileImageStyle = css`
   border-radius: 50%;
   object-fit: cover;
   margin-right: 30px;
+  border: 2px solid ${colors.primaryGreen};
 `;
 
 const profileTextStyle = css`

@@ -160,6 +160,7 @@ const profileimageArea = css`
   border-radius: 50%;
   object-fit: cover;
   background-color: ${colors.gray};
+  border: 2px solid ${colors.primaryGreen};
 `;
 
 const userInfoStyle = css`

@@ -91,6 +91,7 @@ const profileimageArea = css`
   width: 230px;
   height: 230px;
   border-radius: 50%;
+  border: 2px solid ${colors.primaryGreen};
 `;
 
 const profileEditOrFollowerBtn = css`
