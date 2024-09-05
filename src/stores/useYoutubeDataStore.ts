@@ -14,6 +14,7 @@ interface State {
 interface Action {
   setYouTubelistData: (data: IYoutubelistData) => void;
   draggabledData: (arrData: IYoutubelistData[]) => void;
+  clearYoutubelistData: () => void;
 }
 
 const useYoutubeDataStore = create<State & Action>((set) => ({
@@ -21,6 +22,7 @@ const useYoutubeDataStore = create<State & Action>((set) => ({
   setYouTubelistData: (data) =>
     set((state) => ({ youTubelistData: [...state.youTubelistData, data] })),
   draggabledData: (arrData) => set(() => ({ youTubelistData: arrData })),
+  clearYoutubelistData: () => set(() => ({ youTubelistData: [] })),
 }));
 
 export default useYoutubeDataStore;

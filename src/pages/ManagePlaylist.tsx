@@ -21,6 +21,7 @@ const ManagePlaylist = () => {
   const userData = useUserStore((state) => state.userInformation);
   const addedPlaylist = useYoutubeDataStore((state) => state.youTubelistData);
   const setYouTubelistData = useYoutubeDataStore((state) => state.setYouTubelistData);
+  const clearYoutubelistData = useYoutubeDataStore((state) => state.clearYoutubelistData);
   const playlistDataToAdd = useRef<{ getPlaylistData: () => PlaylistDataStore }>(null);
   const { playlistId } = useParams() as { playlistId: string };
   const { mutate } = useNewPlaylist();
@@ -43,6 +44,9 @@ const ManagePlaylist = () => {
   }, [youtubeResults, videoIdList]);
 
   useEffect(() => {
+    if (addedPlaylist.length > 0) {
+      clearYoutubelistData();
+    }
     if (playlistId && userPlyData) {
       const arrLinkToString = userPlyData.link
         ?.map((url: string) => forkVideoId(url))
@@ -78,11 +82,13 @@ const ManagePlaylist = () => {
       try {
         mutate({ playlistData, type, playlistId });
         if (type === '추가') {
+          clearYoutubelistData();
           toast.success('플레이리스트가 생성되었습니다.');
           setTimeout(() => {
             navigate('/playlist');
           }, 2000);
         } else if (type === '수정') {
+          clearYoutubelistData();
           toast.success('플레이리스트가 수정되었습니다.');
           setTimeout(() => {
             navigate(`/watch/${playlistId}?v=${addedPlaylist[0].id}`);
