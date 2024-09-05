@@ -54,5 +54,8 @@ const btn = (size: Size, background: boolean) => css`
   `
     background-color: ${colors.white};
     color: ${colors.black};
+    &:hover {
+      background-color: ${colors.primaryGreen};
+    }
   `}
 `;

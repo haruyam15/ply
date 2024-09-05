@@ -53,7 +53,7 @@ const DraggableItem: React.FC<DraggableItemProps> = ({
         <p>{youTubelistData?.title}</p>
         <span>{youTubelistData?.channelTitle}</span>
       </div>
-      <div css={{ position: 'absolute', right: '20px', top: '15px' }}>
+      <div css={{ position: 'absolute', right: '10px', top: '8px' }}>
         <MenuDot showEdit={false} deleteItem={handleDeletePlaylist} index={index} />
       </div>
     </div>
@@ -79,7 +79,7 @@ const videoArea = (imgUrl?: string) => css`
   `}
 `;
 const listArea = css`
-  width: 100%;
+  width: 98%;
   height: 180px;
   display: flex;
   justify-content: flex-start;
@@ -89,7 +89,7 @@ const listArea = css`
   border-radius: 10px;
   position: relative;
   :hover {
-    background-color: #585858;
+    background-color: #242424;
   }
 `;
 const youtubeDataArea = css`
@@ -97,10 +97,10 @@ const youtubeDataArea = css`
   align-items: top;
   flex-direction: column;
   height: 100%;
-  padding-top: 20px;
+  padding: 20px 30px 0 0;
   & p {
     color: ${colors.white};
-    font-size: 22px;
+    font-size: 18px;
     margin-bottom: 20px;
   }
   & span {

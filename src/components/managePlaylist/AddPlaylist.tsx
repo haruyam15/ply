@@ -22,13 +22,13 @@ const AddPlaylist = forwardRef<AddPlaylistRef, AddPlaylistProps>(({ userPlyData 
   const [link, setLink] = useState<string[]>([]);
   const [isComposing, setIsComposing] = useState(false);
   const [content, setContent] = useState('');
-  const [imgUrl, setImgUrl] = useState<string[]>([]);
   const [videoId, setVideoId] = useState('');
   const [disclosureStatus, setDisclosureStatus] = useState(true);
   const tagValue = useRef<HTMLInputElement>(null);
   const title = useRef<HTMLInputElement>(null);
   const url = useRef<HTMLInputElement>(null);
-  const setYouTubelistData = useYoutubeDataStore((state) => state.setYouTubelistData);
+  const youtubeDataList = useYoutubeDataStore((state) => state.youTubelistData);
+  const setYoutubeListData = useYoutubeDataStore((state) => state.setYouTubelistData);
 
   useImperativeHandle(ref, () => ({
     getPlaylistData,
@@ -38,7 +38,7 @@ const AddPlaylist = forwardRef<AddPlaylistRef, AddPlaylistProps>(({ userPlyData 
     const playlistData: PlaylistDataStore = {
       title: '',
       content: '',
-      disclosureStatus: false,
+      disclosureStatus,
       tags: [],
     };
     playlistData.title = title.current?.value || '';
@@ -46,14 +46,13 @@ const AddPlaylist = forwardRef<AddPlaylistRef, AddPlaylistProps>(({ userPlyData 
     playlistData.disclosureStatus = disclosureStatus;
     playlistData.tags = tags;
     return playlistData;
-  }, [title, content, tags]);
+  }, [title, content, tags, disclosureStatus]);
 
   const handleUrl = useCallback(async () => {
     if (url.current?.value) {
       const newVideoId = forkVideoId(url.current.value);
       if (newVideoId) {
         setLink([...link, url.current?.value]);
-        setImgUrl([`https://img.youtube.com/vi/${newVideoId}/hqdefault.jpg`, ...imgUrl]);
         setVideoId(newVideoId);
         url.current.value = '';
       }
@@ -71,10 +70,10 @@ const AddPlaylist = forwardRef<AddPlaylistRef, AddPlaylistProps>(({ userPlyData 
         id: youTubeData.items[0].id,
         title: youTubeData.items[0].snippet.title,
         link,
-        imgUrl,
+        imgUrl: [`https://img.youtube.com/vi/${videoId}/hqdefault.jpg`],
         channelTitle: youTubeData.items[0].snippet.channelTitle,
       };
-      setYouTubelistData(youTubelist);
+      setYoutubeListData(youTubelist);
       setVideoId('');
     }
   }, [videoId, youTubeData]);
@@ -84,8 +83,6 @@ const AddPlaylist = forwardRef<AddPlaylistRef, AddPlaylistProps>(({ userPlyData 
       if (title.current) {
         title.current.value = userPlyData.title;
       }
-      const imgUrlArr = userPlyData.imgUrl.map((url) => url ?? '');
-      setImgUrl(imgUrlArr);
       setContent(userPlyData.content);
       setTags(userPlyData.tags);
       setDisclosureStatus(userPlyData.disclosureStatus as boolean);
@@ -109,28 +106,30 @@ const AddPlaylist = forwardRef<AddPlaylistRef, AddPlaylistProps>(({ userPlyData 
     }
   };
 
-  const handleContent = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setContent(e.target.value);
-  };
-
   const handleDeleteTag = (index: number) => {
     setTags((prevTags) => prevTags.filter((_, i) => i !== index));
   };
 
+  let imgUrl = '';
+  if (youtubeDataList?.[0]?.imgUrl?.[0]) {
+    imgUrl = youtubeDataList[0].imgUrl[0];
+  }
+
   return (
-    <div css={createPlaylistWrapper(imgUrl[0])}>
+    <div css={createPlaylistWrapper(imgUrl)}>
       <div css={formArea}>
-        <div css={{ marginTop: '15px', color: '#6b6b6b', fontSize: '14px' }}>
+        <div css={{ color: '#6b6b6b', fontSize: '14px' }}>
           <p>플레이리스트 대표 썸네일은 첫번째 영상으로 자동 설정됩니다.</p>
         </div>
-        <div css={videoArea(imgUrl[0])}></div>
+        <div css={videoArea(imgUrl)}></div>
         <div>
           <p>플레이리스트 제목</p>
           <input
             css={[titleArea, { width: '100%' }]}
             type="text"
-            placeholder="제목을 입력해주세요."
+            placeholder="22자 내외로 제목을 입력해주세요."
             ref={title}
+            maxLength={22}
           />
         </div>
         <p>공개 여부</p>
@@ -160,8 +159,9 @@ const AddPlaylist = forwardRef<AddPlaylistRef, AddPlaylistProps>(({ userPlyData 
           <p>설명</p>
           <textarea
             value={content}
-            onChange={(e) => handleContent(e)}
+            onChange={(e) => setContent(e.target.value)}
             css={discriptionArea}
+            maxLength={90}
           ></textarea>
         </div>
         <p>영상추가</p>
@@ -190,11 +190,12 @@ const AddPlaylist = forwardRef<AddPlaylistRef, AddPlaylistProps>(({ userPlyData 
           <input
             css={[titleArea, { width: '75%' }]}
             type="text"
-            placeholder="태그 입력 후 엔터를 눌러주세요."
+            placeholder="8자 내외로 태그 입력 후 엔터를 눌러주세요."
             ref={tagValue}
             onKeyDown={(e) => handleKeyDown(e, 'tag')}
             onCompositionStart={() => setIsComposing(true)}
             onCompositionEnd={() => setIsComposing(false)}
+            maxLength={8}
           />
           <Button size="md" onClick={handleAddTagChange}>
             추가
@@ -248,7 +249,7 @@ const formArea = css`
     margin-bottom: 40px;
   }
   & div:nth-of-type(1) {
-    margin-bottom: 0;
+    margin-bottom: 7px;
   }
   & div:nth-of-type(7),
   & div:nth-of-type(8) {
@@ -258,7 +259,7 @@ const formArea = css`
 
 const videoArea = (imgUrl: string) => css`
   width: 100%;
-  height: 230px;
+  height: 220px;
   background-color: #222;
   border-radius: 5px;
   overflow: hidden;
@@ -273,7 +274,7 @@ const videoArea = (imgUrl: string) => css`
 `;
 
 const titleArea = css`
-  margin-top: 15px;
+  margin-top: 10px;
   border-bottom: 1px solid ${colors.white};
   color: ${colors.white};
   padding: 3px;
