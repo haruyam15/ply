@@ -1,29 +1,27 @@
-// components/MenuDot.tsx
-
 /** @jsxImportSource @emotion/react */
+
 import { useState } from 'react';
 import { css } from '@emotion/react';
 import { EllipsisVertical, Pencil, Trash2 } from 'lucide-react';
-import useDeletePlaylist from '@/hooks/useDeletePlaylist';
-import Confirm from './Confirm';
+
 import { colors } from '@/styles/colors';
+import Confirm from './Confirm';
 
 interface MenuDotProps {
   showEdit?: boolean;
   showDelete?: boolean;
-  deleteItem?: (id: string) => void;
-  playlistDataId?: string;
+  deleteItem?: (index: number) => void; // 타입: (index: number) => void로 수정
+  index?: number; // 삭제할 항목의 index
 }
 
 const MenuDot: React.FC<MenuDotProps> = ({
   showEdit = true,
   showDelete = true,
   deleteItem,
-  playlistDataId,
+  index,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
-  const { error, deletePlaylist } = useDeletePlaylist();
 
   const toggleMenu = () => {
     setIsOpen((prev) => !prev);
@@ -39,15 +37,18 @@ const MenuDot: React.FC<MenuDotProps> = ({
     setIsConfirmOpen(true);
   };
 
-  const handleConfirm = () => {
-    if (playlistDataId) {
-      deletePlaylist(playlistDataId, () => {
-        if (deleteItem) {
-          deleteItem(playlistDataId);
-        }
-      });
+  const handleConfirm = async () => {
+    try {
+      // 실제 API 호출은 index가 아닌 id를 사용해야 할 수도 있지만,
+      // 여기서는 index를 기반으로 삭제를 처리합니다.
+      if (deleteItem && index !== undefined) {
+        deleteItem(index); // 삭제 콜백 실행 (index 전달)
+      }
+    } catch (error) {
+      console.error('삭제 요청 중 오류 발생:', error);
+    } finally {
+      setIsConfirmOpen(false);
     }
-    setIsConfirmOpen(false);
   };
 
   const handleCloseConfirm = () => {
@@ -83,7 +84,6 @@ const MenuDot: React.FC<MenuDotProps> = ({
           onClose={handleCloseConfirm}
         />
       )}
-      {error && <p css={errorTextStyle}>{error}</p>}
     </div>
   );
 };
@@ -140,12 +140,6 @@ const deleteItemStyle = css`
 
 const menuTextStyle = css`
   margin-top: 8px;
-`;
-
-const errorTextStyle = css`
-  color: red;
-  font-size: 12px;
-  margin-top: 5px;
 `;
 
 export default MenuDot;

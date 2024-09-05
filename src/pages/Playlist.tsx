@@ -95,8 +95,8 @@ const PlaylistPage: React.FC = () => {
     fetchPlaylistData();
   }, [userId]);
 
-  const handleDeleteItem = (playlistId: string) => {
-    setPlaylists((prevPlaylists) => prevPlaylists.filter((playlist) => playlist.id !== playlistId));
+  const handleDeleteItem = (index: number) => {
+    setPlaylists((prevPlaylists) => prevPlaylists.filter((_, i) => i !== index));
   };
 
   useEffect(() => {
@@ -143,6 +143,7 @@ const PlaylistPage: React.FC = () => {
               userId={item.userId}
               imgUrl={item.imgUrl[0]}
               videoCount={item.videoCount}
+              index={index}
               deleteItem={handleDeleteItem} // 삭제 콜백 함수 전달
             />
           );

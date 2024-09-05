@@ -21,7 +21,8 @@ interface VideoGridItemProps {
   userId: string;
   imgUrl: string;
   videoCount: number;
-  deleteItem?: (playlistId: string) => void; // 삭제 콜백 함수
+  index: number; // 추가: 각 항목의 index 전달
+  deleteItem?: (index: number) => void; // 타입 수정: (index: number) => void로 수정
 }
 
 const VideoGridItem: React.FC<VideoGridItemProps> = ({
@@ -36,12 +37,10 @@ const VideoGridItem: React.FC<VideoGridItemProps> = ({
   userId,
   imgUrl,
   videoCount,
+  index,
   deleteItem,
 }) => {
   const youtubeVideoId = forkVideoId(imgUrl);
-
-  // 제목 18 글자 이상이면 ... 으로 뒤표시
-  const truncatedTitle = title.length > 18 ? `${title.slice(0, 18)}...` : title;
 
   return (
     <div css={gridItemStyle}>
@@ -53,7 +52,7 @@ const VideoGridItem: React.FC<VideoGridItemProps> = ({
       />
       <div css={descriptionStyle}>
         <div css={infoStyle}>
-          <h3 css={titleStyle}>{truncatedTitle}</h3> {/* 잘린 제목 사용 */}
+          <h3 css={titleStyle}>{title}</h3>
           <User profileImage={profileImage} nickname={userName} userId={userId} onlyImage={false} />
         </div>
         {showMenuDot && (
@@ -61,8 +60,8 @@ const VideoGridItem: React.FC<VideoGridItemProps> = ({
             <MenuDot
               showEdit={showEdit}
               showDelete={showDelete}
-              deleteItem={deleteItem}
-              playlistDataId={videoId} // playlistDataId 전달
+              deleteItem={deleteItem} // 삭제 함수 전달
+              index={index} // index 전달
             />
           </div>
         )}
