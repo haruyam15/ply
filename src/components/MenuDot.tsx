@@ -1,8 +1,8 @@
 /** @jsxImportSource @emotion/react */
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { css } from '@emotion/react';
 import { EllipsisVertical, Pencil, Trash2 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom'; // 추가된 부분
+import { useNavigate } from 'react-router-dom';
 import useDeletePlaylist from '@/hooks/useDeletePlaylist';
 import { colors } from '@/styles/colors';
 import Confirm from './Confirm';
@@ -24,8 +24,8 @@ const MenuDot: React.FC<MenuDotProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
-  const navigate = useNavigate(); // 추가된 부분
-
+  const menuRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
   const { deletePlaylist } = useDeletePlaylist();
 
   const toggleMenu = () => {
@@ -33,7 +33,7 @@ const MenuDot: React.FC<MenuDotProps> = ({
   };
 
   const handleEdit = () => {
-    navigate(`/managePlaylist/${videoId}`); // 수정된 부분: 해당 플레이리스트 ID로 라우팅
+    navigate(`/managePlaylist/${videoId}`);
     setIsOpen(false);
   };
 
@@ -66,8 +66,26 @@ const MenuDot: React.FC<MenuDotProps> = ({
     setIsConfirmOpen(false);
   };
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    if (isOpen) {
+      window.addEventListener('click', handleClickOutside);
+    } else {
+      window.removeEventListener('click', handleClickOutside);
+    }
+
+    return () => {
+      window.removeEventListener('click', handleClickOutside);
+    };
+  }, [isOpen]);
+
   return (
-    <div css={menuDotContainerStyle}>
+    <div css={menuDotContainerStyle} ref={menuRef}>
       <div css={menuDotStyle} onClick={toggleMenu}>
         <EllipsisVertical />
       </div>
