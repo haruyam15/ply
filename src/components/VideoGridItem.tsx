@@ -62,6 +62,7 @@ const VideoGridItem: React.FC<VideoGridItemProps> = ({
               showDelete={showDelete}
               deleteItem={deleteItem} // 삭제 함수 전달
               index={index} // index 전달
+              videoId={videoId}
             />
           </div>
         )}
