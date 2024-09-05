@@ -5,6 +5,7 @@ import SkeletonGridItem from '@/components/SkeletonGridItem';
 import TitleHeader from '@/components/TitleHeader';
 import VideoGridItem from '@/components/VideoGridItem';
 import useUserStore from '@/stores/useUserStore';
+import throttle from 'lodash/throttle'; // lodash의 throttle 가져오기
 
 interface PlaylistData {
   id: string;
@@ -80,7 +81,6 @@ const Timeline: React.FC = () => {
         const result = await response.json();
         setPlaylists(result.playlists);
         setHasMore(result.playlists.length > visibleItems);
-        setLoading(false);
       } catch (error) {
         if (error instanceof Error) {
           console.error('데이터 요청 오류:', error);
@@ -98,7 +98,7 @@ const Timeline: React.FC = () => {
   }, [userId, visibleItems]);
 
   useEffect(() => {
-    const handleScroll = () => {
+    const throttledHandleScroll = throttle(() => {
       const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
       if (scrollTop + clientHeight >= scrollHeight - 5 && !loading && hasMore) {
         setLoading(true);
@@ -111,10 +111,10 @@ const Timeline: React.FC = () => {
           }
         }, 1000);
       }
-    };
+    }, 500); // 500ms마다 한 번만 호출
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', throttledHandleScroll);
+    return () => window.removeEventListener('scroll', throttledHandleScroll);
   }, [loading, hasMore, visibleItems, playlists.length]);
 
   return (
@@ -140,7 +140,7 @@ const Timeline: React.FC = () => {
             profileImage={userInformation?.profileImage || ''}
             userName={userInformation?.userName || ''}
             userId={userInformation?.userId || ''}
-            imgUrl={item.imgUrl[0]} // imgUrl을 VideoGridItem에 전달
+            imgUrl={item.imgUrl} // imgUrl을 VideoGridItem에 전달
             videoCount={item.videoCount}
           />
         ))}
