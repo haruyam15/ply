@@ -13,6 +13,7 @@ interface UserDetail {
   followers: number;
   myPlaylist: number;
   userId: string;
+  isFollowing?: boolean;
 }
 
 const Follow: React.FC = () => {
@@ -36,7 +37,12 @@ const Follow: React.FC = () => {
     try {
       if (userInformation.userId) {
         const response = await axios.get(`/api/followingPage/${userInformation.userId}`);
-        setFollowing(response.data);
+        // 각 유저에 대해 팔로우 상태를 추가로 관리
+        const updatedFollowing = response.data.map((user: UserDetail) => ({
+          ...user,
+          isFollowing: true, // 기본으로 팔로잉 상태로 설정
+        }));
+        setFollowing(updatedFollowing);
       }
     } catch (error) {
       console.error('Failed to fetch following:', error);
@@ -54,11 +60,30 @@ const Follow: React.FC = () => {
     try {
       if (userInformation.userId) {
         await axios.delete(`/api/followDelete/${userInformation.userId}/${targetUserId}`);
-        fetchFollowers();
-        fetchFollowing();
+        // 버튼만 "팔로우"로 변경, 목록 업데이트는 따로 새로고침 없이 상태로 처리
+        setFollowing((prevFollowing) =>
+          prevFollowing.map((user) =>
+            user.userId === targetUserId ? { ...user, isFollowing: false } : user,
+          ),
+        );
       }
     } catch (error) {
       console.error('Failed to unfollow:', error);
+    }
+  };
+
+  const handleFollow = async (targetUserId: string) => {
+    try {
+      if (userInformation.userId) {
+        await axios.post(`/api/follow/${userInformation.userId}/${targetUserId}`);
+        setFollowing((prevFollowing) =>
+          prevFollowing.map((user) =>
+            user.userId === targetUserId ? { ...user, isFollowing: true } : user,
+          ),
+        );
+      }
+    } catch (error) {
+      console.error('Failed to follow:', error);
     }
   };
 
@@ -78,11 +103,16 @@ const Follow: React.FC = () => {
               <p>팔로워 {user.followers}</p>
               <p>플레이리스트 {user.myPlaylist}</p>
             </div>
-            {activeTab === 'following' && (
-              <Button css={profileEditOrFollowerBtn} onClick={() => handleUnfollow(user.userId)}>
-                팔로우 취소
-              </Button>
-            )}
+            {activeTab === 'following' &&
+              (user.isFollowing ? (
+                <Button css={profileEditOrFollowerBtn} onClick={() => handleUnfollow(user.userId)}>
+                  팔로우 취소
+                </Button>
+              ) : (
+                <Button css={profileEditOrFollowerBtn} onClick={() => handleFollow(user.userId)}>
+                  팔로우
+                </Button>
+              ))}
           </div>
         </div>
       ))}
