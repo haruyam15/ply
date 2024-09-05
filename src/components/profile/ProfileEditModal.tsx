@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { css } from '@emotion/react';
 import { ChevronLeft, Pencil } from 'lucide-react';
 import Modal from '@/components/Modal';
@@ -219,14 +219,42 @@ const NicknameModal: React.FC<{
 }> = ({ onBack, nickname, setNewNickname }) => {
   const [tempNickname, setTempNickname] = useState<string>(nickname);
   const [error, setError] = useState<string>('');
+  const debounceTimeout = useRef<NodeJS.Timeout | null>(null); // 디바운스를 위한 타임아웃 설정
 
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newNickname = e.target.value;
     setTempNickname(newNickname);
+
+    // 닉네임 길이 검사
     if (newNickname.length < 2 || newNickname.length > 20) {
       setError('닉네임은 2자 이상 20자 이하여야 합니다.');
     } else {
       setError('');
+
+      // 디바운스 설정: 입력할 때마다 타임아웃을 초기화하고 500ms 후에 중복 검사를 실행
+      if (debounceTimeout.current) {
+        clearTimeout(debounceTimeout.current);
+      }
+
+      debounceTimeout.current = setTimeout(() => {
+        checkNicknameAvailability(newNickname);
+      }, 500); // 500ms 디바운스 적용
+    }
+  };
+
+  const checkNicknameAvailability = async (newNickname: string) => {
+    try {
+      const response = await fetch(`/api/nicknameCheck/${newNickname}`);
+      const result = await response.json();
+
+      if (result.isDuplicate) {
+        setError('이미 존재하는 닉네임입니다.');
+      } else {
+        setError('');
+      }
+    } catch (error) {
+      console.error('닉네임 중복 확인 중 오류 발생:', error);
+      setError('닉네임 중복 확인 중 오류가 발생했습니다.');
     }
   };
 
@@ -244,10 +272,11 @@ const NicknameModal: React.FC<{
       </button>
       <h2 css={modalTitleStyle}>닉네임 변경</h2>
       <Input value={tempNickname} onChange={handleNicknameChange} type="text" />
-      {error && <p css={errorStyle}>{error}</p>}
-      <p css={noteStyle}>이름은 14일 동안 최대 두 번까지 변경할 수 있습니다.</p>
+      {<p css={errorStyle(!!error)}>{error || ' '}</p>}
       <div css={buttonWrapperStyle}>
-        <Button onClick={handleSubmit}>변경하기</Button>
+        <Button onClick={handleSubmit} disabled={!!error}>
+          변경하기
+        </Button>
       </div>
     </div>
   );
@@ -328,7 +357,7 @@ const PasswordChangeModal: React.FC<{
         value={confirmPassword}
         onChange={(e) => setConfirmPassword(e.target.value)}
       />
-      {error && <p css={errorStyle}>{error}</p>}
+      {<p css={errorStyle(!!error)}>{error || ' '}</p>}
       <p css={noteStyle}>
         비밀번호는 최소 6자 이상이어야 하며 숫자, 영문, 특수 문자의 조합을 포함해야 합니다.
       </p>
@@ -481,8 +510,12 @@ const backButtonStyle = css`
   padding: 11px;
 `;
 
-const errorStyle = css`
+const errorStyle = (isVisible: boolean) => css`
   color: ${colors.red};
   font-size: 14px;
   margin-top: 5px;
+  height: 20px;
+  visibility: ${isVisible ? 'visible' : 'hidden'}; /* isVisible 상태에 따라 visibility 설정 */
+  white-space: nowrap;
+  text-align: center;
 `;

@@ -27,6 +27,7 @@ import signupRoute from './routes/signup.js';
 import signupValidate from './routes/signupValidate.js';
 import createPlaylist from './routes/createPlaylist.js';
 import likeCheckRoute from './routes/likeCheck.js';
+import nicknameCheckRoute from './routes/nicknameCheck.js';
 
 const app = express();
 
@@ -81,3 +82,4 @@ app.use('/api/commentAdd', commentAddRoute);
 app.use('/api/likeDelete', likeDeleteRoute);
 app.use('/api/likeAdd', likeAddRoute);
 app.use('/api/likeCheck', likeCheckRoute);
+app.use('/api/nicknameCheck', nicknameCheckRoute);

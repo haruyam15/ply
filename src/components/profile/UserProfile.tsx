@@ -20,11 +20,17 @@ const UserProfile: React.FC = () => {
       try {
         const response = await axios.get(`/api/profilePage/${user.userId}`);
         if (response.data) {
-          setUser({
-            ...user,
-            followers: response.data.followers,
-            myPlaylists: response.data.myPlaylistCount,
-          });
+          // 상태가 달라졌을 때만 업데이트
+          if (
+            user.followers !== response.data.followers ||
+            user.myPlaylists !== response.data.myPlaylistCount
+          ) {
+            setUser({
+              ...user,
+              followers: response.data.followers,
+              myPlaylists: response.data.myPlaylistCount,
+            });
+          }
         }
       } catch (error) {
         console.error('프로필 데이터를 가져오는 중 오류 발생:', error);
@@ -34,7 +40,8 @@ const UserProfile: React.FC = () => {
     if (user.userId) {
       fetchProfileData();
     }
-  }, [user.userId, setUser, user]);
+    // user.userId와 setUser만 의존성 배열에 포함
+  }, [user.userId, setUser]);
 
   const { profileImage, nickname, userId } = user;
 
