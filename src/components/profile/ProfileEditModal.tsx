@@ -27,6 +27,28 @@ const ProfileEditModal: React.FC = () => {
   const [newPassword, setNewPassword] = useState<string>('');
   const [showConfirm, setShowConfirm] = useState(false);
 
+  const uploadImage = async (file: File): Promise<string> => {
+    const formData = new FormData();
+    formData.append('image', file);
+
+    try {
+      const response = await fetch('/api/uploadImage', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('이미지 업로드에 실패했습니다.');
+      }
+
+      const data = await response.json();
+      return data.imageUrl; // 서버에서 반환한 이미지 URL
+    } catch (error) {
+      console.error('이미지 업로드 중 오류 발생:', error);
+      throw error;
+    }
+  };
+
   const handleProfileUpdate = async () => {
     try {
       const response = await fetch(`/api/profileEdit/${userId}`, {
@@ -100,6 +122,7 @@ const ProfileEditModal: React.FC = () => {
             onBack={() => setCurrentModal('main')}
             profileimage={newProfileImage}
             setNewProfileImage={setNewProfileImage}
+            uploadImage={uploadImage}
           />
         );
       case 'nickname':
@@ -170,19 +193,24 @@ const ProfileImageModal: React.FC<{
   onBack: () => void;
   profileimage: string;
   setNewProfileImage: (image: string) => void;
-}> = ({ onBack, profileimage, setNewProfileImage }) => {
-  const handleProfileImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  uploadImage: (file: File) => Promise<string>;
+}> = ({ onBack, profileimage, setNewProfileImage, uploadImage }) => {
+  const [isUploading, setIsUploading] = useState(false);
+
+  const handleProfileImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
-      const reader = new FileReader();
+      setIsUploading(true);
 
-      reader.onloadend = () => {
-        if (typeof reader.result === 'string') {
-          setNewProfileImage(reader.result);
-        }
-      };
-
-      reader.readAsDataURL(file);
+      try {
+        const imageUrl = await uploadImage(file);
+        setNewProfileImage(imageUrl);
+        toast.success('프로필 이미지가 업로드되었습니다.');
+      } catch (error) {
+        toast.error('이미지 업로드에 실패했습니다.');
+      } finally {
+        setIsUploading(false);
+      }
     }
   };
 
@@ -224,26 +252,24 @@ const NicknameModal: React.FC<{
 }> = ({ onBack, nickname, setNewNickname }) => {
   const [tempNickname, setTempNickname] = useState<string>(nickname);
   const [error, setError] = useState<string>('');
-  const debounceTimeout = useRef<NodeJS.Timeout | null>(null); // 디바운스를 위한 타임아웃 설정
+  const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
 
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newNickname = e.target.value;
     setTempNickname(newNickname);
 
-    // 닉네임 길이 검사
     if (newNickname.length < 2 || newNickname.length > 20) {
       setError('닉네임은 2자 이상 20자 이하여야 합니다.');
     } else {
       setError('');
 
-      // 디바운스 설정: 입력할 때마다 타임아웃을 초기화하고 500ms 후에 중복 검사를 실행
       if (debounceTimeout.current) {
         clearTimeout(debounceTimeout.current);
       }
 
       debounceTimeout.current = setTimeout(() => {
         checkNicknameAvailability(newNickname);
-      }, 500); // 500ms 디바운스 적용
+      }, 500);
     }
   };
 

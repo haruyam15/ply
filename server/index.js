@@ -28,6 +28,7 @@ import signupValidate from './routes/signupValidate.js';
 import createPlaylist from './routes/createPlaylist.js';
 import likeCheckRoute from './routes/likeCheck.js';
 import nicknameCheckRoute from './routes/nicknameCheck.js';
+import uploadImageRoute from './routes/uploadImage.js';
 
 const app = express();
 
@@ -57,6 +58,8 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use('/uploads', express.static('uploads'));
+
 app.use('/api', loginRoute);
 app.use('/api', signupRoute);
 app.use('/api', signupValidate);
@@ -83,3 +86,4 @@ app.use('/api/likeDelete', likeDeleteRoute);
 app.use('/api/likeAdd', likeAddRoute);
 app.use('/api/likeCheck', likeCheckRoute);
 app.use('/api/nicknameCheck', nicknameCheckRoute);
+app.use('/api/uploadImage', uploadImageRoute);
