@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { NewPlaylistData } from '@/types/playlistTypes';
-import { plyData } from '@/apis/cuPlyData';
+import { plyData } from '@/apis/updatePlyData';
 
 const useNewPlaylist = () => {
   return useMutation<

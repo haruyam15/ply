@@ -26,11 +26,7 @@ const ManagePlaylist = () => {
   const { mutate } = useNewPlaylist();
   const navigate = useNavigate();
   const { data: youtubeResults } = useYoutubeFetch(videoIdList, !!videoIdList);
-  const { data: userPlyData, error: fetchUserPlyDataError } = useWatchDataFetch(
-    playlistId,
-    'Edit',
-    !!playlistId,
-  );
+  const { data: userPlyData } = useWatchDataFetch(playlistId, 'Edit', !!playlistId);
 
   useEffect(() => {
     youtubeResults?.items.forEach((data) => {
@@ -53,11 +49,6 @@ const ManagePlaylist = () => {
         .filter(Boolean)
         .join(',');
       setVideoIdList(arrLinkToString);
-    } else if (fetchUserPlyDataError) {
-      toast.error('플레이리스트 정보를 불러오는데 실패했습니다.');
-      setTimeout(() => {
-        history.back();
-      }, 2000);
     }
   }, [playlistId, userPlyData]);
 
@@ -88,19 +79,22 @@ const ManagePlaylist = () => {
         mutate({ playlistData, type, playlistId });
         if (type === '추가') {
           toast.success('플레이리스트가 생성되었습니다.');
+          setTimeout(() => {
+            navigate('/playlist');
+          }, 2000);
         } else if (type === '수정') {
           toast.success('플레이리스트가 수정되었습니다.');
+          setTimeout(() => {
+            navigate(`/watch/${playlistId}?v=${addedPlaylist[0].id}`);
+          }, 2000);
         }
-        setTimeout(() => {
-          navigate('/playlist');
-        }, 2000);
       } catch (error) {
         toast.error('플레이리스트 업데이트 중 오류가 발생하였습니다. 다시 시도해주세요.');
         console.error(error);
       }
     }
   };
-
+  console.log(addedPlaylist[0]?.id);
   return (
     <div css={{ margin: '5px 15px 0 0' }}>
       <h2 css={{ fontSize: '22px', marginBottom: '20px' }}>
