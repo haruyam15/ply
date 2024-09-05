@@ -5,7 +5,7 @@ import SkeletonGridItem from '@/components/SkeletonGridItem';
 import TitleHeader from '@/components/TitleHeader';
 import VideoGridItem from '@/components/VideoGridItem';
 import useUserStore from '@/stores/useUserStore';
-import throttle from 'lodash/throttle'; // lodash의 throttle 가져오기
+import throttle from 'lodash/throttle';
 
 interface PlaylistData {
   id: string;
@@ -81,6 +81,7 @@ const Timeline: React.FC = () => {
         const result = await response.json();
         setPlaylists(result.playlists);
         setHasMore(result.playlists.length > visibleItems);
+        setLoading(false);
       } catch (error) {
         if (error instanceof Error) {
           console.error('데이터 요청 오류:', error);
@@ -109,9 +110,9 @@ const Timeline: React.FC = () => {
           if (playlists.length <= visibleItems + 8) {
             setHasMore(false);
           }
-        }, 1000);
+        }, 500);
       }
-    }, 500); // 500ms마다 한 번만 호출
+    }, 500);
 
     window.addEventListener('scroll', throttledHandleScroll);
     return () => window.removeEventListener('scroll', throttledHandleScroll);
@@ -121,7 +122,7 @@ const Timeline: React.FC = () => {
     <div css={containerStyle}>
       <TitleHeader
         profileImage={userInformation?.profileImage || '없음'}
-        nickname={userInformation?.userName || '손성오'}
+        nickname={userInformation?.userName || ''}
         actionText="타임라인"
       />
 
@@ -140,7 +141,7 @@ const Timeline: React.FC = () => {
             profileImage={userInformation?.profileImage || ''}
             userName={userInformation?.userName || ''}
             userId={userInformation?.userId || ''}
-            imgUrl={item.imgUrl} // imgUrl을 VideoGridItem에 전달
+            imgUrl={item.imgUrl[0]} // imgUrl을 VideoGridItem에 전달
             videoCount={item.videoCount}
           />
         ))}

@@ -103,7 +103,7 @@ const Like: React.FC = () => {
         setTimeout(() => {
           setVisibleItems((prev) => prev + 8);
           setLoading(false);
-        }, 1000);
+        }, 500);
       }
     }, 500); // 500ms마다 한 번만 호출
 
@@ -115,7 +115,7 @@ const Like: React.FC = () => {
     <div css={containerStyle}>
       <TitleHeader
         profileImage={userInformation?.profileImage || '없음'}
-        nickname={userInformation?.userName || '손성오'}
+        nickname={userInformation?.userName || ''}
         actionText="좋아요한 플레이리스트"
       />
 

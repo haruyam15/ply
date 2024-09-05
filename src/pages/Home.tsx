@@ -77,7 +77,7 @@ const Home: React.FC = () => {
       if (exploreData.length <= exploreVisibleItems + 8) {
         setHasMoreExplore(false);
       }
-    }, 1000);
+    }, 500);
   };
 
   const fetchUserInformation = async (userId: string) => {
