@@ -9,14 +9,16 @@ import { useNavigate, useParams } from 'react-router-dom';
 function CommentList() {
   const navigate = useNavigate();
   const playlistId = useParams().playlistId as string;
-  const { isLoading, data, error } = useWatchDataFetch(playlistId, 'comment');
+  const { isLoading, data, isError } = useWatchDataFetch({ playlistId, optionalKey: 'comment' });
 
   if (isLoading) {
     return <></>;
   }
-  if (error) {
-    console.error(error);
+
+  if (isError) {
+    alert('댓글을 가져오는데 오류가 발생했습니다.');
     navigate('/');
+    return null;
   }
 
   if (!data) {

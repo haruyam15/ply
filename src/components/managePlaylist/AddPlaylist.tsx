@@ -64,7 +64,7 @@ const AddPlaylist = forwardRef<AddPlaylistRef, AddPlaylistProps>(({ userPlyData 
     }
   }, [url]);
 
-  const { data: youTubeData } = useYoutubeFetch(videoId, !!videoId);
+  const { data: youTubeData } = useYoutubeFetch({ videoId, enabled: !!videoId });
   useEffect(() => {
     if (!!videoId && youTubeData?.items) {
       const youTubelist = {

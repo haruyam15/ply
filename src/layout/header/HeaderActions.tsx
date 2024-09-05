@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { Link } from 'react-router-dom';
 import Button from '@/components/Button';
 import Signin from '@/components/sign/Signin';
 import Signup from '@/components/sign/Signup';
@@ -15,16 +14,14 @@ function HeaderActions() {
   return (
     <div css={headerActions}>
       {user?.userId ? (
-        <Link to={'/profile'}>
-          <div className="user-info">
-            <User
-              profileImage={user.profileImage}
-              nickname={user.nickname}
-              userId={user.userId}
-              size="md"
-            />
-          </div>
-        </Link>
+        <div className="user-info">
+          <User
+            profileImage={user.profileImage}
+            nickname={user.nickname}
+            userId={user.userId}
+            size="md"
+          />
+        </div>
       ) : (
         <>
           <div onClick={() => openSigninModal('signin')}>

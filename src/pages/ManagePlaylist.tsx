@@ -26,8 +26,15 @@ const ManagePlaylist = () => {
   const { playlistId } = useParams() as { playlistId: string };
   const { mutate } = useNewPlaylist();
   const navigate = useNavigate();
-  const { data: youtubeResults } = useYoutubeFetch(videoIdList, !!videoIdList);
-  const { data: userPlyData } = useWatchDataFetch(playlistId, 'Edit', !!playlistId);
+  const { data: youtubeResults } = useYoutubeFetch({
+    videoId: videoIdList,
+    enabled: !!videoIdList,
+  });
+  const { data: userPlyData } = useWatchDataFetch({
+    playlistId,
+    optionalKey: 'Edit',
+    enabled: !!playlistId,
+  });
 
   useEffect(() => {
     youtubeResults?.items.forEach((data) => {

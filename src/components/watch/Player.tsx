@@ -1,11 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { useLocation } from 'react-router-dom';
 
-function Player() {
-  const urlParams = new URLSearchParams(useLocation().search);
-  const playingVideoId = urlParams.get('v') as string;
+interface IPlayerProps {
+  playingVideoId: string;
+}
 
+function Player({ playingVideoId }: IPlayerProps) {
   return (
     <div className="player" css={player} key={playingVideoId}>
       <iframe src={`https://www.youtube.com/embed/${playingVideoId}`} allowFullScreen></iframe>

@@ -1,14 +1,14 @@
 import axios from 'axios';
 
-const getIsFollowing = async (userId: string, targetUserId: string): Promise<boolean | null> => {
+const getIsFollowing = async (userId: string, targetUserId: string): Promise<boolean> => {
   try {
     const response = await axios.get(
       `http://localhost:8080/api/followCheck/${userId}/${targetUserId}`,
     );
     return response.data.followStatus;
   } catch (error) {
-    console.error(error);
-    return null;
+    console.error('팔로잉 처리에 오류가 발생했습니다.:', error);
+    throw error;
   }
 };
 

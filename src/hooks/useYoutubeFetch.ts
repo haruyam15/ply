@@ -1,7 +1,12 @@
 import getYoutubeData from '@/apis/getYoutubeData';
 import { useQuery } from '@tanstack/react-query';
 
-function useYoutubeFetch(videoId: string, enabled: boolean, playlistId?: string) {
+interface IUseYoutubeFetch {
+  videoId: string;
+  enabled?: boolean;
+  playlistId?: string;
+}
+function useYoutubeFetch({ videoId, enabled, playlistId }: IUseYoutubeFetch) {
   if (!playlistId) {
     playlistId = videoId;
   }
