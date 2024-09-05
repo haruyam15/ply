@@ -24,10 +24,10 @@ const ManagePlaylist = () => {
   const clearYoutubelistData = useYoutubeDataStore((state) => state.clearYoutubelistData);
   const playlistDataToAdd = useRef<{ getPlaylistData: () => PlaylistDataStore }>(null);
   const { playlistId } = useParams() as { playlistId: string };
-  const { mutate } = useNewPlaylist();
-  const navigate = useNavigate();
   const { data: youtubeResults } = useYoutubeFetch(videoIdList, !!videoIdList);
   const { data: userPlyData } = useWatchDataFetch(playlistId, 'Edit', !!playlistId);
+  const { mutate } = useNewPlaylist();
+  const navigate = useNavigate();
 
   useEffect(() => {
     youtubeResults?.items.forEach((data) => {
@@ -82,25 +82,20 @@ const ManagePlaylist = () => {
       try {
         mutate({ playlistData, type, playlistId });
         if (type === '추가') {
-          clearYoutubelistData();
           toast.success('플레이리스트가 생성되었습니다.');
-          setTimeout(() => {
-            navigate('/playlist');
-          }, 2000);
         } else if (type === '수정') {
-          clearYoutubelistData();
           toast.success('플레이리스트가 수정되었습니다.');
-          setTimeout(() => {
-            navigate(`/watch/${playlistId}?v=${addedPlaylist[0].id}`);
-          }, 2000);
         }
+        setTimeout(() => {
+          clearYoutubelistData();
+          navigate('/playlist');
+        }, 2000);
       } catch (error) {
         toast.error('플레이리스트 업데이트 중 오류가 발생하였습니다. 다시 시도해주세요.');
         console.error(error);
       }
     }
   };
-  console.log(addedPlaylist[0]?.id);
   return (
     <div css={{ margin: '5px 15px 0 0' }}>
       <h2 css={{ fontSize: '22px', marginBottom: '20px' }}>
@@ -111,7 +106,9 @@ const ManagePlaylist = () => {
         <div css={{ width: 'calc(100% - 450px)', position: 'relative' }}>
           <PlaylistChart />
           <div css={btnArea}>
-            <Button size="md">취소</Button>
+            <Button size="md" onClick={() => history.back()}>
+              취소
+            </Button>
             <Button
               size="md"
               background={true}
