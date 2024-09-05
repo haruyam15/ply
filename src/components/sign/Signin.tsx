@@ -1,11 +1,13 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /** @jsxImportSource @emotion/react */
-import { useRef } from 'react';
+import { useCallback, useRef } from 'react';
 import { css } from '@emotion/react';
 import Modal from '@/components/Modal';
 import useModalStore from '@/stores/useModalStore';
 import useUserStore from '@/stores/useUserStore';
 import { colors } from '@/styles/colors';
 import useUserDataFetch from '@/hooks/useUserDataFetch';
+import { debounce } from 'lodash';
 
 const Signin: React.FC = () => {
   const signinModal = useModalStore((state) => state.modals);
@@ -16,26 +18,33 @@ const Signin: React.FC = () => {
   const passwordRef = useRef<HTMLInputElement>(null);
   const { mutateAsync } = useUserDataFetch();
 
+  const debouncedSignin = useCallback(
+    debounce(async () => {
+      const userId = idRef.current?.value ?? null;
+      const password = passwordRef.current?.value ?? null;
+      if (userId && password) {
+        try {
+          const fetchUserData = {
+            userId,
+            password,
+          };
+          const userData = await mutateAsync({ api: 'login', userData: fetchUserData });
+          if (typeof userData !== 'number' && userData !== null) {
+            setUserData(userData);
+            closeSigninModal('signin');
+            location.reload();
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    }, 500),
+    [idRef, passwordRef],
+  );
+
   const onLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const userId = idRef.current?.value ?? null;
-    const password = passwordRef.current?.value ?? null;
-    if (userId && password) {
-      try {
-        const fetchUserData = {
-          userId,
-          password,
-        };
-        const userData = await mutateAsync({ api: 'login', userData: fetchUserData });
-        if (typeof userData !== 'number' && userData !== null) {
-          setUserData(userData);
-          closeSigninModal('signin');
-          location.reload();
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    }
+    debouncedSignin();
   };
 
   const children: React.ReactNode = (
@@ -56,7 +65,7 @@ const Signin: React.FC = () => {
             htmlFor="remember"
           >
             <input css={{ cursor: 'pointer' }} type="checkBox" id="remember" defaultChecked />
-            Remember ID
+            로그인 유지하기
           </label>
         </div>
         <div>
@@ -74,7 +83,7 @@ const Signin: React.FC = () => {
             openSignupModal('signup');
           }}
         >
-          Sign Up
+          회원가입
         </button>
       </p>
     </>
@@ -110,7 +119,7 @@ export const idAndPassword = css`
   width: 100%;
   height: 40px;
   border: none;
-  border-radius: 10px;
+  border-radius: 7px;
   margin: 15px 0 20px;
   outline: none;
   padding: 0 10px;
@@ -119,7 +128,7 @@ export const idAndPassword = css`
   color: ${colors.black};
 `;
 export const modalMovementBtn = css`
-  margin-left: 5px;
+  margin-left: 10px;
   background-color: transparent;
   border: none;
   cursor: pointer;

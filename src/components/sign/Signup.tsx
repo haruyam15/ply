@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /** @jsxImportSource @emotion/react */
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { debounce } from 'lodash';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -35,21 +36,41 @@ const Signup: React.FC = () => {
   const nameRef = useRef<HTMLInputElement>(null);
   const idRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
+  const rePasswordRef = useRef<HTMLInputElement>(null);
   const { mutateAsync } = useUserDataFetch();
 
   const checkbox = document.getElementById('check') as HTMLInputElement;
   useEffect(() => {
+    const passwordCheckRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,}$/;
     const validation = async () => {
       try {
-        if (newUser.nickname && newUser.userId && !checkbox?.checked && signupModal.modalState) {
+        if (
+          newUser.password &&
+          newUser.nickname &&
+          newUser.userId &&
+          !checkbox?.checked &&
+          signupModal.modalState
+        ) {
           toast.error('모두 확인하였는지 체크해주세요.');
           return;
+        }
+        if (newUser.password) {
+          if (!passwordCheckRegex.test(newUser.password)) {
+            toast.error('비밀번호는 6자 이상이어야 하며 숫자, 영문, 특수문자를 포함해야 합니다.');
+            return;
+          }
+        }
+        if (rePasswordRef.current) {
+          if (rePasswordRef.current.value !== newUser.password) {
+            toast.error('비밀번호가 일치하지 않습니다.');
+            return;
+          }
         }
         const userData = {
           userId: newUser.userId,
           nickname: newUser.nickname,
         };
-        const res = await mutateAsync({ api: 'validate', userData });
+        const res = await mutateAsync({ api: 'signupValidate', userData });
         if (res === 200) {
           addNewUser();
         }
@@ -69,13 +90,20 @@ const Signup: React.FC = () => {
     validation();
   }, [newUser]);
 
+  const debouncedSignup = useCallback(
+    debounce(() => {
+      setNewUser({
+        nickname: nameRef.current?.value ?? null,
+        userId: idRef.current?.value ?? null,
+        password: passwordRef.current?.value ?? null,
+      });
+    }, 500),
+    [],
+  );
+
   const onSignup = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setNewUser({
-      nickname: nameRef.current?.value ?? null,
-      userId: idRef.current?.value ?? null,
-      password: passwordRef.current?.value ?? null,
-    });
+    debouncedSignup();
   };
 
   const addNewUser = async () => {
@@ -118,6 +146,10 @@ const Signup: React.FC = () => {
           <Input css={idAndPassword} ref={passwordRef} type="password" required />
           <label>비밀번호</label>
         </div>
+        <div css={idAndPasswordArea}>
+          <Input css={idAndPassword} ref={rePasswordRef} type="password" required />
+          <label>비밀번호 재입력</label>
+        </div>
         <div css={{ fontSize: '14px' }}>
           <label
             css={{
@@ -139,12 +171,12 @@ const Signup: React.FC = () => {
       <p css={{ fontSize: '14px', marginBottom: '40px' }}>
         로그인하시겠습니까?
         <button css={modalMovementBtn} onClick={() => openSigninModal('signin')}>
-          로그인 화면으로 돌아가기
+          로그인
         </button>
       </p>
       <ToastContainer
         position="bottom-center"
-        limit={2}
+        limit={1}
         closeButton={false}
         autoClose={2000}
         hideProgressBar
