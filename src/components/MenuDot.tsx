@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { css } from '@emotion/react';
 import { EllipsisVertical, Pencil, Trash2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom'; // 추가된 부분
 import useDeletePlaylist from '@/hooks/useDeletePlaylist';
 import { colors } from '@/styles/colors';
 import Confirm from './Confirm';
@@ -23,6 +24,7 @@ const MenuDot: React.FC<MenuDotProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const navigate = useNavigate(); // 추가된 부분
 
   const { deletePlaylist } = useDeletePlaylist();
 
@@ -31,7 +33,7 @@ const MenuDot: React.FC<MenuDotProps> = ({
   };
 
   const handleEdit = () => {
-    console.log('Edit clicked');
+    navigate(`/managePlaylist/${videoId}`); // 수정된 부분: 해당 플레이리스트 ID로 라우팅
     setIsOpen(false);
   };
 

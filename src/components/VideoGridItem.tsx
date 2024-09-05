@@ -21,7 +21,7 @@ interface VideoGridItemProps {
   userId: string;
   imgUrl: string;
   videoCount: number;
-  index: number; // 추가: 각 항목의 index 전달
+  index?: number; // 추가: 각 항목의 index 전달
   deleteItem?: (index: number) => void; // 타입 수정: (index: number) => void로 수정
 }
 
