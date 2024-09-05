@@ -37,10 +37,9 @@ const Follow: React.FC = () => {
     try {
       if (userInformation.userId) {
         const response = await axios.get(`/api/followingPage/${userInformation.userId}`);
-        // 각 유저에 대해 팔로우 상태를 추가로 관리
         const updatedFollowing = response.data.map((user: UserDetail) => ({
           ...user,
-          isFollowing: true, // 기본으로 팔로잉 상태로 설정
+          isFollowing: true,
         }));
         setFollowing(updatedFollowing);
       }
@@ -60,7 +59,6 @@ const Follow: React.FC = () => {
     try {
       if (userInformation.userId) {
         await axios.delete(`/api/followDelete/${userInformation.userId}/${targetUserId}`);
-        // 버튼만 "팔로우"로 변경, 목록 업데이트는 따로 새로고침 없이 상태로 처리
         setFollowing((prevFollowing) =>
           prevFollowing.map((user) =>
             user.userId === targetUserId ? { ...user, isFollowing: false } : user,
@@ -89,33 +87,42 @@ const Follow: React.FC = () => {
 
   const renderUserList = (users: UserDetail[]) => (
     <div>
-      {users.map((user, index) => (
-        <div key={index} css={userItemStyle}>
-          <img
-            css={profileimageArea}
-            src={user.profileImage || '/default-profile-image.jpg'}
-            alt={user.userName}
-          />
-          <div css={userInfoStyle}>
-            <h2 css={nicknameStyle}>{user.userName}</h2>
-            <div css={userDetailsStyle}>
-              <p>{user.userId}</p>
-              <p>팔로워 {user.followers}</p>
-              <p>플레이리스트 {user.myPlaylist}</p>
+      {users.length === 0 ? (
+        <p css={emptyMessageStyle}>
+          {activeTab === 'followers' ? '아직 팔로워가 없습니다.' : '아직 팔로잉한 유저가 없습니다.'}
+        </p>
+      ) : (
+        users.map((user, index) => (
+          <div key={index} css={userItemStyle}>
+            <img
+              css={profileimageArea}
+              src={user.profileImage || '/default-profile-image.jpg'}
+              alt={user.userName}
+            />
+            <div css={userInfoStyle}>
+              <h2 css={nicknameStyle}>{user.userName}</h2>
+              <div css={userDetailsStyle}>
+                <p>{user.userId}</p>
+                <p>팔로워 {user.followers}</p>
+                <p>플레이리스트 {user.myPlaylist}</p>
+              </div>
+              {activeTab === 'following' &&
+                (user.isFollowing ? (
+                  <Button
+                    css={profileEditOrFollowerBtn}
+                    onClick={() => handleUnfollow(user.userId)}
+                  >
+                    팔로우 취소
+                  </Button>
+                ) : (
+                  <Button css={profileEditOrFollowerBtn} onClick={() => handleFollow(user.userId)}>
+                    팔로우
+                  </Button>
+                ))}
             </div>
-            {activeTab === 'following' &&
-              (user.isFollowing ? (
-                <Button css={profileEditOrFollowerBtn} onClick={() => handleUnfollow(user.userId)}>
-                  팔로우 취소
-                </Button>
-              ) : (
-                <Button css={profileEditOrFollowerBtn} onClick={() => handleFollow(user.userId)}>
-                  팔로우
-                </Button>
-              ))}
           </div>
-        </div>
-      ))}
+        ))
+      )}
     </div>
   );
 
@@ -141,6 +148,8 @@ const Follow: React.FC = () => {
     </div>
   );
 };
+
+export default Follow;
 
 const tabsStyle = css`
   display: flex;
@@ -229,4 +238,9 @@ const profileEditOrFollowerBtn = css`
   }
 `;
 
-export default Follow;
+const emptyMessageStyle = css`
+  text-align: center;
+  margin-top: 140px;
+  font-size: 20px;
+  color: ${colors.gray};
+`;

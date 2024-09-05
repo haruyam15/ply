@@ -16,6 +16,7 @@ interface PlaylistData {
   id: string;
   videoCount: number;
 }
+
 function Profile() {
   const userInformation = useUserStore((state) => state.userInformation);
   const [selectedTab, setSelectedTab] = useState('playlist');
@@ -81,6 +82,14 @@ function Profile() {
           <p>로딩 중...</p>
         ) : error ? (
           <p>{error}</p>
+        ) : playlists.length === 0 ? (
+          <div css={emptyMessageStyle}>
+            {selectedTab === 'playlist' ? (
+              <p>아직 플레이리스트가 없습니다. 플레이리스트를 만들어보세요!</p>
+            ) : (
+              <p>좋아요한 플레이리스트가 없습니다.</p>
+            )}
+          </div>
         ) : (
           <div css={gridContainerStyle}>
             {playlists.map((item, index) => (
@@ -91,7 +100,7 @@ function Profile() {
                 user={item.userId}
                 showDelete={true}
                 showEdit={true}
-                showMenuDot={true}
+                showMenuDot={userInformation.userId === item.userId}
                 tags={item.tags}
                 profileImage={userInformation?.profileImage || ''}
                 userName={item.userId}
@@ -156,4 +165,12 @@ const gridContainerStyle = css`
   grid-template-columns: repeat(4, 1fr);
   gap: 20px;
   padding: 20px;
+`;
+
+const emptyMessageStyle = css`
+  text-align: center;
+  font-size: 20px;
+  color: ${colors.gray};
+  padding: 40px 0;
+  margin-top: 80px;
 `;
