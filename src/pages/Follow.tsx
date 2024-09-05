@@ -16,7 +16,7 @@ interface UserDetail {
 }
 
 const Follow: React.FC = () => {
-  const { userInformation } = useUserStore();
+  const userInformation = useUserStore((state) => state.userInformation);
   const [followers, setFollowers] = useState<UserDetail[]>([]);
   const [following, setFollowing] = useState<UserDetail[]>([]);
   const [activeTab, setActiveTab] = useState<'followers' | 'following'>('followers');
