@@ -170,7 +170,7 @@ const Home: React.FC = () => {
       </div>
 
       {/* 타임라인 섹션을 조건부로 렌더링 */}
-      {user.userId && (
+      {user.userId && playlists.length > 0 && (
         <>
           <div css={TimeLineStyle}>
             <div>타임라인</div>
