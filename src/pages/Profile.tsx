@@ -17,7 +17,7 @@ interface PlaylistItem {
 }
 
 function Profile() {
-  const { userInformation } = useUserStore();
+  const userInformation = useUserStore((state) => state.userInformation);
   const [selectedTab, setSelectedTab] = useState('playlist');
   const [playlists, setPlaylists] = useState<PlaylistItem[]>([]);
   const [loading, setLoading] = useState(true);
