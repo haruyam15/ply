@@ -12,7 +12,7 @@ interface MenuDotProps {
   showDelete?: boolean;
   deleteItem?: (index: number) => void;
   index?: number;
-  videoId: string;
+  videoId?: string;
 }
 
 const MenuDot: React.FC<MenuDotProps> = ({

@@ -22,8 +22,8 @@ const PlaylistChart: React.FC = () => {
   };
 
   return (
-    <DndProvider backend={HTML5Backend}>
-      <div css={playlistChartWrapper('top')}>
+    <div css={playlistChartWrapper('top')}>
+      <DndProvider backend={HTML5Backend}>
         {youTubelistData ? (
           <ul css={{ width: '100%' }}>
             {youTubelistData.map((youTubelistData, index) => (
@@ -42,8 +42,8 @@ const PlaylistChart: React.FC = () => {
             <p>영상을 추가해 보새요.</p>
           </div>
         )}
-      </div>
-    </DndProvider>
+      </DndProvider>
+    </div>
   );
 };
 
@@ -51,7 +51,7 @@ export default PlaylistChart;
 
 const playlistChartWrapper = (position: string) => css`
   width: 100%;
-  min-height: 800px;
+  max-height: 800px;
   margin-left: 20px;
   box-sizing: border-box;
   display: flex;
@@ -59,8 +59,15 @@ const playlistChartWrapper = (position: string) => css`
   align-items: ${position};
   font-size: 22px;
   color: #6b6b6b;
-  transition: all 0.4;
+  overflow-y: auto;
   & p {
     margin-left: 10px;
+  }
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: #242424;
+    border-radius: 10px;
   }
 `;
