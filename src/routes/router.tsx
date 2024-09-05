@@ -11,6 +11,7 @@ import Search from '@/pages/Search';
 import Timeline from '@/pages/Timeline';
 import Watch from '@/pages/Watch';
 import ManagePlaylist from '@/pages/ManagePlaylist';
+import ProtectedRoutes from '@/routes/ProtectedRoutes';
 
 export const router = createBrowserRouter([
   {
@@ -24,27 +25,51 @@ export const router = createBrowserRouter([
       },
       {
         path: '/timeline',
-        element: <Timeline />,
+        element: (
+          <ProtectedRoutes>
+            <Timeline />
+          </ProtectedRoutes>
+        ),
       },
       {
         path: '/playlist',
-        element: <Playlist />,
+        element: (
+          <ProtectedRoutes>
+            <Playlist />
+          </ProtectedRoutes>
+        ),
       },
       {
         path: '/like',
-        element: <Like />,
+        element: (
+          <ProtectedRoutes>
+            <Like />
+          </ProtectedRoutes>
+        ),
       },
       {
         path: '/profile',
-        element: <Profile />,
+        element: (
+          <ProtectedRoutes>
+            <Profile />
+          </ProtectedRoutes>
+        ),
       },
       {
         path: '/watch/:playlistId',
-        element: <Watch />,
+        element: (
+          <ProtectedRoutes>
+            <Watch />
+          </ProtectedRoutes>
+        ),
       },
       {
         path: '/follow',
-        element: <Follow />,
+        element: (
+          <ProtectedRoutes>
+            <Follow />
+          </ProtectedRoutes>
+        ),
       },
       {
         path: '/search',
@@ -52,7 +77,11 @@ export const router = createBrowserRouter([
       },
       {
         path: '/managePlaylist/:playlistId?',
-        element: <ManagePlaylist />,
+        element: (
+          <ProtectedRoutes>
+            <ManagePlaylist />
+          </ProtectedRoutes>
+        ),
       },
     ],
   },
