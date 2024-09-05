@@ -1,15 +1,24 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { ListVideo } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 interface CoverProps {
   imageSrc: string;
   playListLength?: number;
+  playListId?: string;
+  youtubeVideoId?: string | null;
 }
 
-const Cover: React.FC<CoverProps> = ({ imageSrc, playListLength }) => {
+const Cover: React.FC<CoverProps> = ({ imageSrc, playListLength, playListId, youtubeVideoId }) => {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate(`/watch/${playListId}?v=${youtubeVideoId}`);
+  };
+
   return (
-    <div css={coverStyle}>
+    <div css={coverStyle} onClick={handleClick}>
       <img src={imageSrc} alt="cover" css={coverImageStyle} />
       {playListLength && (
         <div css={overlayTextStyle}>
@@ -24,7 +33,12 @@ const Cover: React.FC<CoverProps> = ({ imageSrc, playListLength }) => {
 const coverStyle = css`
   position: relative;
   width: 100%;
-  height: 140px; /* 원하는 높이로 설정 */
+  height: 140px;
+  cursor: pointer;
+
+  &:hover img {
+    filter: brightness(30%); /* 이미지 어둡게 */
+  }
 `;
 
 const coverImageStyle = css`
@@ -32,6 +46,7 @@ const coverImageStyle = css`
   height: 100%;
   object-fit: cover;
   border-radius: 12px;
+  transition: filter 0.2s ease; /* 부드러운 전환 효과 */
 `;
 
 const overlayTextStyle = css`

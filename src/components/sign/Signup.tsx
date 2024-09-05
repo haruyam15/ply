@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Modal from '@/components/Modal';
 import {
   submitBtn,
@@ -12,16 +13,20 @@ import {
 } from '@/components/sign/Signin';
 import useModalStore from '@/stores/useModalStore';
 import { colors } from '@/styles/colors';
-import 'react-toastify/dist/ReactToastify.css';
-interface SignupData {
-  nickname: string | null;
+import Input from '@/components/Input';
+import Button from '@/components/Button';
+import useUserDataFetch from '@/hooks/useUserDataFetch';
+
+export interface SignupData {
+  nickname?: string | null;
   userId: string | null;
-  password: string | null;
+  password?: string | null;
 }
 
 const Signup: React.FC = () => {
-  const signinModal = useModalStore((state) => state.modals);
+  const signupModal = useModalStore((state) => state.modals);
   const openSigninModal = useModalStore((state) => state.openModal);
+  const closeSignupModal = useModalStore((state) => state.closeModal);
   const [newUser, setNewUser] = useState<SignupData>({
     nickname: null,
     userId: null,
@@ -30,6 +35,39 @@ const Signup: React.FC = () => {
   const nameRef = useRef<HTMLInputElement>(null);
   const idRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
+  const { mutateAsync } = useUserDataFetch();
+
+  const checkbox = document.getElementById('check') as HTMLInputElement;
+  useEffect(() => {
+    const validation = async () => {
+      try {
+        if (newUser.nickname && newUser.userId && !checkbox?.checked && signupModal.modalState) {
+          toast.error('모두 확인하였는지 체크해주세요.');
+          return;
+        }
+        const userData = {
+          userId: newUser.userId,
+          nickname: newUser.nickname,
+        };
+        const res = await mutateAsync({ api: 'validate', userData });
+        if (res === 200) {
+          addNewUser();
+        }
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          if (error.response && error.response.status === 400) {
+            const { field } = error.response.data;
+            if (field === 'userId') {
+              toast.error('중복된 ID 입니다.');
+            } else if (field === 'nickname') {
+              toast.error('중복된 닉네임입니다.');
+            }
+          }
+        }
+      }
+    };
+    validation();
+  }, [newUser]);
 
   const onSignup = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -40,19 +78,22 @@ const Signup: React.FC = () => {
     });
   };
 
-  const checkbox = document.getElementById('check') as HTMLInputElement;
-
   const addNewUser = async () => {
     if (newUser.userId && newUser.nickname && newUser.password && checkbox?.checked) {
       try {
-        const res = await axios.post('/api/register', {
+        const userData = {
           userId: newUser.userId,
           nickname: newUser.nickname,
           password: newUser.password,
-        });
-        if (res.status === 201) {
+        };
+        const res = await mutateAsync({ api: 'register', userData });
+        if (res === 201) {
           toast.success('가입이 완료되었습니다.');
-          openSigninModal('signin');
+          setNewUser({ nickname: null, userId: null, password: null });
+          setTimeout(() => {
+            closeSignupModal('signup');
+            openSigninModal('signin');
+          }, 2000);
         }
       } catch (error) {
         console.error(error);
@@ -61,81 +102,58 @@ const Signup: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    const validation = async () => {
-      if (newUser.userId && !checkbox?.checked && signinModal.modalState) {
-        toast.error('모두 확인하였는지 체크해주세요.');
-        return;
-      } else {
-        try {
-          const res = await axios.post('/api/validate', {
-            userId: newUser.userId,
-            nickname: newUser.nickname,
-          });
-          if (res.status === 200) {
-            addNewUser();
-          }
-        } catch (error) {
-          if (axios.isAxiosError(error)) {
-            if (error.response && error.response.status === 400) {
-              const { field } = error.response.data;
-              if (field === 'userId') {
-                toast.error('중복된 ID 입니다.');
-              } else if (field === 'nickname') {
-                toast.error('중복된 닉네임입니다.');
-              }
-            }
-          }
-        }
-      }
-    };
-    validation();
-  }, [newUser, addNewUser]);
-
   const children: React.ReactNode = (
     <>
-      <h2 css={{ margin: '50px 0 20px', fontSize: '28px' }}>회원가입</h2>
+      <h2 css={{ margin: '40px 0 40px', fontSize: '28px' }}>회원가입</h2>
       <form css={{ width: '330px' }} onSubmit={(e) => onSignup(e)}>
         <div css={idAndPasswordArea}>
-          <input css={idAndPassword} ref={nameRef} type="text" required />
-          <label>NickName</label>
+          <Input css={idAndPassword} ref={nameRef} type="text" required />
+          <label>닉네임</label>
         </div>
         <div css={idAndPasswordArea}>
-          <input css={idAndPassword} ref={idRef} type="text" required />
-          <label>ID</label>
+          <Input css={idAndPassword} ref={idRef} type="text" required />
+          <label>아이디</label>
         </div>
         <div css={idAndPasswordArea}>
-          <input css={idAndPassword} ref={passwordRef} type="password" required />
-          <label>Password</label>
+          <Input css={idAndPassword} ref={passwordRef} type="password" required />
+          <label>비밀번호</label>
         </div>
-        <div css={{ fontSize: '12px' }}>
-          <label css={{ cursor: 'pointer', accentColor: `${colors.primaryGreen}` }} htmlFor="check">
+        <div css={{ fontSize: '14px' }}>
+          <label
+            css={{
+              display: 'flex',
+              alignItems: 'center',
+              cursor: 'pointer',
+              accentColor: `${colors.primaryGreen}`,
+            }}
+            htmlFor="check"
+          >
+            <input css={{ cursor: 'pointer', marginRight: '10px' }} type="checkBox" id="check" />
             모두 확인 하셨습니까?
-            <input css={{ cursor: 'pointer' }} type="checkBox" id="check" />
           </label>
         </div>
-        <button css={submitBtn} type="submit">
+        <Button css={submitBtn} type="submit">
           가입하기
-        </button>
+        </Button>
       </form>
       <p css={{ fontSize: '14px', marginBottom: '40px' }}>
         로그인하시겠습니까?
         <button css={modalMovementBtn} onClick={() => openSigninModal('signin')}>
-          Go back to login
+          로그인 화면으로 돌아가기
         </button>
       </p>
       <ToastContainer
         position="bottom-center"
         limit={2}
         closeButton={false}
-        autoClose={3000}
+        autoClose={2000}
         hideProgressBar
       />
     </>
   );
   return (
     <>
-      {signinModal.modalName === 'signup' && signinModal.modalState ? (
+      {signupModal.modalName === 'signup' && signupModal.modalState ? (
         <Modal children={children} modalName="signup" />
       ) : null}
     </>

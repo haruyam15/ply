@@ -1,21 +1,19 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { useNavigate } from 'react-router-dom';
 import User from '@/components/User';
 import useNavStore from '@/stores/useNavStore';
-import { IUserData } from '@/types/userTypes';
 import { Tab } from '@/types/navTypes';
-
-interface IFListProps {
-  tab: Tab;
-}
+import { IUserData } from '@/types/userTypes';
+import Button from '@/components/Button';
 
 const TESTURL = [
   'https://avatars.githubusercontent.com/u/131119152?s=64&v=4',
   'https://avatars.githubusercontent.com/u/143858798?s=64&v=4',
   'https://avatars.githubusercontent.com/u/147500032?s=64&v=4',
   'https://avatars.githubusercontent.com/u/169154369?s=64&v=4',
-  'https://avatars.githubusercontent.com/u/110523397?v=4',
 ];
+
 const user: IUserData = {
   userId: 'haruyam15',
   profileImage: TESTURL[4],
@@ -58,21 +56,39 @@ const user: IUserData = {
   myplaylist: [],
 };
 
-function FList({ tab }: IFListProps) {
+function FList({ tab }: FListProps) {
   const isExpand = useNavStore((state) => state.isExpand);
+  const navigate = useNavigate();
+
+  const handleMoreClick = () => {
+    navigate('/follow');
+  };
+
+  const displayedUsers = user[tab].slice(0, 4);
+  const hasMore = user[tab].length > 3;
+
   return (
-    <ul css={fList(isExpand)}>
-      {user[tab].map((f, i) => (
-        <li key={i}>
-          <User
-            profileImage={f.profileImage}
-            nickname={f.nickname}
-            userId={f.userId}
-            onlyImage={!isExpand}
-          />
-        </li>
-      ))}
-    </ul>
+    <>
+      <ul css={fList(isExpand)}>
+        {displayedUsers.map((f, i) => (
+          <li key={i}>
+            <User
+              profileImage={f.profileImage}
+              nickname={f.nickname}
+              userId={f.userId}
+              onlyImage={!isExpand}
+            />
+          </li>
+        ))}
+      </ul>
+      {hasMore && (
+        <div css={buttonContainer}>
+          <Button size={isExpand ? 'sm' : 'sm'} onClick={handleMoreClick}>
+            {isExpand ? '더보기' : '...'}
+          </Button>
+        </div>
+      )}
+    </>
   );
 }
 
@@ -92,8 +108,18 @@ const fList = (isExpand: boolean) => css`
   }
   ${!isExpand &&
   `
-		li{
-			padding:4px
-		}
+    li {
+      padding: 4px;
+    }
   `}
 `;
+
+const buttonContainer = css`
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+`;
+
+interface FListProps {
+  tab: Tab;
+}

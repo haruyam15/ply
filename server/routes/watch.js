@@ -24,6 +24,7 @@ const getPlaylistDetails = async (playlistDataId, database) => {
           commentsWriter: comment.commentsWriter,
           profileImage: commentUser ? commentUser.profileImage : null,
           userName: commentUser ? commentUser.nickname : null,
+          userId: commentUser ? commentUser.commentsWriter : null,
         };
       }),
     );
@@ -42,6 +43,7 @@ const getPlaylistDetails = async (playlistDataId, database) => {
         imgUrl: playlist.imgUrl,
         profileImage: user ? user.profileImage : null,
         userName: user ? user.nickname : null,
+        disclosureStatus: playlist.disclosureStatus,
       },
     };
   } catch (error) {

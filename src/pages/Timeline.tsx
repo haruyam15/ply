@@ -1,10 +1,10 @@
 /** @jsxImportSource @emotion/react */
 import { useEffect, useState } from 'react';
 import { css } from '@emotion/react';
-
 import SkeletonGridItem from '@/components/SkeletonGridItem';
 import TitleHeader from '@/components/TitleHeader';
 import VideoGridItem from '@/components/VideoGridItem';
+import useUserStore from '@/stores/useUserStore';
 
 interface PlaylistData {
   id: string;
@@ -13,6 +13,7 @@ interface PlaylistData {
   tags: string[];
   imgUrl: string; // imgUrl 속성 추가
   disclosureStatus: string;
+  videoCount: number;
 }
 
 interface UserInformation {
@@ -28,15 +29,13 @@ const Timeline: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(true);
   const [userInformation, setUserInformation] = useState<UserInformation | null>(null);
-
-  const userInformationString = localStorage.getItem('userInformation');
+  const user = useUserStore((state) => state.userInformation);
 
   let userId: string | null = null;
 
-  if (userInformationString) {
+  if (user.userId) {
     try {
-      const userInformation = JSON.parse(userInformationString);
-      userId = userInformation.userId;
+      userId = user.userId;
     } catch (e) {
       console.error('로컬 스토리지에서 사용자 정보를 파싱하는 중 오류 발생:', e);
     }
@@ -123,7 +122,7 @@ const Timeline: React.FC = () => {
       <TitleHeader
         profileImage={userInformation?.profileImage || '없음'}
         nickname={userInformation?.userName || '손성오'}
-        actionText="Timeline"
+        actionText="타임라인"
       />
 
       {error && <div css={errorStyle}>{error}</div>}
@@ -141,7 +140,8 @@ const Timeline: React.FC = () => {
             profileImage={userInformation?.profileImage || ''}
             userName={userInformation?.userName || ''}
             userId={userInformation?.userId || ''}
-            imgUrl={item.imgUrl} // imgUrl을 VideoGridItem에 전달
+            imgUrl={item.imgUrl[0]} // imgUrl을 VideoGridItem에 전달
+            videoCount={item.videoCount}
           />
         ))}
         {loading && Array.from({ length: 8 }).map((_, index) => <SkeletonGridItem key={index} />)}

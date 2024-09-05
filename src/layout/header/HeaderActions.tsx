@@ -1,9 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { Link } from 'react-router-dom';
-
 import Button from '@/components/Button';
-import Signin, { realUserData } from '@/components/sign/Signin';
+import Signin from '@/components/sign/Signin';
 import Signup from '@/components/sign/Signup';
 import User from '@/components/User';
 import useModalStore from '@/stores/useModalStore';
@@ -15,7 +14,7 @@ function HeaderActions() {
 
   return (
     <div css={headerActions}>
-      {realUserData?.userId === user.userId ? (
+      {user?.userId ? (
         <Link to={'/profile'}>
           <div className="user-info">
             <User
@@ -46,7 +45,8 @@ const headerActions = css`
   height: 100%;
   display: flex;
   justify-content: flex-end;
-  padding-right: 20px;
+  margin-top: 3px;
+  padding-right: 30px;
   box-sizing: border-box;
   align-items: center;
 `;

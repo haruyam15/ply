@@ -2,7 +2,7 @@
 import { css } from '@emotion/react';
 import { colors } from '@/styles/colors';
 
-interface ButtonProps {
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
   size?: Size;
   onClick?: () => void | Promise<void>;
@@ -11,9 +11,9 @@ interface ButtonProps {
 
 type Size = 'sm' | 'md' | 'lg';
 
-function Button({ children, size = 'sm', onClick, background = false }: ButtonProps) {
+function Button({ children, size = 'sm', onClick, background = false, ...rest }: ButtonProps) {
   return (
-    <button css={btn(size, background)} onClick={onClick}>
+    <button css={btn(size, background)} onClick={onClick} {...rest}>
       {children}
     </button>
   );
@@ -41,9 +41,9 @@ const btn = (size: Size, background: boolean) => css`
   ${size === 'md' &&
   `
     width: 80px;
-		height: 35px;
-		font-size:15px;
-	`}
+    height: 35px;
+    font-size:15px;
+  `}
   ${size === 'lg' &&
   `
     height: 60px;

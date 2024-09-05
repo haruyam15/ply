@@ -48,7 +48,7 @@ const DraggableItem: React.FC<DraggableItemProps> = ({
       <div css={{ cursor: 'pointer' }}>
         <AlignJustify />
       </div>
-      <div css={videoArea(youTubelistData?.imgUrl[0])}></div>
+      <div css={videoArea(youTubelistData?.imgUrl?.[0])}></div>
       <div css={youtubeDataArea}>
         <p>{youTubelistData?.title}</p>
         <span>{youTubelistData?.channelTitle}</span>
@@ -62,7 +62,7 @@ const DraggableItem: React.FC<DraggableItemProps> = ({
 
 export default DraggableItem;
 
-const videoArea = (imgUrl: string) => css`
+const videoArea = (imgUrl?: string) => css`
   min-width: 220px;
   width: 220px;
   height: 160px;
@@ -89,7 +89,7 @@ const listArea = css`
   border-radius: 10px;
   position: relative;
   :hover {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: #585858;
   }
 `;
 const youtubeDataArea = css`

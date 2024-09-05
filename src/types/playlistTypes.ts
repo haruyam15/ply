@@ -1,23 +1,24 @@
 export interface IPlaylist {
-  id: string;
-  _id: string;
-  link: string[];
   title: string;
   content: string;
-  userId: string;
-  like: string[];
-  numoflike: number;
+  link: string[];
+  like: number;
   comments: IComment[];
+  userId: string;
   date: string;
-  disclosureStatus: boolean;
   tags: string[];
-  imgUrl: string;
+  imgUrl: string[];
+  profileImage: string;
+  userName: string;
+  disclosureStatus?: boolean;
 }
 
 export interface IComment {
+  commentsWriter: string;
   commentsContent: string;
   commentsDate: string;
-  commentsWriter: string;
+  profileImage: string;
+  userName: string;
 }
 
 export interface PlaylistDataStore {
@@ -30,5 +31,12 @@ export interface PlaylistDataStore {
 export interface NewPlaylistData extends PlaylistDataStore {
   userId: string;
   link: (string | undefined)[];
-  imgUrl: string[];
+  imgUrl: (string | undefined)[];
+}
+export interface UserPlyDataStore extends PlaylistDataStore {
+  comments: IComment[];
+  date: string;
+  userName: string;
+  profileImage: string;
+  imgUrl: (string | undefined)[];
 }

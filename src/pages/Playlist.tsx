@@ -1,10 +1,10 @@
 /** @jsxImportSource @emotion/react */
 import { useEffect, useState } from 'react';
 import { css } from '@emotion/react';
-
 import SkeletonGridItem from '@/components/SkeletonGridItem';
 import TitleHeader from '@/components/TitleHeader';
 import VideoGridItem from '@/components/VideoGridItem';
+import useUserStore from '@/stores/useUserStore';
 
 interface PlaylistData {
   title: string;
@@ -12,6 +12,8 @@ interface PlaylistData {
   tags: string[];
   imgUrl: string[];
   disclosureStatus: boolean;
+  id: string;
+  videoCount: number;
 }
 
 interface UserInformation {
@@ -26,14 +28,13 @@ const PlaylistPage: React.FC = () => {
   const [playlists, setPlaylists] = useState<PlaylistData[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [userInformation, setUserInformation] = useState<UserInformation | null>(null);
+  const user = useUserStore((state) => state.userInformation);
 
-  const userInformationString = localStorage.getItem('userInformation');
   let userId: string | null = null;
 
-  if (userInformationString) {
+  if (user.userId) {
     try {
-      const userInformation = JSON.parse(userInformationString);
-      userId = userInformation.userId;
+      userId = user.userId;
     } catch (e) {
       console.error('로컬 스토리지에서 사용자 정보를 파싱하는 중 오류 발생:', e);
     }
@@ -94,6 +95,10 @@ const PlaylistPage: React.FC = () => {
     fetchPlaylistData();
   }, [userId]);
 
+  const handleDeleteItem = (index: number) => {
+    setPlaylists((prevPlaylists) => prevPlaylists.filter((_, i) => i !== index));
+  };
+
   useEffect(() => {
     const handleScroll = () => {
       const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
@@ -115,28 +120,34 @@ const PlaylistPage: React.FC = () => {
       <TitleHeader
         profileImage={userInformation?.profileImage || '없음'}
         nickname={userInformation?.userName || '손성오'}
-        actionText="Playlist"
+        actionText="플레이리스트"
         showAddPlaylistButton={true}
       />
 
       {error && <div css={errorStyle}>{error}</div>}
 
       <div css={gridContainerStyle}>
-        {playlists.slice(0, visibleItems).map((item, index) => (
-          <VideoGridItem
-            key={index}
-            videoId={item.imgUrl[0].split('/')[4]} // imgUrl에서 videoId 추출
-            title={item.title}
-            user={item.userId}
-            showDelete={true}
-            showEdit={true}
-            tags={item.tags}
-            profileImage={userInformation?.profileImage || ''}
-            userName={item.userId}
-            userId={item.userId}
-            imgUrl={item.imgUrl[0]}
-          />
-        ))}
+        {playlists.slice(0, visibleItems).map((item, index) => {
+          return (
+            <VideoGridItem
+              key={index}
+              videoId={item.id}
+              title={item.title}
+              user={item.userId}
+              showDelete={true}
+              showEdit={true}
+              showMenuDot={true}
+              tags={item.tags}
+              profileImage={userInformation?.profileImage || ''}
+              userName={item.userId}
+              userId={item.userId}
+              imgUrl={item.imgUrl[0]}
+              videoCount={item.videoCount}
+              index={index}
+              deleteItem={handleDeleteItem} // 삭제 콜백 함수 전달
+            />
+          );
+        })}
         {loading && Array.from({ length: 8 }).map((_, index) => <SkeletonGridItem key={index} />)}
       </div>
     </div>

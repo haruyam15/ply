@@ -1,4 +1,3 @@
-/* eslint-disable no-empty-pattern */
 /* eslint-disable react-hooks/exhaustive-deps */
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
@@ -9,15 +8,23 @@ import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useSta
 import useYoutubeDataStore from '@/stores/useYoutubeDataStore';
 import forkVideoId from '@/utils/forkVideoId';
 import useYoutubeFetch from '@/hooks/useYoutubeFetch';
-import { PlaylistDataStore } from '@/types/playlistTypes';
+import { PlaylistDataStore, IPlaylist } from '@/types/playlistTypes';
 
-const AddPlaylist = forwardRef(({}, ref) => {
+interface AddPlaylistProps {
+  userPlyData: IPlaylist | null | undefined;
+}
+interface AddPlaylistRef {
+  getPlaylistData: () => PlaylistDataStore;
+}
+
+const AddPlaylist = forwardRef<AddPlaylistRef, AddPlaylistProps>(({ userPlyData }, ref) => {
   const [tags, setTags] = useState<string[]>([]);
   const [link, setLink] = useState<string[]>([]);
   const [isComposing, setIsComposing] = useState(false);
   const [content, setContent] = useState('');
   const [imgUrl, setImgUrl] = useState<string[]>([]);
   const [videoId, setVideoId] = useState('');
+  const [disclosureStatus, setDisclosureStatus] = useState(true);
   const tagValue = useRef<HTMLInputElement>(null);
   const title = useRef<HTMLInputElement>(null);
   const url = useRef<HTMLInputElement>(null);
@@ -36,11 +43,7 @@ const AddPlaylist = forwardRef(({}, ref) => {
     };
     playlistData.title = title.current?.value || '';
     playlistData.content = content;
-    playlistData.disclosureStatus =
-      document.querySelector<HTMLInputElement>('input[name="disclosureStatus"]:checked')
-        ?.nextElementSibling?.textContent === '공개'
-        ? true
-        : false;
+    playlistData.disclosureStatus = disclosureStatus;
     playlistData.tags = tags;
     return playlistData;
   }, [title, content, tags]);
@@ -75,6 +78,19 @@ const AddPlaylist = forwardRef(({}, ref) => {
       setVideoId('');
     }
   }, [videoId, youTubeData]);
+
+  useEffect(() => {
+    if (userPlyData) {
+      if (title.current) {
+        title.current.value = userPlyData.title;
+      }
+      const imgUrlArr = userPlyData.imgUrl.map((url) => url ?? '');
+      setImgUrl(imgUrlArr);
+      setContent(userPlyData.content);
+      setTags(userPlyData.tags);
+      setDisclosureStatus(userPlyData.disclosureStatus as boolean);
+    }
+  }, [userPlyData]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, type: string) => {
     if (e.key === 'Enter' && !isComposing) {
@@ -120,11 +136,23 @@ const AddPlaylist = forwardRef(({}, ref) => {
         <p>공개 여부</p>
         <div css={disclosureStatusWrapper}>
           <label htmlFor="public">
-            <input type="radio" name="disclosureStatus" id="public" defaultChecked />
+            <input
+              type="radio"
+              name="disclosureStatus"
+              id="public"
+              checked={disclosureStatus === true}
+              onChange={() => setDisclosureStatus(true)}
+            />
             <p>공개</p>
           </label>
           <label htmlFor="nondisclosure" css={{ marginLeft: '20px' }}>
-            <input type="radio" name="disclosureStatus" id="nondisclosure" />
+            <input
+              type="radio"
+              name="disclosureStatus"
+              id="nondisclosure"
+              checked={disclosureStatus === false}
+              onChange={() => setDisclosureStatus(false)}
+            />
             <p>비공개</p>
           </label>
         </div>
