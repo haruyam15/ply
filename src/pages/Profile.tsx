@@ -7,19 +7,19 @@ import { Video, Heart } from 'lucide-react';
 import VideoGridItem from '@/components/VideoGridItem';
 import useUserStore from '@/stores/useUserStore';
 
-interface PlaylistItem {
-  imgUrl: string[];
+interface PlaylistData {
   title: string;
   userId: string;
-  nickname: string;
-  profileImage: string;
   tags: string[];
+  imgUrl: string[];
+  disclosureStatus: boolean;
+  id: string;
+  videoCount: number;
 }
-
 function Profile() {
   const userInformation = useUserStore((state) => state.userInformation);
   const [selectedTab, setSelectedTab] = useState('playlist');
-  const [playlists, setPlaylists] = useState<PlaylistItem[]>([]);
+  const [playlists, setPlaylists] = useState<PlaylistData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -39,7 +39,7 @@ function Profile() {
         }
 
         const data = await response.json();
-        const filteredPlaylists: PlaylistItem[] =
+        const filteredPlaylists: PlaylistData[] =
           selectedTab === 'playlist' ? data.playlists : data.likedPlaylists;
 
         setPlaylists(filteredPlaylists);
@@ -53,6 +53,10 @@ function Profile() {
 
     fetchPlaylists();
   }, [selectedTab, userInformation.userId]);
+
+  const handleDeleteItem = (index: number) => {
+    setPlaylists((prevPlaylists) => prevPlaylists.filter((_, i) => i !== index));
+  };
 
   return (
     <div css={containerStyle}>
@@ -82,18 +86,20 @@ function Profile() {
             {playlists.map((item, index) => (
               <VideoGridItem
                 key={index}
-                videoId={item.imgUrl[0].split('/')[4]}
+                videoId={item.id}
                 title={item.title}
                 user={item.userId}
-                showEdit={false}
-                showDelete={false}
-                tags={item.tags || []}
-                profileImage={item.profileImage || ''}
-                userName={item.nickname || ''}
-                userId={item.userId || ''}
+                showDelete={true}
+                showEdit={true}
+                showMenuDot={true}
+                tags={item.tags}
+                profileImage={userInformation?.profileImage || ''}
+                userName={item.userId}
+                userId={item.userId}
                 imgUrl={item.imgUrl[0]}
-                videoCount={0}
-                index={0}
+                videoCount={item.videoCount}
+                index={index}
+                deleteItem={handleDeleteItem}
               />
             ))}
           </div>
@@ -102,6 +108,8 @@ function Profile() {
     </div>
   );
 }
+
+export default Profile;
 
 const tabsStyle = css`
   display: flex;
@@ -149,5 +157,3 @@ const gridContainerStyle = css`
   gap: 20px;
   padding: 20px;
 `;
-
-export default Profile;
