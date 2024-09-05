@@ -9,13 +9,21 @@ interface IUserProps {
   userId: string;
   onlyImage?: boolean;
   size?: Size;
+  onClick?: () => void;
 }
 
 type Size = 'sm' | 'md' | 'lg';
 
-function User({ profileImage, nickname, userId, onlyImage = false, size = 'sm' }: IUserProps) {
+function User({
+  profileImage,
+  nickname,
+  userId,
+  onlyImage = false,
+  size = 'sm',
+  onClick,
+}: IUserProps) {
   return (
-    <div css={userWrap(size)}>
+    <div css={userWrap(size)} onClick={onClick}>
       <If test={onlyImage}>
         <If.Then>
           <div className="profile">

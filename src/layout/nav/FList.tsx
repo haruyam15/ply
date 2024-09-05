@@ -4,90 +4,46 @@ import { useNavigate } from 'react-router-dom';
 import User from '@/components/User';
 import useNavStore from '@/stores/useNavStore';
 import { Tab } from '@/types/navTypes';
-import { IUserData } from '@/types/userTypes';
 import Button from '@/components/Button';
-
-const TESTURL = [
-  'https://avatars.githubusercontent.com/u/131119152?s=64&v=4',
-  'https://avatars.githubusercontent.com/u/143858798?s=64&v=4',
-  'https://avatars.githubusercontent.com/u/147500032?s=64&v=4',
-  'https://avatars.githubusercontent.com/u/169154369?s=64&v=4',
-];
-
-const user: IUserData = {
-  userId: 'haruyam15',
-  profileImage: TESTURL[4],
-  nickname: '하루얌',
-  password: '1234',
-  like: ['playlist1', 'playlist2'],
-  following: [
-    {
-      userId: 'Sonseongoh',
-      nickname: '성오',
-      profileImage: TESTURL[0],
-    },
-    {
-      userId: 'dhkim511',
-      nickname: '도형',
-      profileImage: TESTURL[1],
-    },
-    {
-      userId: 'love1ace',
-      nickname: '동영',
-      profileImage: TESTURL[2],
-    },
-    {
-      userId: 'ssumanlife',
-      nickname: '수민',
-      profileImage: TESTURL[3],
-    },
-    {
-      userId: 'abcde',
-      nickname: 'hahaha',
-      profileImage: TESTURL[4],
-    },
-  ],
-  followers: [
-    { userId: 'Sonseongoh', nickname: '성오', profileImage: TESTURL[0] },
-    { userId: 'dhkim511', nickname: '도형', profileImage: TESTURL[1] },
-    { userId: 'love1ace', nickname: '동영', profileImage: TESTURL[2] },
-    { userId: 'ssumanlife', nickname: '수민', profileImage: TESTURL[3] },
-  ],
-  myplaylist: [],
-};
+import useUserStore from '@/stores/useUserStore';
+import { IUserData, FollowingFollowers } from '@/types/userTypes';
 
 function FList({ tab }: FListProps) {
   const isExpand = useNavStore((state) => state.isExpand);
   const navigate = useNavigate();
+  const userInformation = useUserStore((state) => state.userInformation) as IUserData;
 
   const handleMoreClick = () => {
-    navigate('/follow');
+    navigate(`/follow?tab=${tab}`);
   };
 
-  const displayedUsers = user[tab].slice(0, 4);
-  const hasMore = user[tab].length > 3;
+  const handleUserClick = (userId: string) => {
+    navigate(`/profile/${userId}`);
+  };
+
+  const users: FollowingFollowers[] =
+    tab === 'followers' ? userInformation.followers : userInformation.following;
 
   return (
     <>
       <ul css={fList(isExpand)}>
-        {displayedUsers.map((f, i) => (
+        {users.map((f, i) => (
           <li key={i}>
             <User
               profileImage={f.profileImage}
               nickname={f.nickname}
               userId={f.userId}
               onlyImage={!isExpand}
+              onClick={() => handleUserClick(f.userId)}
             />
           </li>
         ))}
       </ul>
-      {hasMore && (
-        <div css={buttonContainer}>
-          <Button size={isExpand ? 'sm' : 'sm'} onClick={handleMoreClick}>
-            {isExpand ? '더보기' : '...'}
-          </Button>
-        </div>
-      )}
+      <div css={buttonContainer}>
+        <Button size={isExpand ? 'sm' : 'sm'} onClick={handleMoreClick}>
+          {isExpand ? '더보기' : '...'}
+        </Button>
+      </div>
     </>
   );
 }

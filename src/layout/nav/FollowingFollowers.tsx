@@ -40,11 +40,11 @@ function FollowingFollowers() {
         <If.Else>
           <div className="f-wrap">
             <p>팔로잉</p>
-            <FList tab={selected} />
+            <FList tab={FOLLOWING} />
           </div>
           <div className="f-wrap">
             <p>팔로워</p>
-            <FList tab={selected} />
+            <FList tab={FOLLOWERS} />
           </div>
         </If.Else>
       </If>

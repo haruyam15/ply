@@ -18,4 +18,4 @@ export interface IUserInformation {
   nickname: string;
 }
 
-type FollowingFollowers = Omit<IUserInformation, 'password'>;
+export type FollowingFollowers = Omit<IUserInformation, 'password'>;
