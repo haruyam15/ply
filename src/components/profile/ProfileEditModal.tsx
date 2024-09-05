@@ -7,10 +7,11 @@ import Input from '@/components/Input';
 import Button from '@/components/Button';
 import Confirm from '@/components/Confirm';
 import useModalStore from '@/stores/useModalStore';
-import useUserStore, { IUser } from '@/stores/useUserStore';
+import useUserStore from '@/stores/useUserStore';
 import { colors } from '@/styles/colors';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { IUserData, IUserInformation } from '@/types/userTypes';
 
 const ProfileEditModal: React.FC = () => {
   const [currentModal, setCurrentModal] = useState<
@@ -19,7 +20,7 @@ const ProfileEditModal: React.FC = () => {
 
   const { modals, closeModal } = useModalStore();
   const { setUser } = useUserStore();
-  const userInformation: IUser = useUserStore((state) => state.userInformation);
+  const userInformation: IUserData = useUserStore((state) => state.userInformation);
   const { profileImage, nickname, userId } = userInformation;
   const [newProfileImage, setNewProfileImage] = useState<string>(profileImage);
   const [newNickname, setNewNickname] = useState<string>(nickname);
@@ -47,28 +48,21 @@ const ProfileEditModal: React.FC = () => {
 
       const result = await response.json();
       if (result.success) {
-        setUser({
-          userId,
+        const updatedUser: IUserData = {
+          ...userInformation,
           password: newPassword || userInformation.password,
           profileImage: newProfileImage,
           nickname: newNickname,
-          likes: userInformation.likes,
-          followers: userInformation.followers,
-          following: userInformation.following,
-          myPlaylists: userInformation.myPlaylists,
-        });
+        };
+        setUser(updatedUser);
 
-        localStorage.setItem(
-          'userInformation',
-          JSON.stringify({
-            userId,
-            profileImage: newProfileImage,
-            nickname: newNickname,
-            password: newPassword || userInformation.password,
-            followers: userInformation.followers,
-            following: userInformation.following,
-          }),
-        );
+        const userInfoForStorage: IUserInformation = {
+          userId,
+          profileImage: newProfileImage,
+          nickname: newNickname,
+          password: newPassword || userInformation.password,
+        };
+        localStorage.setItem('userInformation', JSON.stringify(userInfoForStorage));
 
         closeModal('profileEdit');
         toast.success('프로필이 성공적으로 업데이트되었습니다.');

@@ -14,7 +14,7 @@ const getProfilePageInfo = async (userId, database) => {
       profilePageInfo: {
         profileImage: user.profileImage,
         userName: user.nickname,
-        followers: user.followers.length,
+        followers: user.followers,
         myPlaylistCount: user.myPlaylists ? user.myPlaylists.length : 0,
       },
     };

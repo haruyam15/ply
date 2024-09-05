@@ -92,6 +92,8 @@ function Profile() {
                 userName={item.nickname || ''}
                 userId={item.userId || ''}
                 imgUrl={item.imgUrl[0]}
+                videoCount={0}
+                index={0}
               />
             ))}
           </div>
@@ -131,7 +133,6 @@ const tabStyle = css`
 const activeTabStyle = css`
   color: ${colors.primaryGreen};
   border-bottom: 2px solid ${colors.primaryGreen};
-  wid
 `;
 
 const containerStyle = css`
