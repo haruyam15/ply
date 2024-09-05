@@ -47,7 +47,6 @@ const modalArea = css`
   flex-direction: column;
   background-color: ${colors.black};
   border-radius: 15px;
-  color: ${colors.white};
   align-items: center;
 `;
 const closeBtn = css`

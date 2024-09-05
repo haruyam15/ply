@@ -1,7 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /** @jsxImportSource @emotion/react */
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Modal from '@/components/Modal';
 import {
   submitBtn,
@@ -13,8 +15,6 @@ import useModalStore from '@/stores/useModalStore';
 import { colors } from '@/styles/colors';
 import Input from '@/components/Input';
 import Button from '@/components/Button';
-
-import 'react-toastify/dist/ReactToastify.css';
 import useUserDataFetch from '@/hooks/useUserDataFetch';
 
 export interface SignupData {
@@ -24,8 +24,9 @@ export interface SignupData {
 }
 
 const Signup: React.FC = () => {
-  const signinModal = useModalStore((state) => state.modals);
+  const signupModal = useModalStore((state) => state.modals);
   const openSigninModal = useModalStore((state) => state.openModal);
+  const closeSignupModal = useModalStore((state) => state.closeModal);
   const [newUser, setNewUser] = useState<SignupData>({
     nickname: null,
     userId: null,
@@ -36,42 +37,14 @@ const Signup: React.FC = () => {
   const passwordRef = useRef<HTMLInputElement>(null);
   const { mutateAsync } = useUserDataFetch();
 
-  const onSignup = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setNewUser({
-      nickname: nameRef.current?.value ?? null,
-      userId: idRef.current?.value ?? null,
-      password: passwordRef.current?.value ?? null,
-    });
-  };
-
   const checkbox = document.getElementById('check') as HTMLInputElement;
-
-  const addNewUser = async () => {
-    if (newUser.userId && newUser.nickname && newUser.password && checkbox?.checked) {
+  useEffect(() => {
+    const validation = async () => {
       try {
-        const userData = {
-          userId: newUser.userId,
-          nickname: newUser.nickname,
-          password: newUser.password,
-        };
-        const res = await mutateAsync({ api: 'register', userData });
-        if (res === 201) {
-          toast.success('가입이 완료되었습니다.');
-          openSigninModal('signin');
+        if (newUser.nickname && newUser.userId && !checkbox?.checked && signupModal.modalState) {
+          toast.error('모두 확인하였는지 체크해주세요.');
+          return;
         }
-      } catch (error) {
-        console.error(error);
-        toast.error('계정 생성 중에 오류가 발생하였습니다. 다시 시도해주세요.');
-      }
-    }
-  };
-
-  const validation = async () => {
-    if (newUser.nickname && newUser.userId && !checkbox?.checked && signinModal.modalState) {
-      toast.error('모두 확인하였는지 체크해주세요.');
-    } else {
-      try {
         const userData = {
           userId: newUser.userId,
           nickname: newUser.nickname,
@@ -91,6 +64,40 @@ const Signup: React.FC = () => {
             }
           }
         }
+      }
+    };
+    validation();
+  }, [newUser]);
+
+  const onSignup = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setNewUser({
+      nickname: nameRef.current?.value ?? null,
+      userId: idRef.current?.value ?? null,
+      password: passwordRef.current?.value ?? null,
+    });
+  };
+
+  const addNewUser = async () => {
+    if (newUser.userId && newUser.nickname && newUser.password && checkbox?.checked) {
+      try {
+        const userData = {
+          userId: newUser.userId,
+          nickname: newUser.nickname,
+          password: newUser.password,
+        };
+        const res = await mutateAsync({ api: 'register', userData });
+        if (res === 201) {
+          toast.success('가입이 완료되었습니다.');
+          setNewUser({ nickname: null, userId: null, password: null });
+          setTimeout(() => {
+            closeSignupModal('signup');
+            openSigninModal('signin');
+          }, 2000);
+        }
+      } catch (error) {
+        console.error(error);
+        toast.error('계정 생성 중에 오류가 발생하였습니다. 다시 시도해주세요.');
       }
     }
   };
@@ -125,7 +132,7 @@ const Signup: React.FC = () => {
             모두 확인 하셨습니까?
           </label>
         </div>
-        <Button css={submitBtn} type="submit" onClick={validation}>
+        <Button css={submitBtn} type="submit">
           가입하기
         </Button>
       </form>
@@ -137,7 +144,7 @@ const Signup: React.FC = () => {
       </p>
       <ToastContainer
         position="bottom-center"
-        limit={1}
+        limit={2}
         closeButton={false}
         autoClose={2000}
         hideProgressBar
@@ -146,7 +153,7 @@ const Signup: React.FC = () => {
   );
   return (
     <>
-      {signinModal.modalName === 'signup' && signinModal.modalState ? (
+      {signupModal.modalName === 'signup' && signupModal.modalState ? (
         <Modal children={children} modalName="signup" />
       ) : null}
     </>

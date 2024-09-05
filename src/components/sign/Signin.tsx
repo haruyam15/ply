@@ -9,7 +9,7 @@ import useUserDataFetch from '@/hooks/useUserDataFetch';
 
 const Signin: React.FC = () => {
   const signinModal = useModalStore((state) => state.modals);
-  const openSigninModal = useModalStore((state) => state.openModal);
+  const openSignupModal = useModalStore((state) => state.openModal);
   const closeSigninModal = useModalStore((state) => state.closeModal);
   const setUserData = useUserStore((state) => state.setUser);
   const idRef = useRef<HTMLInputElement>(null);
@@ -70,10 +70,11 @@ const Signin: React.FC = () => {
         <button
           css={modalMovementBtn}
           onClick={() => {
-            openSigninModal('signup');
+            closeSigninModal('signin');
+            openSignupModal('signup');
           }}
         >
-          Sign Up now
+          Sign Up
         </button>
       </p>
     </>
@@ -93,7 +94,7 @@ export const idAndPasswordArea = css`
   position: relative;
   label {
     position: absolute;
-    top: 30px;
+    top: 28px;
     left: 10px;
     color: #888;
     transition: all 0.3s ease;
@@ -115,6 +116,7 @@ export const idAndPassword = css`
   padding: 0 10px;
   box-sizing: border-box;
   background-color: ${colors.white};
+  color: ${colors.black};
 `;
 export const modalMovementBtn = css`
   margin-left: 5px;
