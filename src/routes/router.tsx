@@ -10,7 +10,7 @@ import Profile from '@/pages/Profile';
 import Search from '@/pages/Search';
 import Timeline from '@/pages/Timeline';
 import Watch from '@/pages/Watch';
-import CreatePlaylist from '@/pages/CreatePlaylist';
+import ManagePlaylist from '@/pages/ManagePlaylist';
 
 export const router = createBrowserRouter([
   {
@@ -51,8 +51,8 @@ export const router = createBrowserRouter([
         element: <Search />,
       },
       {
-        path: '/createplaylist/:playlistId?',
-        element: <CreatePlaylist />,
+        path: '/managePlaylist/:playlistId?',
+        element: <ManagePlaylist />,
       },
     ],
   },

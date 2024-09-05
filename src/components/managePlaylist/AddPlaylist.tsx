@@ -49,7 +49,6 @@ const AddPlaylist = forwardRef<AddPlaylistRef, AddPlaylistProps>(({ userPlyData 
   }, [title, content, tags]);
 
   const handleUrl = useCallback(async () => {
-    console.log('222');
     if (url.current?.value) {
       const newVideoId = forkVideoId(url.current.value);
       if (newVideoId) {
