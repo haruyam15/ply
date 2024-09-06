@@ -41,7 +41,7 @@ const UserProfile: React.FC = () => {
       fetchProfileData();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user.userId, setUser]);
+  }, [user.userId]);
 
   const { profileImage, nickname, userId } = user;
 
