@@ -151,7 +151,7 @@ const Home: React.FC = () => {
     slidesToScroll: 1,
     arrows: true,
     autoplay: true,
-    autoplaySpeed: 2000,
+    autoplaySpeed: 4000,
   };
 
   const navigateToTimeline = () => {
@@ -162,15 +162,17 @@ const Home: React.FC = () => {
     <div css={containerStyle}>
       <div css={[carouselStyle, slickArrowStyle]}>
         <Slider {...settings}>
-          {['C0C6wvNl14w', 'ZncbtRo7RXs', 'phuiiNCxRMg'].map((videoId, index) => (
-            <div key={index} css={slideStyle}>
-              <img
-                src={`https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`}
-                alt={`캐러셀이미지`}
-                css={thumbnailStyle}
-              />
-            </div>
-          ))}
+          {['kjM1eO9eBss', 'ft70sAYrFyY', 'dsgan8jxdV0', 'nb1wIbEghD0', 'T-mHuIdFIEc'].map(
+            (videoId, index) => (
+              <div key={index} css={slideStyle}>
+                <img
+                  src={`https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`}
+                  alt={`캐러셀이미지`}
+                  css={thumbnailStyle}
+                />
+              </div>
+            ),
+          )}
         </Slider>
       </div>
 
