@@ -20,7 +20,6 @@ const UserProfile: React.FC = () => {
       try {
         const response = await axios.get(`/api/profilePage/${user.userId}`);
         if (response.data) {
-          // 상태가 달라졌을 때만 업데이트
           if (
             user.followers !== response.data.followers ||
             user.myPlaylists !== response.data.myPlaylistCount
@@ -50,32 +49,16 @@ const UserProfile: React.FC = () => {
   };
 
   return (
-    <div
-      css={{
-        display: 'flex',
-        justifyContent: 'left',
-        alignItems: 'center',
-        margin: '20px',
-        marginTop: '80px',
-      }}
-    >
+    <div css={userProfileContainer}>
       <img css={profileimageArea} src={profileImage} alt="Profile" />
-      <div css={{ marginLeft: '30px' }}>
-        <h1 css={{ fontSize: '32px' }}>{nickname}</h1>
-        <div
-          css={{
-            width: '300px',
-            display: 'flex',
-            justifyContent: 'space-between',
-            margin: '20px 0 20px',
-            color: `${colors.lightestGray}`,
-          }}
-        >
+      <div css={profileTextArea}>
+        <h1 css={nicknameStyle}>{nickname}</h1>
+        <div css={infoContainer}>
           <p>{userId}</p>
-          <Link to="/follow" css={{ color: `${colors.lightestGray}` }}>
+          <Link to="/follow" css={infoLink}>
             팔로워 {user.followers?.length || 0}
           </Link>
-          <Link to="/playlist" css={{ color: `${colors.lightestGray}` }}>
+          <Link to="/playlist" css={infoLink}>
             플레이리스트 {user.myPlaylists?.length || 0}
           </Link>
         </div>
@@ -94,11 +77,43 @@ const UserProfile: React.FC = () => {
 
 export default UserProfile;
 
+const userProfileContainer = css`
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  margin: 20px;
+  margin-top: 80px;
+`;
+
 const profileimageArea = css`
   width: 230px;
   height: 230px;
   border-radius: 50%;
   border: 2px solid ${colors.primaryGreen};
+`;
+
+const profileTextArea = css`
+  margin-left: 30px;
+`;
+
+const nicknameStyle = css`
+  font-size: 32px;
+`;
+
+const infoContainer = css`
+  width: 300px;
+  display: flex;
+  justify-content: space-between;
+  margin: 20px 0;
+  color: ${colors.lightestGray};
+`;
+
+const infoLink = css`
+  color: ${colors.lightestGray};
+  text-decoration: none;
+  &:hover {
+    color: ${colors.white};
+  }
 `;
 
 const profileEditOrFollowerBtn = css`
