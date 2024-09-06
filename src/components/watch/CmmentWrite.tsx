@@ -16,7 +16,7 @@ function CommentWrite() {
   const { profileImage, nickname, userId } = userInformation;
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [commentInput, setCommentInput] = useState<string>('');
-  const { mutate } = useCommentAdd(playlistId);
+  const { mutate } = useCommentAdd(playlistId, profileImage, userId);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setCommentInput(e.target.value);
@@ -77,6 +77,7 @@ const commentWrite = css`
       border-bottom: 1px solid ${colors.darkestGray};
       resize: none;
       overflow: auto;
+      padding-top: 10px;
     }
     button {
       flex-shrink: 0;

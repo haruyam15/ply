@@ -29,7 +29,7 @@ function CommentList() {
     return <div css={emptyComment}>댓글이 없습니다.</div>;
   }
 
-  const sortedComments = data.comments.reverse();
+  const sortedComments = [...data.comments].reverse();
 
   return (
     <ul css={commentsList} className="comments-list">
