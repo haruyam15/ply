@@ -20,7 +20,7 @@ import useUserDataFetch from '@/hooks/useUserDataFetch';
 
 export interface SignupData {
   nickname?: string | null;
-  userId: string | null;
+  userId?: string | null;
   password?: string | null;
 }
 
@@ -40,8 +40,8 @@ const Signup: React.FC = () => {
   const { mutateAsync } = useUserDataFetch();
 
   const checkbox = document.getElementById('check') as HTMLInputElement;
+  const passwordCheckRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,}$/;
   useEffect(() => {
-    const passwordCheckRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,}$/;
     const validation = async () => {
       try {
         if (
@@ -70,7 +70,7 @@ const Signup: React.FC = () => {
           userId: newUser.userId,
           nickname: newUser.nickname,
         };
-        const res = await mutateAsync({ api: 'signupValidate', userData });
+        const res = await mutateAsync({ api: 'signValidate', userData });
         if (res === 200) {
           addNewUser();
         }
@@ -178,7 +178,7 @@ const Signup: React.FC = () => {
         position="bottom-center"
         limit={1}
         closeButton={false}
-        autoClose={2000}
+        autoClose={1500}
         hideProgressBar
       />
     </>
