@@ -1,19 +1,17 @@
 /** @jsxImportSource @emotion/react */
 import { useState } from 'react';
 import { css } from '@emotion/react';
-import { toast } from 'react-toastify';
 import { ChevronLeft } from 'lucide-react';
 import Input from '@/components/Input';
 import Button from '@/components/Button';
-import useUserStore from '@/stores/useUserStore';
 import { colors } from '@/styles/colors';
+import { toast } from 'react-toastify';
+import useUserStore from '@/stores/useUserStore';
 
-interface PasswordChangeModalProps {
+const PasswordChangeModal: React.FC<{
   onBack: () => void;
   onPasswordChange: (password: string) => void;
-}
-
-const PasswordChangeModal: React.FC<PasswordChangeModalProps> = ({ onBack, onPasswordChange }) => {
+}> = ({ onBack, onPasswordChange }) => {
   const [currentPassword, setCurrentPassword] = useState<string>('');
   const [newPassword, setNewPassword] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState<string>('');
@@ -62,7 +60,7 @@ const PasswordChangeModal: React.FC<PasswordChangeModalProps> = ({ onBack, onPas
   };
 
   return (
-    <>
+    <div css={modalContentStyle}>
       <button css={backButtonStyle} onClick={onBack}>
         <ChevronLeft size={28} />
       </button>
@@ -85,13 +83,36 @@ const PasswordChangeModal: React.FC<PasswordChangeModalProps> = ({ onBack, onPas
         value={confirmPassword}
         onChange={(e) => setConfirmPassword(e.target.value)}
       />
-      {<p css={errorStyle(!!error)}>{error || ' '}</p>}
+      {<p css={passwordErrorStyle(!!error)}>{error || ' '}</p>}
       <div css={buttonWrapperStyle}>
         <Button onClick={handleSubmit}>변경하기</Button>
       </div>
-    </>
+    </div>
   );
 };
+
+export default PasswordChangeModal;
+
+const modalContentStyle = css`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px;
+  padding-top: 40px;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 420px;
+  position: relative;
+`;
+
+const modalTitleStyle = css`
+  font-size: 24px;
+  margin-bottom: 40px;
+  color: ${colors.white};
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+`;
 
 const backButtonStyle = css`
   position: absolute;
@@ -105,18 +126,9 @@ const backButtonStyle = css`
   padding: 11px;
 `;
 
-const modalTitleStyle = css`
-  font-size: 24px;
-  margin-bottom: 40px;
-  color: ${colors.white};
-  text-align: center;
-  justify-content: center;
-  align-items: center;
-`;
-
-const errorStyle = (isVisible: boolean) => css`
+const passwordErrorStyle = (isVisible: boolean) => css`
   color: ${colors.red};
-  font-size: 14px;
+  font-size: 12px;
   margin-top: 5px;
   height: 20px;
   visibility: ${isVisible ? 'visible' : 'hidden'};
@@ -145,5 +157,3 @@ const buttonWrapperStyle = css`
     }
   }
 `;
-
-export default PasswordChangeModal;

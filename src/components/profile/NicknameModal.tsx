@@ -1,19 +1,17 @@
 /** @jsxImportSource @emotion/react */
 import { useState, useRef } from 'react';
 import { css } from '@emotion/react';
-import { toast } from 'react-toastify';
 import { ChevronLeft } from 'lucide-react';
 import Input from '@/components/Input';
 import Button from '@/components/Button';
+import { toast } from 'react-toastify';
 import { colors } from '@/styles/colors';
 
-interface NicknameModalProps {
+const NicknameModal: React.FC<{
   onBack: () => void;
   nickname: string;
   setNewNickname: (nickname: string) => void;
-}
-
-const NicknameModal: React.FC<NicknameModalProps> = ({ onBack, nickname, setNewNickname }) => {
+}> = ({ onBack, nickname, setNewNickname }) => {
   const [tempNickname, setTempNickname] = useState<string>(nickname);
   const [error, setError] = useState<string>('');
   const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
@@ -66,15 +64,10 @@ const NicknameModal: React.FC<NicknameModalProps> = ({ onBack, nickname, setNewN
         <ChevronLeft size={28} />
       </button>
       <h2 css={modalTitleStyle}>닉네임 변경</h2>
-      <Input
-        value={tempNickname}
-        onChange={handleNicknameChange}
-        type="text"
-        placeholder="새 닉네임을 입력하세요"
-      />
-      <p css={errorStyle(!!error)}>{error || ' '}</p>
+      <Input value={tempNickname} onChange={handleNicknameChange} type="text" />
+      {<p css={errorStyle(!!error)}>{error || ' '}</p>}
       <div css={buttonWrapperStyle}>
-        <Button onClick={handleSubmit} disabled={!!error || tempNickname === nickname}>
+        <Button onClick={handleSubmit} disabled={!!error}>
           변경하기
         </Button>
       </div>
@@ -82,12 +75,27 @@ const NicknameModal: React.FC<NicknameModalProps> = ({ onBack, nickname, setNewN
   );
 };
 
+export default NicknameModal;
+
 const modalContentStyle = css`
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 16px;
+  padding-top: 40px;
+  border-radius: 10px;
   width: 100%;
+  max-width: 420px;
   position: relative;
+`;
+
+const modalTitleStyle = css`
+  font-size: 24px;
+  margin-bottom: 40px;
+  color: ${colors.white};
+  text-align: center;
+  justify-content: center;
+  align-items: center;
 `;
 
 const backButtonStyle = css`
@@ -98,50 +106,38 @@ const backButtonStyle = css`
   border: none;
   outline: none;
   cursor: pointer;
-  color: ${colors.gray};
+  color: #888;
   padding: 11px;
-`;
-
-const modalTitleStyle = css`
-  font-size: 24px;
-  margin-bottom: 40px;
-  color: ${colors.white};
-  text-align: center;
 `;
 
 const errorStyle = (isVisible: boolean) => css`
   color: ${colors.red};
   font-size: 14px;
-  margin-top: 10px;
+  margin-top: 5px;
   height: 20px;
   visibility: ${isVisible ? 'visible' : 'hidden'};
+  white-space: nowrap;
   text-align: center;
 `;
 
 const buttonWrapperStyle = css`
   width: 100%;
-  margin-top: 20px;
+  margin-top: 15px;
 
   button {
     width: 100%;
     height: 45px;
+    margin: 20px 0 25px;
     border: none;
     border-radius: 10px;
     background-color: ${colors.primaryGreen};
     color: ${colors.white};
-    font-size: 18px;
+    font-size: 20px;
     cursor: pointer;
-    transition: opacity 0.2s ease-in-out;
-
-    &:hover:not(:disabled) {
+    &:hover {
+      background-color: ${colors.primaryGreen};
       opacity: 0.8;
-    }
-
-    &:disabled {
-      background-color: ${colors.gray};
-      cursor: not-allowed;
+      border: none;
     }
   }
 `;
-
-export default NicknameModal;

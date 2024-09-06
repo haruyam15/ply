@@ -1,24 +1,24 @@
 /** @jsxImportSource @emotion/react */
 import { useState } from 'react';
 import { css } from '@emotion/react';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import Modal from '@/components/Modal';
+import Button from '@/components/Button';
 import Confirm from '@/components/Confirm';
-import useModalStore from '@/stores/useModalStore';
-import useUserStore from '@/stores/useUserStore';
-import { IUserData, IUserInformation } from '@/types/userTypes';
 import ProfileImageModal from './ProfileImageModal';
 import NicknameModal from './NicknameModal';
 import PasswordChangeModal from './PasswordChangeModal';
-import MainProfileContent from './MainProfileContent';
+import useModalStore from '@/stores/useModalStore';
+import useUserStore from '@/stores/useUserStore';
+import { IUserData, IUserInformation } from '@/types/userTypes';
+import { toast, ToastContainer } from 'react-toastify';
+import { colors } from '@/styles/colors';
+import 'react-toastify/dist/ReactToastify.css';
 
 const ProfileEditModal: React.FC = () => {
   const [currentModal, setCurrentModal] = useState<
     'main' | 'profileImage' | 'nickname' | 'password'
   >('main');
   const [isModalVisible, setIsModalVisible] = useState(true);
-  const [showConfirm, setShowConfirm] = useState(false);
   const modals = useModalStore((state) => state.modals);
   const closeModal = useModalStore((state) => state.closeModal);
   const setUser = useUserStore((state) => state.setUser);
@@ -27,8 +27,9 @@ const ProfileEditModal: React.FC = () => {
   const [newProfileImage, setNewProfileImage] = useState<string>(profileImage);
   const [newNickname, setNewNickname] = useState<string>(nickname);
   const [newPassword, setNewPassword] = useState<string>('');
+  const [showConfirm, setShowConfirm] = useState(false);
 
-  const handleConfirm = async () => {
+  const handleProfileUpdate = async () => {
     try {
       const response = await fetch(`/api/profileEdit/${userId}`, {
         method: 'PUT',
@@ -75,6 +76,10 @@ const ProfileEditModal: React.FC = () => {
       console.error('Failed to update profile:', error);
       toast.error('프로필 업데이트 중 오류가 발생했습니다.');
     }
+  };
+
+  const handleConfirm = () => {
+    handleProfileUpdate();
     setShowConfirm(false);
     setIsModalVisible(true);
   };
@@ -116,13 +121,23 @@ const ProfileEditModal: React.FC = () => {
         );
       default:
         return (
-          <MainProfileContent
-            newProfileImage={newProfileImage}
-            newNickname={newNickname}
-            userId={userId}
-            setCurrentModal={setCurrentModal}
-            handleShowConfirm={handleShowConfirm}
-          />
+          <div css={modalContentStyle}>
+            <div css={profileHeaderStyle}>
+              <img src={newProfileImage} alt="Profile" css={profileImageStyle} />
+              <div css={profileTextStyle}>
+                <h2>{newNickname}</h2>
+                <span>{userId}</span>
+              </div>
+            </div>
+            <ul css={listStyle}>
+              <li onClick={() => setCurrentModal('profileImage')}>프로필 사진 변경</li>
+              <li onClick={() => setCurrentModal('nickname')}>닉네임 변경</li>
+              <li onClick={() => setCurrentModal('password')}>비밀번호 변경</li>
+            </ul>
+            <div css={buttonWrapperStyle}>
+              <Button onClick={handleShowConfirm}>적용하기</Button>
+            </div>
+          </div>
         );
     }
   };
@@ -131,11 +146,7 @@ const ProfileEditModal: React.FC = () => {
     <>
       {modals.modalName === 'profileEdit' && modals.modalState && (
         <>
-          {isModalVisible && (
-            <Modal modalName="profileEdit">
-              <div css={modalContentStyle}>{renderModalContent()}</div>
-            </Modal>
-          )}
+          {isModalVisible && <Modal modalName="profileEdit">{renderModalContent()}</Modal>}
           {showConfirm && (
             <Confirm
               text="정말로 수정하시겠습니까?"
@@ -157,6 +168,8 @@ const ProfileEditModal: React.FC = () => {
   );
 };
 
+export default ProfileEditModal;
+
 const modalContentStyle = css`
   display: flex;
   flex-direction: column;
@@ -169,4 +182,69 @@ const modalContentStyle = css`
   position: relative;
 `;
 
-export default ProfileEditModal;
+const profileHeaderStyle = css`
+  display: flex;
+  align-items: center;
+  margin: 10px 0 20px;
+`;
+
+const profileImageStyle = css`
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 30px;
+  border: 2px solid ${colors.primaryGreen};
+`;
+
+const profileTextStyle = css`
+  h2 {
+    margin-bottom: 10px;
+    font-size: 20px;
+    text-align: center;
+  }
+  span {
+    font-size: 16px;
+    color: ${colors.gray};
+  }
+`;
+
+const listStyle = css`
+  list-style: none;
+  padding: 16px 0;
+  padding-bottom: 0;
+  margin: 0;
+  width: 100%;
+  li {
+    margin-bottom: 10px;
+    padding: 16px;
+    cursor: pointer;
+    text-align: left;
+    background-color: ${colors.inputGray};
+    border-radius: 10px;
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+`;
+
+const buttonWrapperStyle = css`
+  width: 100%;
+  margin-top: 15px;
+  button {
+    width: 100%;
+    height: 45px;
+    margin: 20px 0 25px;
+    border: none;
+    border-radius: 10px;
+    background-color: ${colors.primaryGreen};
+    color: ${colors.white};
+    font-size: 20px;
+    cursor: pointer;
+    &:hover {
+      background-color: ${colors.primaryGreen};
+      opacity: 0.8;
+      border: none;
+    }
+  }
+`;

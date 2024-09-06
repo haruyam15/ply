@@ -1,46 +1,18 @@
 /** @jsxImportSource @emotion/react */
 import { useState } from 'react';
 import { css } from '@emotion/react';
-import { toast } from 'react-toastify';
-import { ChevronLeft, Pencil } from 'lucide-react';
+import { Pencil, ChevronLeft } from 'lucide-react';
 import Input from '@/components/Input';
 import Button from '@/components/Button';
 import { colors } from '@/styles/colors';
+import { toast } from 'react-toastify';
 
-interface ProfileImageModalProps {
+const ProfileImageModal: React.FC<{
   onBack: () => void;
   profileimage: string;
   setNewProfileImage: (image: string) => void;
-}
-
-const ProfileImageModal: React.FC<ProfileImageModalProps> = ({
-  onBack,
-  profileimage,
-  setNewProfileImage,
-}) => {
+}> = ({ onBack, profileimage, setNewProfileImage }) => {
   const [isUploading, setIsUploading] = useState(false);
-
-  const uploadImage = async (file: File): Promise<string> => {
-    const formData = new FormData();
-    formData.append('image', file);
-
-    try {
-      const response = await fetch('/api/uploadImage', {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error('이미지 업로드에 실패했습니다.');
-      }
-
-      const data = await response.json();
-      return data.imageUrl;
-    } catch (error) {
-      console.error('이미지 업로드 중 오류 발생:', error);
-      throw error;
-    }
-  };
 
   const handleProfileImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -48,10 +20,22 @@ const ProfileImageModal: React.FC<ProfileImageModalProps> = ({
       setIsUploading(true);
 
       try {
-        const imageUrl = await uploadImage(file);
-        setNewProfileImage(imageUrl);
+        const formData = new FormData();
+        formData.append('image', file);
+
+        const response = await fetch('/api/uploadImage', {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (!response.ok) {
+          throw new Error('이미지 업로드에 실패했습니다.');
+        }
+
+        const data = await response.json();
+        setNewProfileImage(data.imageUrl);
         toast.success('프로필 이미지가 업로드되었습니다.');
-      } catch (error) {
+      } catch {
         toast.error('이미지 업로드에 실패했습니다.');
       } finally {
         setIsUploading(false);
@@ -65,7 +49,7 @@ const ProfileImageModal: React.FC<ProfileImageModalProps> = ({
   };
 
   return (
-    <>
+    <div css={modalContentStyle}>
       <button css={backButtonStyle} onClick={onBack}>
         <ChevronLeft size={28} />
       </button>
@@ -86,29 +70,22 @@ const ProfileImageModal: React.FC<ProfileImageModalProps> = ({
       <div css={buttonWrapperStyle}>
         <Button onClick={handleSubmit}>변경하기</Button>
       </div>
-    </>
+    </div>
   );
 };
 
-const backButtonStyle = css`
-  position: absolute;
-  top: 0;
-  left: -30px;
-  background-color: transparent;
-  border: none;
-  outline: none;
-  cursor: pointer;
-  color: #888;
-  padding: 11px;
-`;
+export default ProfileImageModal;
 
-const modalTitleStyle = css`
-  font-size: 24px;
-  margin-bottom: 40px;
-  color: ${colors.white};
-  text-align: center;
-  justify-content: center;
+const modalContentStyle = css`
+  display: flex;
+  flex-direction: column;
   align-items: center;
+  padding: 16px;
+  padding-top: 40px;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 420px;
+  position: relative;
 `;
 
 const modalProfileImageWrapper = css`
@@ -145,6 +122,27 @@ const editIconButton = css`
   }
 `;
 
+const modalTitleStyle = css`
+  font-size: 24px;
+  margin-bottom: 40px;
+  color: ${colors.white};
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+`;
+
+const backButtonStyle = css`
+  position: absolute;
+  top: 0;
+  left: -30px;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  color: #888;
+  padding: 11px;
+`;
+
 const buttonWrapperStyle = css`
   width: 100%;
   margin-top: 15px;
@@ -166,5 +164,3 @@ const buttonWrapperStyle = css`
     }
   }
 `;
-
-export default ProfileImageModal;
