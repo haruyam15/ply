@@ -21,7 +21,7 @@ const Signin: React.FC = () => {
   const passwordRef = useRef<HTMLInputElement>(null);
   const { mutateAsync } = useUserDataFetch();
 
-  const debouncedSignin = useCallback(
+  const throttleFetchSignin = useCallback(
     throttle(async (userId, password) => {
       if (userId && password) {
         try {
@@ -41,7 +41,7 @@ const Signin: React.FC = () => {
     [],
   );
 
-  const debouncedValidate = useCallback(
+  const throttleFetchValidate = useCallback(
     throttle(async (userId, password) => {
       if (userId && password) {
         try {
@@ -50,7 +50,7 @@ const Signin: React.FC = () => {
             userData: { userId, password },
           });
           if (passwordValidateStatus === 200) {
-            debouncedSignin(userId, password);
+            throttleFetchSignin(userId, password);
           }
         } catch (error) {
           if (axios.isAxiosError(error)) {
@@ -67,13 +67,13 @@ const Signin: React.FC = () => {
         }
       }
     }, 500),
-    [debouncedSignin],
+    [],
   );
   const onLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const userId = idRef.current?.value ?? null;
     const password = passwordRef.current?.value ?? null;
-    debouncedValidate(userId, password);
+    throttleFetchValidate(userId, password);
   };
 
   const children: React.ReactNode = (
