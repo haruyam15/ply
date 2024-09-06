@@ -63,6 +63,7 @@ const profileImageStyle = css`
   height: 32px;
   border-radius: 50%;
   margin-right: 8px;
+  border: 1px solid ${colors.primaryGreen};
 `;
 
 const nicknameStyle = css`
@@ -84,10 +85,10 @@ const addButtonStyle = css`
   cursor: pointer;
   border: none;
   background: none;
-  padding: 4px;
+  padding: 6px;
   color: inherit;
   font: inherit;
-  margin-top: 10px;
+  margin-top: 2px;
 
   &:hover {
     background-color: ${colors.darkestGray};
@@ -97,11 +98,12 @@ const addButtonStyle = css`
 
 const iconStyle = css`
   margin-right: 4px; /* 아이콘과 텍스트 사이 간격 */
+  margin-left: 4px;
   color: ${colors.lightestGray};
 `;
 
 const buttonTextStyle = css`
-  margin-right: 10px;
+  margin-right: 6px;
   font-size: 16px; /* 텍스트 스타일을 닉네임과 맞춤 */
   font-weight: bold;
   color: ${colors.lightestGray};

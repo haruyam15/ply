@@ -23,6 +23,7 @@ const AddPlaylist = forwardRef<AddPlaylistRef, AddPlaylistProps>(({ userPlyData 
   const [isComposing, setIsComposing] = useState(false);
   const [content, setContent] = useState('');
   const [videoId, setVideoId] = useState('');
+  const [errText, setErrText] = useState('');
   const [disclosureStatus, setDisclosureStatus] = useState(true);
   const tagValue = useRef<HTMLInputElement>(null);
   const title = useRef<HTMLInputElement>(null);
@@ -98,7 +99,10 @@ const AddPlaylist = forwardRef<AddPlaylistRef, AddPlaylistProps>(({ userPlyData 
 
   const handleAddTagChange = () => {
     const currentValue = tagValue.current?.value.trim();
-    if (currentValue) {
+    if (tags.length > 2) {
+      setErrText('태그는 최대 3개까지 입력 가능합니다.');
+    } else if (currentValue) {
+      setErrText('');
       setTags((prevTags) => [...prevTags, currentValue]);
       if (tagValue.current) {
         tagValue.current.value = '';
@@ -202,6 +206,7 @@ const AddPlaylist = forwardRef<AddPlaylistRef, AddPlaylistProps>(({ userPlyData 
           </Button>
         </div>
         <Tags tags={tags} deletable={true} position={true} onClick={handleDeleteTag} />
+        <p css={{ fontSize: '12px', color: `${colors.red}`, marginTop: '5px' }}>{errText}</p>
       </div>
     </div>
   );

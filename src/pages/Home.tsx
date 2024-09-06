@@ -164,7 +164,7 @@ const Home: React.FC = () => {
           {['C0C6wvNl14w', 'ZncbtRo7RXs', 'phuiiNCxRMg'].map((videoId, index) => (
             <div key={index} css={slideStyle}>
               <img
-                src={`https://i.ytimg.com/vi/${videoId}}/maxresdefault.jpg`}
+                src={`https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`}
                 alt={`캐러셀이미지`}
                 css={thumbnailStyle}
               />
@@ -194,8 +194,8 @@ const Home: React.FC = () => {
                 showEdit={true}
                 tags={item.tags}
                 profileImage={userInformation?.profileImage || ''}
-                userName={item.userId}
-                userId={item.userId}
+                userName={userInformation?.userName || ''}
+                userId={userInformation?.userId || ''}
                 imgUrl={item.imgUrl[0]}
                 videoCount={item.videoCount}
               />
@@ -223,8 +223,8 @@ const Home: React.FC = () => {
             showEdit={true}
             tags={item.tags}
             profileImage={userInformation?.profileImage || ''}
-            userName={item.userId}
-            userId={item.userId}
+            userName={userInformation?.userName || ''}
+            userId={userInformation?.userId || ''}
             imgUrl={item.imgUrl[0]}
             videoCount={item.videoCount}
           />
