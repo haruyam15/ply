@@ -16,6 +16,7 @@ const PasswordChangeModal: React.FC<{
   const [newPassword, setNewPassword] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState<string>('');
   const [error, setError] = useState<string>('');
+  const { userInformation, setUser } = useUserStore.getState();
 
   const validatePassword = (password: string) => {
     const regex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,}$/;
@@ -35,25 +36,36 @@ const PasswordChangeModal: React.FC<{
     }
 
     try {
-      const { userInformation, setUser } = useUserStore.getState();
-      const response = await fetch(`/api/passwordCheck/${userInformation.userId}`, {
+      const checkResponse = await fetch(`/api/passwordCheck/${userInformation.userId}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ inputPassword: currentPassword }),
       });
 
-      const result = await response.json();
-      if (response.ok && result.isPasswordValid) {
+      const checkResult = await checkResponse.json();
+      if (!checkResponse.ok || !checkResult.isPasswordValid) {
+        setError('현재 비밀번호가 일치하지 않습니다.');
+        return;
+      }
+
+      const changeResponse = await fetch(`/api/profileEdit/${userInformation.userId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: newPassword }),
+      });
+
+      const changeResult = await changeResponse.json();
+      if (changeResponse.ok && changeResult.success) {
         onPasswordChange(newPassword);
         setUser({ ...userInformation, password: newPassword });
         toast.success('비밀번호가 성공적으로 변경되었습니다.');
         onBack();
       } else {
-        setError('현재 비밀번호가 일치하지 않습니다.');
+        setError(changeResult.message || '비밀번호 변경에 실패했습니다.');
       }
     } catch (error) {
-      console.error('Failed to check password:', error);
-      toast.error('비밀번호 확인 중 오류가 발생했습니다.');
+      console.error('Failed to change password:', error);
+      toast.error('비밀번호 변경 중 오류가 발생했습니다.');
     }
   };
 

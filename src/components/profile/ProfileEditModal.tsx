@@ -5,9 +5,8 @@ import Modal from '@/components/Modal';
 import ProfileImageModal from './ProfileImageModal';
 import NicknameModal from './NicknameModal';
 import PasswordChangeModal from './PasswordChangeModal';
-import useModalStore from '@/stores/useModalStore';
 import useUserStore from '@/stores/useUserStore';
-import { IUserData, IUserInformation } from '@/types/userTypes';
+import { IUserData } from '@/types/userTypes';
 import { ToastContainer } from 'react-toastify';
 import { colors } from '@/styles/colors';
 import 'react-toastify/dist/ReactToastify.css';
@@ -16,64 +15,10 @@ const ProfileEditModal: React.FC = () => {
   const [currentModal, setCurrentModal] = useState<
     'main' | 'profileImage' | 'nickname' | 'password'
   >('main');
-  const closeModal = useModalStore((state) => state.closeModal);
-  const setUser = useUserStore((state) => state.setUser);
   const userInformation: IUserData = useUserStore((state) => state.userInformation);
   const { profileImage, nickname, userId } = userInformation;
   const [newProfileImage, setNewProfileImage] = useState<string>(profileImage);
   const [newNickname, setNewNickname] = useState<string>(nickname);
-  const [newPassword, setNewPassword] = useState<string>('');
-
-  const handleProfileUpdate = async () => {
-    try {
-      const response = await fetch(`/api/profileEdit/${userId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          profileImage: newProfileImage,
-          password: newPassword,
-          userName: newNickname,
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to update profile');
-      }
-
-      const result = await response.json();
-      if (result.success) {
-        const updatedUser: IUserData = {
-          ...userInformation,
-          password: newPassword || userInformation.password,
-          profileImage: newProfileImage,
-          nickname: newNickname,
-        };
-        setUser(updatedUser);
-
-        const userInfoForStorage: IUserInformation = {
-          userId,
-          profileImage: newProfileImage,
-          nickname: newNickname,
-          password: newPassword || userInformation.password,
-        };
-        localStorage.setItem('userInformation', JSON.stringify(userInfoForStorage));
-
-        closeModal('profileEdit');
-      } else {
-        console.error(result.message);
-      }
-    } catch (error) {
-      console.error('Failed to update profile:', error);
-    }
-  };
-
-  const closeAndSaveProfileEdit = () => {
-    handleProfileUpdate();
-    closeModal('profileEdit');
-  };
 
   const renderModalContent = () => {
     switch (currentModal) {
@@ -95,10 +40,7 @@ const ProfileEditModal: React.FC = () => {
         );
       case 'password':
         return (
-          <PasswordChangeModal
-            onBack={() => setCurrentModal('main')}
-            onPasswordChange={(password) => setNewPassword(password)}
-          />
+          <PasswordChangeModal onBack={() => setCurrentModal('main')} onPasswordChange={() => {}} />
         );
       default:
         return (
@@ -115,7 +57,6 @@ const ProfileEditModal: React.FC = () => {
               <li onClick={() => setCurrentModal('nickname')}>닉네임 변경</li>
               <li onClick={() => setCurrentModal('password')}>비밀번호 변경</li>
             </ul>
-            <button onClick={closeAndSaveProfileEdit}>저장 후 닫기</button>
           </div>
         );
     }
