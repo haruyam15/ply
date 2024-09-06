@@ -6,6 +6,7 @@ import TitleHeader from '@/components/TitleHeader';
 import VideoGridItem from '@/components/VideoGridItem';
 import useUserStore from '@/stores/useUserStore';
 import throttle from 'lodash/throttle';
+import EmptyMessage from '@/components/EmptyMessage';
 
 interface PlaylistData {
   id: string;
@@ -130,9 +131,7 @@ const Timeline: React.FC = () => {
       {error && <div css={errorStyle}>{error}</div>}
 
       {/* 플레이리스트가 비어있을 경우 출력 */}
-      {playlists.length === 0 && !loading && (
-        <div css={emptyMessageStyle}>타임라인이 비어있습니다.</div>
-      )}
+      {playlists.length === 0 && !loading && <EmptyMessage message="타임라인이 비어있습니다." />}
 
       <div css={gridContainerStyle}>
         {playlists.slice(0, visibleItems).map((item, index) => (

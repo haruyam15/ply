@@ -6,6 +6,7 @@ import TitleHeader from '@/components/TitleHeader';
 import VideoGridItem from '@/components/VideoGridItem';
 import useUserStore from '@/stores/useUserStore';
 import throttle from 'lodash/throttle';
+import EmptyMessage from '@/components/EmptyMessage';
 
 interface LikedPlaylistData {
   title: string;
@@ -122,9 +123,9 @@ const Like: React.FC = () => {
 
       {error && <div css={errorStyle}>{error}</div>}
 
-      {/* 좋아요한 플레이리스트가 비어있을 경우 출력 */}
+      {/* 좋아요한 플레이리스트가 비어있을 경우 EmptyMessage 컴포넌트 사용 */}
       {likedPlaylists.length === 0 && !loading && (
-        <div css={emptyMessageStyle}>좋아요한 플레이리스트가 없습니다.</div>
+        <EmptyMessage message="좋아요한 플레이리스트가 없습니다." />
       )}
 
       <div css={gridContainerStyle}>
@@ -180,13 +181,6 @@ const errorStyle = css`
   color: red;
   text-align: center;
   margin: 20px 0;
-`;
-
-const emptyMessageStyle = css`
-  text-align: center;
-  font-size: 18px;
-  color: #555;
-  margin-top: 20px;
 `;
 
 export default Like;
