@@ -12,7 +12,7 @@ interface PlaylistData {
   title: string;
   userId: string;
   tags: string[];
-  imgUrl: string; // imgUrl 속성 추가
+  imgUrl: string;
   disclosureStatus: string;
   videoCount: number;
   nickName: string;
@@ -129,6 +129,11 @@ const Timeline: React.FC = () => {
 
       {error && <div css={errorStyle}>{error}</div>}
 
+      {/* 플레이리스트가 비어있을 경우 출력 */}
+      {playlists.length === 0 && !loading && (
+        <div css={emptyMessageStyle}>타임라인이 비어있습니다.</div>
+      )}
+
       <div css={gridContainerStyle}>
         {playlists.slice(0, visibleItems).map((item, index) => (
           <VideoGridItem
@@ -142,7 +147,7 @@ const Timeline: React.FC = () => {
             profileImage={userInformation?.profileImage || ''}
             userName={item.nickName}
             userId={item.userId}
-            imgUrl={item.imgUrl[0]} // imgUrl을 VideoGridItem에 전달
+            imgUrl={item.imgUrl[0]}
             videoCount={item.videoCount}
           />
         ))}
@@ -181,6 +186,13 @@ const errorStyle = css`
   color: red;
   text-align: center;
   margin: 20px 0;
+`;
+
+const emptyMessageStyle = css`
+  text-align: center;
+  font-size: 18px;
+  color: #555;
+  margin-top: 20px;
 `;
 
 export default Timeline;
