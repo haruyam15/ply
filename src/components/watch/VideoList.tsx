@@ -1,12 +1,13 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { Play } from 'lucide-react';
+import { CopyPlus, Play } from 'lucide-react';
 import { colors } from '@/styles/colors';
 import forkVideoId from '@/utils/forkVideoId';
 import { Link } from 'react-router-dom';
 import { If } from '@/components/IfElse';
 import { IPlaylist } from '@/types/playlistTypes';
 import { IYoutubeVideoResponse } from '@/types/youtubeResponseTypes';
+import useUserStore from '@/stores/useUserStore';
 
 interface IVideoListProps {
   playlistId: string;
@@ -15,6 +16,7 @@ interface IVideoListProps {
   youtubeData: IYoutubeVideoResponse;
 }
 function VideoList({ playlistId, playingVideoId, playlistData, youtubeData }: IVideoListProps) {
+  const user = useUserStore((state) => state.userInformation);
   const { title, userName } = playlistData;
   const totalVideoCnt = youtubeData.items.length;
   const nowPlayingindex = playlistData.link.map((li) => forkVideoId(li)).indexOf(playingVideoId);
@@ -22,7 +24,14 @@ function VideoList({ playlistId, playingVideoId, playlistData, youtubeData }: IV
   return (
     <div className="video-list" css={list}>
       <div className="list-header">
-        <p>{title}</p>
+        <div css={{ display: 'flex', justifyContent: 'space-between' }}>
+          <p>{title}</p>
+          {user.userId === playlistData.userId ? (
+            <Link to={`/managePlaylist/${playlistId}`} css={{ color: 'white' }}>
+              <CopyPlus />
+            </Link>
+          ) : null}
+        </div>
         <span>
           {userName}
           <em>
