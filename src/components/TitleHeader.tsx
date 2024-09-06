@@ -63,6 +63,7 @@ const profileImageStyle = css`
   height: 32px;
   border-radius: 50%;
   margin-right: 8px;
+  border: 1px solid ${colors.primaryGreen};
 `;
 
 const nicknameStyle = css`

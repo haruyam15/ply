@@ -194,8 +194,8 @@ const Home: React.FC = () => {
                 showEdit={true}
                 tags={item.tags}
                 profileImage={userInformation?.profileImage || ''}
-                userName={item.userId}
-                userId={item.userId}
+                userName={userInformation?.userName || ''}
+                userId={userInformation?.userId || ''}
                 imgUrl={item.imgUrl[0]}
                 videoCount={item.videoCount}
               />
@@ -223,8 +223,8 @@ const Home: React.FC = () => {
             showEdit={true}
             tags={item.tags}
             profileImage={userInformation?.profileImage || ''}
-            userName={item.userId}
-            userId={item.userId}
+            userName={userInformation?.userName || ''}
+            userId={userInformation?.userId || ''}
             imgUrl={item.imgUrl[0]}
             videoCount={item.videoCount}
           />
