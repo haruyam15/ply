@@ -1,7 +1,7 @@
 import { IYoutubeVideoResponse } from '@/types/youtubeResponseTypes';
 import axios from 'axios';
 
-const getYoutubeData = async (videoId: string): Promise<IYoutubeVideoResponse | null> => {
+const getYoutubeData = async (videoId: string): Promise<IYoutubeVideoResponse> => {
   try {
     const response = await axios.get('/api/youtube/videos', {
       params: {
@@ -12,7 +12,7 @@ const getYoutubeData = async (videoId: string): Promise<IYoutubeVideoResponse | 
     return response.data;
   } catch (error) {
     console.error('유튜브 데이터 호출을 실패했습니다.:', error);
-    return null;
+    throw error;
   }
 };
 

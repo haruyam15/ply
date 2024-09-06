@@ -2,6 +2,7 @@
 import { css } from '@emotion/react';
 import { If } from '@/components/IfElse';
 import { colors } from '@/styles/colors';
+import { Link } from 'react-router-dom';
 
 interface IUserProps {
   profileImage: string;
@@ -23,24 +24,26 @@ function User({
   onClick,
 }: IUserProps) {
   return (
-    <div css={userWrap(size)} onClick={onClick}>
-      <If test={onlyImage}>
-        <If.Then>
-          <div className="profile">
-            <img src={profileImage} alt="" />
-          </div>
-        </If.Then>
-        <If.Else>
-          <div className="profile">
-            <img width="26" height="26" src={profileImage} alt="" />
-          </div>
-          <div className="user-info">
-            <p>{nickname}</p>
-            <span>{userId}</span>
-          </div>
-        </If.Else>
-      </If>
-    </div>
+    <Link to={`/profile/${userId}`}>
+      <div css={userWrap(size)} onClick={onClick}>
+        <If test={onlyImage}>
+          <If.Then>
+            <div className="profile">
+              <img src={profileImage} alt="" />
+            </div>
+          </If.Then>
+          <If.Else>
+            <div className="profile">
+              <img width="26" height="26" src={profileImage} alt="" />
+            </div>
+            <div className="user-info">
+              <p>{nickname}</p>
+              <span>{userId}</span>
+            </div>
+          </If.Else>
+        </If>
+      </div>
+    </Link>
   );
 }
 export default User;

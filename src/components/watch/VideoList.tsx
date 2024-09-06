@@ -3,47 +3,18 @@ import { css } from '@emotion/react';
 import { Play } from 'lucide-react';
 import { colors } from '@/styles/colors';
 import forkVideoId from '@/utils/forkVideoId';
-import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
-import useYoutubeFetch from '@/hooks/useYoutubeFetch';
-import useWatchDataFetch from '@/hooks/useWatchDataFetch';
-import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { If } from '@/components/IfElse';
+import { IPlaylist } from '@/types/playlistTypes';
+import { IYoutubeVideoResponse } from '@/types/youtubeResponseTypes';
 
-function VideoList() {
-  const navigate = useNavigate();
-  const playlistId = useParams().playlistId as string;
-  const urlParams = new URLSearchParams(useLocation().search);
-  const playingVideoId = urlParams.get('v') as string;
-  const { isLoading: playlistLoading, data: playlistData } = useWatchDataFetch(playlistId);
-  const [videoId, setVideoId] = useState<string>('');
-
-  useEffect(() => {
-    if (playlistData) {
-      const { link } = playlistData;
-      setVideoId(link.map((l) => forkVideoId(l)).join(','));
-    }
-  }, [playlistData]);
-
-  const { data: youtubeData, isLoading: youtubeIsLoading } = useYoutubeFetch(
-    videoId,
-    !!videoId,
-    playlistId,
-  );
-
-  if (playlistLoading || youtubeIsLoading) {
-    return <div></div>;
-  }
-
-  if (!youtubeData) {
-    return <div></div>;
-  }
-
-  if (!playlistData) {
-    alert('플레이리스트 조회에 오류가 발생했습니다.');
-    navigate('/');
-    return null;
-  }
-
+interface IVideoListProps {
+  playlistId: string;
+  playingVideoId: string;
+  playlistData: IPlaylist;
+  youtubeData: IYoutubeVideoResponse;
+}
+function VideoList({ playlistId, playingVideoId, playlistData, youtubeData }: IVideoListProps) {
   const { title, userName } = playlistData;
   const totalVideoCnt = youtubeData.items.length;
   const nowPlayingindex = playlistData.link.map((li) => forkVideoId(li)).indexOf(playingVideoId);
@@ -64,7 +35,7 @@ function VideoList() {
           const { title, channelTitle, thumbnails } = item.snippet;
           const youtubeVideoId = item.id;
           return (
-            <li key={i}>
+            <li key={i} className={i === nowPlayingindex ? 'active' : ''}>
               <Link to={`/watch/${playlistId}?v=${youtubeVideoId}`}>
                 <div className="num">
                   <If test={i === nowPlayingindex}>
@@ -93,6 +64,7 @@ function VideoList() {
 export default VideoList;
 
 const list = css`
+  width: 400px;
   flex: 3;
   box-sizing: border-box;
   border-radius: 8px;
@@ -165,6 +137,9 @@ const list = css`
 
     li:hover {
       cursor: pointer;
+      background: rgba(255, 255, 255, 0.1);
+    }
+    li.active {
       background: rgba(255, 255, 255, 0.1);
     }
   }

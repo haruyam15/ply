@@ -1,6 +1,7 @@
 import getIsLike from '@/apis/watch/getIsLike';
 import updateLike from '@/apis/watch/updateLike';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { Dispatch, SetStateAction } from 'react';
 
 interface ILikeUpdateProps {
   type: 'likeAdd' | 'likeDelete';
@@ -15,15 +16,26 @@ export const useLikeCheck = (playlistId: string, userId: string, enabled: boolea
   });
 };
 
-export const useLikeUpdate = (playlistId: string) => {
-  const queryClient = useQueryClient();
+export const useLikeUpdate = (
+  playlistId: string,
+  likeCnt: number,
+  setLikeCnt: Dispatch<SetStateAction<number>>,
+) => {
   return useMutation({
     mutationFn: async ({ type, userId }: ILikeUpdateProps) => {
       const response = await updateLike(type, userId, playlistId);
       return response;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['likeCheck', playlistId] });
+    onMutate: async ({ type }) => {
+      console.log(type);
+      const previousLikeCnt = likeCnt;
+      setLikeCnt((prev) => (type === 'likeAdd' ? prev + 1 : prev - 1));
+      return { previousLikeCnt };
+    },
+    onError: (_error, _type, context) => {
+      if (context) {
+        setLikeCnt(context.previousLikeCnt);
+      }
     },
   });
 };

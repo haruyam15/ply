@@ -24,8 +24,15 @@ const ManagePlaylist = () => {
   const clearYoutubelistData = useYoutubeDataStore((state) => state.clearYoutubelistData);
   const playlistDataToAdd = useRef<{ getPlaylistData: () => PlaylistDataStore }>(null);
   const { playlistId } = useParams() as { playlistId: string };
-  const { data: youtubeResults } = useYoutubeFetch(videoIdList, !!videoIdList);
-  const { data: userPlyData } = useWatchDataFetch(playlistId, 'Edit', !!playlistId);
+  const { data: youtubeResults } = useYoutubeFetch({
+    videoId: videoIdList,
+    enabled: !!videoIdList,
+  });
+  const { data: userPlyData } = useWatchDataFetch({
+    playlistId,
+    optionalKey: 'Edit',
+    enabled: !!playlistId,
+  });
   const { mutate } = useNewPlaylist();
   const navigate = useNavigate();
 
