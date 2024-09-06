@@ -20,11 +20,17 @@ const UserProfile: React.FC = () => {
       try {
         const response = await axios.get(`/api/profilePage/${user.userId}`);
         if (response.data) {
-          setUser({
-            ...user,
-            followers: response.data.followers,
-            myPlaylists: response.data.myPlaylistCount,
-          });
+          // 상태가 달라졌을 때만 업데이트
+          if (
+            user.followers !== response.data.followers ||
+            user.myPlaylists !== response.data.myPlaylistCount
+          ) {
+            setUser({
+              ...user,
+              followers: response.data.followers,
+              myPlaylists: response.data.myPlaylistCount,
+            });
+          }
         }
       } catch (error) {
         console.error('프로필 데이터를 가져오는 중 오류 발생:', error);
@@ -34,7 +40,8 @@ const UserProfile: React.FC = () => {
     if (user.userId) {
       fetchProfileData();
     }
-  }, [user.userId, setUser, user]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user.userId]);
 
   const { profileImage, nickname, userId } = user;
 
@@ -64,7 +71,7 @@ const UserProfile: React.FC = () => {
             color: `${colors.lightestGray}`,
           }}
         >
-          <p>@{userId}</p>
+          <p>{userId}</p>
           <Link to="/follow" css={{ color: `${colors.lightestGray}` }}>
             팔로워 {user.followers?.length || 0}
           </Link>
@@ -91,6 +98,7 @@ const profileimageArea = css`
   width: 230px;
   height: 230px;
   border-radius: 50%;
+  border: 2px solid ${colors.primaryGreen};
 `;
 
 const profileEditOrFollowerBtn = css`

@@ -5,6 +5,7 @@ import SkeletonGridItem from '@/components/SkeletonGridItem';
 import TitleHeader from '@/components/TitleHeader';
 import VideoGridItem from '@/components/VideoGridItem';
 import useUserStore from '@/stores/useUserStore';
+import throttle from 'lodash/throttle';
 
 interface PlaylistData {
   id: string;
@@ -98,7 +99,7 @@ const Timeline: React.FC = () => {
   }, [userId, visibleItems]);
 
   useEffect(() => {
-    const handleScroll = () => {
+    const throttledHandleScroll = throttle(() => {
       const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
       if (scrollTop + clientHeight >= scrollHeight - 5 && !loading && hasMore) {
         setLoading(true);
@@ -109,19 +110,19 @@ const Timeline: React.FC = () => {
           if (playlists.length <= visibleItems + 8) {
             setHasMore(false);
           }
-        }, 1000);
+        }, 500);
       }
-    };
+    }, 500);
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', throttledHandleScroll);
+    return () => window.removeEventListener('scroll', throttledHandleScroll);
   }, [loading, hasMore, visibleItems, playlists.length]);
 
   return (
     <div css={containerStyle}>
       <TitleHeader
         profileImage={userInformation?.profileImage || '없음'}
-        nickname={userInformation?.userName || '손성오'}
+        nickname={userInformation?.userName || ''}
         actionText="타임라인"
       />
 

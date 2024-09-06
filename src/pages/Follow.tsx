@@ -13,6 +13,7 @@ interface UserDetail {
   followers: number;
   myPlaylist: number;
   userId: string;
+  isFollowing?: boolean;
 }
 
 const Follow: React.FC = () => {
@@ -36,7 +37,11 @@ const Follow: React.FC = () => {
     try {
       if (userInformation.userId) {
         const response = await axios.get(`/api/followingPage/${userInformation.userId}`);
-        setFollowing(response.data);
+        const updatedFollowing = response.data.map((user: UserDetail) => ({
+          ...user,
+          isFollowing: true,
+        }));
+        setFollowing(updatedFollowing);
       }
     } catch (error) {
       console.error('Failed to fetch following:', error);
@@ -54,38 +59,70 @@ const Follow: React.FC = () => {
     try {
       if (userInformation.userId) {
         await axios.delete(`/api/followDelete/${userInformation.userId}/${targetUserId}`);
-        fetchFollowers();
-        fetchFollowing();
+        setFollowing((prevFollowing) =>
+          prevFollowing.map((user) =>
+            user.userId === targetUserId ? { ...user, isFollowing: false } : user,
+          ),
+        );
       }
     } catch (error) {
       console.error('Failed to unfollow:', error);
     }
   };
 
+  const handleFollow = async (targetUserId: string) => {
+    try {
+      if (userInformation.userId) {
+        await axios.post(`/api/follow/${userInformation.userId}/${targetUserId}`);
+        setFollowing((prevFollowing) =>
+          prevFollowing.map((user) =>
+            user.userId === targetUserId ? { ...user, isFollowing: true } : user,
+          ),
+        );
+      }
+    } catch (error) {
+      console.error('Failed to follow:', error);
+    }
+  };
+
   const renderUserList = (users: UserDetail[]) => (
     <div>
-      {users.map((user, index) => (
-        <div key={index} css={userItemStyle}>
-          <img
-            css={profileimageArea}
-            src={user.profileImage || '/default-profile-image.jpg'}
-            alt={user.userName}
-          />
-          <div css={userInfoStyle}>
-            <h2 css={nicknameStyle}>{user.userName}</h2>
-            <div css={userDetailsStyle}>
-              <p>@{user.userId}</p>
-              <p>팔로워 {user.followers}</p>
-              <p>플레이리스트 {user.myPlaylist}</p>
+      {users.length === 0 ? (
+        <p css={emptyMessageStyle}>
+          {activeTab === 'followers' ? '아직 팔로워가 없습니다.' : '아직 팔로잉한 유저가 없습니다.'}
+        </p>
+      ) : (
+        users.map((user, index) => (
+          <div key={index} css={userItemStyle}>
+            <img
+              css={profileimageArea}
+              src={user.profileImage || '/default-profile-image.jpg'}
+              alt={user.userName}
+            />
+            <div css={userInfoStyle}>
+              <h2 css={nicknameStyle}>{user.userName}</h2>
+              <div css={userDetailsStyle}>
+                <p>{user.userId}</p>
+                <p>팔로워 {user.followers}</p>
+                <p>플레이리스트 {user.myPlaylist}</p>
+              </div>
+              {activeTab === 'following' &&
+                (user.isFollowing ? (
+                  <Button
+                    css={profileEditOrFollowerBtn}
+                    onClick={() => handleUnfollow(user.userId)}
+                  >
+                    팔로우 취소
+                  </Button>
+                ) : (
+                  <Button css={profileEditOrFollowerBtn} onClick={() => handleFollow(user.userId)}>
+                    팔로우
+                  </Button>
+                ))}
             </div>
-            {activeTab === 'following' && (
-              <Button css={profileEditOrFollowerBtn} onClick={() => handleUnfollow(user.userId)}>
-                팔로우 취소
-              </Button>
-            )}
           </div>
-        </div>
-      ))}
+        ))
+      )}
     </div>
   );
 
@@ -111,6 +148,8 @@ const Follow: React.FC = () => {
     </div>
   );
 };
+
+export default Follow;
 
 const tabsStyle = css`
   display: flex;
@@ -160,6 +199,7 @@ const profileimageArea = css`
   border-radius: 50%;
   object-fit: cover;
   background-color: ${colors.gray};
+  border: 2px solid ${colors.primaryGreen};
 `;
 
 const userInfoStyle = css`
@@ -198,4 +238,9 @@ const profileEditOrFollowerBtn = css`
   }
 `;
 
-export default Follow;
+const emptyMessageStyle = css`
+  text-align: center;
+  margin-top: 140px;
+  font-size: 20px;
+  color: ${colors.gray};
+`;
