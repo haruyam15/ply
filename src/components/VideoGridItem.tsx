@@ -102,4 +102,15 @@ const titleStyle = css`
   max-width: 100%;
 `;
 
+<<<<<<< Updated upstream
+=======
+const tagContainerStyle = css`
+  display: flex;
+  overflow: hidden; /* 넘치는 태그를 숨김 */
+  white-space: nowrap; /* 태그가 한 줄로 유지되도록 설정 */
+  flex-wrap: nowrap; /* 태그를 한 줄로 배치 */
+  justify-content: flex-end;
+`;
+
+>>>>>>> Stashed changes
 export default VideoGridItem;
