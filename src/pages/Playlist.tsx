@@ -139,8 +139,8 @@ const PlaylistPage: React.FC = () => {
               showMenuDot={true}
               tags={item.tags}
               profileImage={userInformation?.profileImage || ''}
-              userName={item.userId}
-              userId={item.userId}
+              userName={userInformation?.userName || ''}
+              userId={userInformation?.userId || ''}
               imgUrl={item.imgUrl[0]}
               videoCount={item.videoCount}
               index={index}

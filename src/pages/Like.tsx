@@ -132,8 +132,8 @@ const Like: React.FC = () => {
             showEdit={true}
             tags={item.tags}
             profileImage={userInformation?.profileImage || ''}
-            userName={item.userId} // userName을 userId로 대체
-            userId={item.userId}
+            userName={userInformation?.userName || ''}
+            userId={userInformation?.userId || ''}
             imgUrl={item.imgUrl[0]} // imgUrl 배열에서 첫 번째 요소 사용
             videoCount={item.videoCount}
             index={index}
