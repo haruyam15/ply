@@ -40,7 +40,7 @@ const UserProfile: React.FC = () => {
     if (user.userId) {
       fetchProfileData();
     }
-    // user.userId와 setUser만 의존성 배열에 포함
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user.userId, setUser]);
 
   const { profileImage, nickname, userId } = user;

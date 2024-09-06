@@ -18,8 +18,9 @@ const ProfileEditModal: React.FC = () => {
     'main' | 'profileImage' | 'nickname' | 'password'
   >('main');
   const [isModalVisible, setIsModalVisible] = useState(true);
-  const { modals, closeModal } = useModalStore();
-  const { setUser } = useUserStore();
+  const modals = useModalStore((state) => state.modals);
+  const closeModal = useModalStore((state) => state.closeModal);
+  const setUser = useUserStore((state) => state.setUser);
   const userInformation: IUserData = useUserStore((state) => state.userInformation);
   const { profileImage, nickname, userId } = userInformation;
   const [newProfileImage, setNewProfileImage] = useState<string>(profileImage);
