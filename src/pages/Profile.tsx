@@ -7,19 +7,20 @@ import { Video, Heart } from 'lucide-react';
 import VideoGridItem from '@/components/VideoGridItem';
 import useUserStore from '@/stores/useUserStore';
 
-interface PlaylistItem {
-  imgUrl: string[];
+interface PlaylistData {
   title: string;
   userId: string;
-  nickname: string;
-  profileImage: string;
   tags: string[];
+  imgUrl: string[];
+  disclosureStatus: boolean;
+  id: string;
+  videoCount: number;
 }
 
 function Profile() {
   const userInformation = useUserStore((state) => state.userInformation);
   const [selectedTab, setSelectedTab] = useState('playlist');
-  const [playlists, setPlaylists] = useState<PlaylistItem[]>([]);
+  const [playlists, setPlaylists] = useState<PlaylistData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -39,7 +40,7 @@ function Profile() {
         }
 
         const data = await response.json();
-        const filteredPlaylists: PlaylistItem[] =
+        const filteredPlaylists: PlaylistData[] =
           selectedTab === 'playlist' ? data.playlists : data.likedPlaylists;
 
         setPlaylists(filteredPlaylists);
@@ -53,6 +54,10 @@ function Profile() {
 
     fetchPlaylists();
   }, [selectedTab, userInformation.userId]);
+
+  const handleDeleteItem = (index: number) => {
+    setPlaylists((prevPlaylists) => prevPlaylists.filter((_, i) => i !== index));
+  };
 
   return (
     <div css={containerStyle}>
@@ -77,23 +82,33 @@ function Profile() {
           <p>로딩 중...</p>
         ) : error ? (
           <p>{error}</p>
+        ) : playlists.length === 0 ? (
+          <div css={emptyMessageStyle}>
+            {selectedTab === 'playlist' ? (
+              <p>아직 플레이리스트가 없습니다. 플레이리스트를 만들어보세요!</p>
+            ) : (
+              <p>좋아요한 플레이리스트가 없습니다.</p>
+            )}
+          </div>
         ) : (
           <div css={gridContainerStyle}>
             {playlists.map((item, index) => (
               <VideoGridItem
                 key={index}
-                videoId={item.imgUrl[0].split('/')[4]}
+                videoId={item.id}
                 title={item.title}
                 user={item.userId}
-                showEdit={false}
-                showDelete={false}
-                tags={item.tags || []}
-                profileImage={item.profileImage || ''}
-                userName={item.nickname || ''}
-                userId={item.userId || ''}
+                showDelete={true}
+                showEdit={true}
+                showMenuDot={userInformation.userId === item.userId}
+                tags={item.tags}
+                profileImage={userInformation?.profileImage || ''}
+                userName={item.userId}
+                userId={item.userId}
                 imgUrl={item.imgUrl[0]}
-                videoCount={0}
-                index={0}
+                videoCount={item.videoCount}
+                index={index}
+                deleteItem={handleDeleteItem}
               />
             ))}
           </div>
@@ -102,6 +117,8 @@ function Profile() {
     </div>
   );
 }
+
+export default Profile;
 
 const tabsStyle = css`
   display: flex;
@@ -150,4 +167,10 @@ const gridContainerStyle = css`
   padding: 20px;
 `;
 
-export default Profile;
+const emptyMessageStyle = css`
+  text-align: center;
+  font-size: 20px;
+  color: ${colors.gray};
+  padding: 40px 0;
+  margin-top: 80px;
+`;

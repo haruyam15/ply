@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { css } from '@emotion/react';
 import { ChevronLeft, Pencil } from 'lucide-react';
 import Modal from '@/components/Modal';
@@ -17,15 +17,38 @@ const ProfileEditModal: React.FC = () => {
   const [currentModal, setCurrentModal] = useState<
     'main' | 'profileImage' | 'nickname' | 'password'
   >('main');
-
-  const { modals, closeModal } = useModalStore();
-  const { setUser } = useUserStore();
+  const [isModalVisible, setIsModalVisible] = useState(true);
+  const modals = useModalStore((state) => state.modals);
+  const closeModal = useModalStore((state) => state.closeModal);
+  const setUser = useUserStore((state) => state.setUser);
   const userInformation: IUserData = useUserStore((state) => state.userInformation);
   const { profileImage, nickname, userId } = userInformation;
   const [newProfileImage, setNewProfileImage] = useState<string>(profileImage);
   const [newNickname, setNewNickname] = useState<string>(nickname);
   const [newPassword, setNewPassword] = useState<string>('');
   const [showConfirm, setShowConfirm] = useState(false);
+
+  const uploadImage = async (file: File): Promise<string> => {
+    const formData = new FormData();
+    formData.append('image', file);
+
+    try {
+      const response = await fetch('/api/uploadImage', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('이미지 업로드에 실패했습니다.');
+      }
+
+      const data = await response.json();
+      return data.imageUrl; // 서버에서 반환한 이미지 URL
+    } catch (error) {
+      console.error('이미지 업로드 중 오류 발생:', error);
+      throw error;
+    }
+  };
 
   const handleProfileUpdate = async () => {
     try {
@@ -79,10 +102,17 @@ const ProfileEditModal: React.FC = () => {
   const handleConfirm = () => {
     handleProfileUpdate();
     setShowConfirm(false);
+    setIsModalVisible(true);
+  };
+
+  const handleShowConfirm = () => {
+    setShowConfirm(true);
+    setIsModalVisible(false);
   };
 
   const handleCloseConfirm = () => {
     setShowConfirm(false);
+    setIsModalVisible(false);
   };
 
   const renderModalContent = () => {
@@ -93,6 +123,7 @@ const ProfileEditModal: React.FC = () => {
             onBack={() => setCurrentModal('main')}
             profileimage={newProfileImage}
             setNewProfileImage={setNewProfileImage}
+            uploadImage={uploadImage}
           />
         );
       case 'nickname':
@@ -117,7 +148,7 @@ const ProfileEditModal: React.FC = () => {
               <img src={newProfileImage} alt="Profile" css={profileImageStyle} />
               <div css={profileTextStyle}>
                 <h2>{newNickname}</h2>
-                <span>@{userId}</span>
+                <span>{userId}</span>
               </div>
             </div>
             <ul css={listStyle}>
@@ -126,7 +157,7 @@ const ProfileEditModal: React.FC = () => {
               <li onClick={() => setCurrentModal('password')}>비밀번호 변경</li>
             </ul>
             <div css={buttonWrapperStyle}>
-              <Button onClick={() => setShowConfirm(true)}>수정하기</Button>
+              <Button onClick={handleShowConfirm}>적용하기</Button>
             </div>
           </div>
         );
@@ -136,17 +167,16 @@ const ProfileEditModal: React.FC = () => {
   return (
     <>
       {modals.modalName === 'profileEdit' && modals.modalState && (
-        <Modal modalName="profileEdit">
-          {renderModalContent()}
+        <>
+          {isModalVisible && <Modal modalName="profileEdit">{renderModalContent()}</Modal>}
           {showConfirm && (
             <Confirm
-              title="프로필 수정"
               text="정말로 수정하시겠습니까?"
               onConfirm={handleConfirm}
               onClose={handleCloseConfirm}
             />
           )}
-        </Modal>
+        </>
       )}
       <ToastContainer
         position="bottom-center"
@@ -164,20 +194,24 @@ const ProfileImageModal: React.FC<{
   onBack: () => void;
   profileimage: string;
   setNewProfileImage: (image: string) => void;
-}> = ({ onBack, profileimage, setNewProfileImage }) => {
-  const handleProfileImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  uploadImage: (file: File) => Promise<string>;
+}> = ({ onBack, profileimage, setNewProfileImage, uploadImage }) => {
+  const [isUploading, setIsUploading] = useState(false);
+
+  const handleProfileImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
-      const reader = new FileReader();
+      setIsUploading(true);
 
-      reader.onloadend = () => {
-        if (typeof reader.result === 'string') {
-          setNewProfileImage(reader.result);
-          toast.success('이미지가 성공적으로 선택되었습니다.');
-        }
-      };
-
-      reader.readAsDataURL(file);
+      try {
+        const imageUrl = await uploadImage(file);
+        setNewProfileImage(imageUrl);
+        toast.success('프로필 이미지가 업로드되었습니다.');
+      } catch (error) {
+        toast.error('이미지 업로드에 실패했습니다.');
+      } finally {
+        setIsUploading(false);
+      }
     }
   };
 
@@ -219,14 +253,40 @@ const NicknameModal: React.FC<{
 }> = ({ onBack, nickname, setNewNickname }) => {
   const [tempNickname, setTempNickname] = useState<string>(nickname);
   const [error, setError] = useState<string>('');
+  const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
 
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newNickname = e.target.value;
     setTempNickname(newNickname);
+
     if (newNickname.length < 2 || newNickname.length > 20) {
       setError('닉네임은 2자 이상 20자 이하여야 합니다.');
     } else {
       setError('');
+
+      if (debounceTimeout.current) {
+        clearTimeout(debounceTimeout.current);
+      }
+
+      debounceTimeout.current = setTimeout(() => {
+        checkNicknameAvailability(newNickname);
+      }, 500);
+    }
+  };
+
+  const checkNicknameAvailability = async (newNickname: string) => {
+    try {
+      const response = await fetch(`/api/nicknameCheck/${newNickname}`);
+      const result = await response.json();
+
+      if (result.isDuplicate) {
+        setError('이미 존재하는 닉네임입니다.');
+      } else {
+        setError('');
+      }
+    } catch (error) {
+      console.error('닉네임 중복 확인 중 오류 발생:', error);
+      setError('닉네임 중복 확인 중 오류가 발생했습니다.');
     }
   };
 
@@ -244,10 +304,11 @@ const NicknameModal: React.FC<{
       </button>
       <h2 css={modalTitleStyle}>닉네임 변경</h2>
       <Input value={tempNickname} onChange={handleNicknameChange} type="text" />
-      {error && <p css={errorStyle}>{error}</p>}
-      <p css={noteStyle}>이름은 14일 동안 최대 두 번까지 변경할 수 있습니다.</p>
+      {<p css={errorStyle(!!error)}>{error || ' '}</p>}
       <div css={buttonWrapperStyle}>
-        <Button onClick={handleSubmit}>변경하기</Button>
+        <Button onClick={handleSubmit} disabled={!!error}>
+          변경하기
+        </Button>
       </div>
     </div>
   );
@@ -328,10 +389,7 @@ const PasswordChangeModal: React.FC<{
         value={confirmPassword}
         onChange={(e) => setConfirmPassword(e.target.value)}
       />
-      {error && <p css={errorStyle}>{error}</p>}
-      <p css={noteStyle}>
-        비밀번호는 최소 6자 이상이어야 하며 숫자, 영문, 특수 문자의 조합을 포함해야 합니다.
-      </p>
+      {<p css={passwordErrorStyle(!!error)}>{error || ' '}</p>}
       <div css={buttonWrapperStyle}>
         <Button onClick={handleSubmit}>변경하기</Button>
       </div>
@@ -365,6 +423,7 @@ const profileImageStyle = css`
   border-radius: 50%;
   object-fit: cover;
   margin-right: 30px;
+  border: 2px solid ${colors.primaryGreen};
 `;
 
 const profileTextStyle = css`
@@ -463,11 +522,6 @@ const modalTitleStyle = css`
   align-items: center;
 `;
 
-const noteStyle = css`
-  font-size: 12px;
-  color: ${colors.gray};
-`;
-
 const backButtonStyle = css`
   position: absolute;
   top: 0;
@@ -480,8 +534,22 @@ const backButtonStyle = css`
   padding: 11px;
 `;
 
-const errorStyle = css`
+const errorStyle = (isVisible: boolean) => css`
   color: ${colors.red};
   font-size: 14px;
   margin-top: 5px;
+  height: 20px;
+  visibility: ${isVisible ? 'visible' : 'hidden'};
+  white-space: nowrap;
+  text-align: center;
+`;
+
+const passwordErrorStyle = (isVisible: boolean) => css`
+  color: ${colors.red};
+  font-size: 12px;
+  margin-top: 5px;
+  height: 20px;
+  visibility: ${isVisible ? 'visible' : 'hidden'};
+  white-space: nowrap;
+  text-align: center;
 `;
