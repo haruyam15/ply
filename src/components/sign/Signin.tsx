@@ -7,7 +7,7 @@ import useModalStore from '@/stores/useModalStore';
 import useUserStore from '@/stores/useUserStore';
 import { colors } from '@/styles/colors';
 import useUserDataFetch from '@/hooks/useUserDataFetch';
-import { debounce } from 'lodash';
+import { throttle } from 'lodash';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
@@ -22,7 +22,7 @@ const Signin: React.FC = () => {
   const { mutateAsync } = useUserDataFetch();
 
   const debouncedSignin = useCallback(
-    debounce(async (userId, password) => {
+    throttle(async (userId, password) => {
       if (userId && password) {
         try {
           const userData = await mutateAsync({ api: 'login', userData: { userId, password } });
@@ -42,7 +42,7 @@ const Signin: React.FC = () => {
   );
 
   const debouncedValidate = useCallback(
-    debounce(async (userId, password) => {
+    throttle(async (userId, password) => {
       if (userId && password) {
         try {
           const passwordValidateStatus = await mutateAsync({
@@ -56,6 +56,9 @@ const Signin: React.FC = () => {
           if (axios.isAxiosError(error)) {
             if (error.response && error.response.status === 400) {
               const { field } = error.response.data;
+              if (field === 'userId') {
+                toast.error('존재하지 않는 계정입니다.');
+              }
               if (field === 'password') {
                 toast.error('비밀번호가 일치하지 않습니다.');
               }
@@ -79,11 +82,11 @@ const Signin: React.FC = () => {
       <form css={{ width: '330px' }} onSubmit={(e) => onLogin(e)}>
         <div css={idAndPasswordArea}>
           <input css={idAndPassword} ref={idRef} type="text" required />
-          <label>ID</label>
+          <label>아이디</label>
         </div>
         <div css={idAndPasswordArea}>
           <input css={idAndPassword} ref={passwordRef} type="password" required />
-          <label>Password</label>
+          <label>비밀번호</label>
         </div>
         <div css={{ fontSize: '14px' }}>
           <label
@@ -96,7 +99,7 @@ const Signin: React.FC = () => {
         </div>
         <div>
           <button css={submitBtn} type="submit">
-            Login
+            로그인
           </button>
         </div>
       </form>

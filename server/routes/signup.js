@@ -11,7 +11,7 @@ router.post('/register', async (req, res) => {
     const newUser = {
       userId,
       password,
-      profileImage: '',
+      profileImage: '../../public/assets/images/user-default.png',
       nickname,
       likes: [],
       following: [],
