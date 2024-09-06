@@ -44,6 +44,9 @@ const Signup: React.FC = () => {
   useEffect(() => {
     const validation = async () => {
       try {
+        if (!signupModal.modalState) {
+          return;
+        }
         if (
           newUser.password &&
           newUser.nickname &&

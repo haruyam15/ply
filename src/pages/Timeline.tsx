@@ -15,6 +15,7 @@ interface PlaylistData {
   imgUrl: string; // imgUrl 속성 추가
   disclosureStatus: string;
   videoCount: number;
+  nickName: string;
 }
 
 interface UserInformation {
@@ -139,8 +140,8 @@ const Timeline: React.FC = () => {
             showEdit={true}
             tags={item.tags}
             profileImage={userInformation?.profileImage || ''}
-            userName={userInformation?.userName || ''}
-            userId={userInformation?.userId || ''}
+            userName={item.nickName}
+            userId={item.userId}
             imgUrl={item.imgUrl[0]} // imgUrl을 VideoGridItem에 전달
             videoCount={item.videoCount}
           />

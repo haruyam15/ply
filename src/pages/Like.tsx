@@ -15,6 +15,7 @@ interface LikedPlaylistData {
   disclosureStatus: boolean;
   id: string;
   videoCount: number;
+  nickName: string;
 }
 
 interface UserInformation {
@@ -132,8 +133,8 @@ const Like: React.FC = () => {
             showEdit={true}
             tags={item.tags}
             profileImage={userInformation?.profileImage || ''}
-            userName={userInformation?.userName || ''}
-            userId={userInformation?.userId || ''}
+            userName={item.nickName}
+            userId={item.userId}
             imgUrl={item.imgUrl[0]} // imgUrl 배열에서 첫 번째 요소 사용
             videoCount={item.videoCount}
             index={index}

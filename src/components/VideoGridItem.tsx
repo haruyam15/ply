@@ -66,7 +66,10 @@ const VideoGridItem: React.FC<VideoGridItemProps> = ({
           </div>
         )}
       </div>
-      <Tags tags={tags} />
+      {/* 태그를 감싸는 div에 스타일 적용 */}
+      <div css={tagContainerStyle}>
+        <Tags tags={tags} />
+      </div>
     </div>
   );
 };
@@ -102,8 +105,6 @@ const titleStyle = css`
   max-width: 100%;
 `;
 
-<<<<<<< Updated upstream
-=======
 const tagContainerStyle = css`
   display: flex;
   overflow: hidden; /* 넘치는 태그를 숨김 */
@@ -112,5 +113,4 @@ const tagContainerStyle = css`
   justify-content: flex-end;
 `;
 
->>>>>>> Stashed changes
 export default VideoGridItem;
