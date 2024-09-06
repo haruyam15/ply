@@ -164,7 +164,7 @@ const Home: React.FC = () => {
           {['C0C6wvNl14w', 'ZncbtRo7RXs', 'phuiiNCxRMg'].map((videoId, index) => (
             <div key={index} css={slideStyle}>
               <img
-                src={`https://img.youtube.com/vi/${videoId}/hqdefault.jpg`}
+                src={`https://i.ytimg.com/vi/${videoId}}/maxresdefault.jpg`}
                 alt={`캐러셀이미지`}
                 css={thumbnailStyle}
               />
