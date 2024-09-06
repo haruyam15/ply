@@ -6,6 +6,7 @@ import { colors } from '@/styles/colors';
 import { Video, Heart } from 'lucide-react';
 import VideoGridItem from '@/components/VideoGridItem';
 import useUserStore from '@/stores/useUserStore';
+import { useParams } from 'react-router-dom';
 
 interface PlaylistData {
   title: string;
@@ -23,16 +24,17 @@ function Profile() {
   const [playlists, setPlaylists] = useState<PlaylistData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
+  const { userId } = useParams() as { userId: string };
+  console.log(userId);
   useEffect(() => {
     const fetchPlaylists = async () => {
       try {
         setLoading(true);
         let response;
         if (selectedTab === 'playlist') {
-          response = await fetch(`/api/playlistPage/${userInformation.userId}`);
+          response = await fetch(`/api/playlistPage/${userId}`);
         } else {
-          response = await fetch(`/api/likePage/${userInformation.userId}`);
+          response = await fetch(`/api/likePage/${userId}`);
         }
 
         if (!response.ok) {
@@ -53,7 +55,7 @@ function Profile() {
     };
 
     fetchPlaylists();
-  }, [selectedTab, userInformation.userId]);
+  }, [selectedTab, userId]);
 
   const handleDeleteItem = (index: number) => {
     setPlaylists((prevPlaylists) => prevPlaylists.filter((_, i) => i !== index));
