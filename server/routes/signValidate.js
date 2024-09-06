@@ -19,6 +19,9 @@ router.post('/signValidate', async (req, res) => {
       }
     } else {
       const foundUser = await database.collection('users').findOne({ userId: userId });
+      if (!foundUser) {
+        return res.status(400).send({ field: 'userId', message: 'User ID does not exist' });
+      }
       if (foundUser.password !== password) {
         return res.status(400).send({ field: 'password', message: 'Password does not match' });
       }
