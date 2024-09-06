@@ -59,6 +59,8 @@ const tabWrap = css`
   padding: 18px;
   min-height: 370px;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
 
   &::before {
     background-color: ${colors.borderGray};
@@ -70,6 +72,7 @@ const tabWrap = css`
     top: 0;
   }
   .tab {
+    width: 100%;
     margin: 0 auto 22px;
     display: flex;
     justify-content: space-between;

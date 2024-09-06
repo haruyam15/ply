@@ -7,6 +7,8 @@ import { Tab } from '@/types/navTypes';
 import Button from '@/components/Button';
 import useUserStore from '@/stores/useUserStore';
 import { IUserData, FollowingFollowers } from '@/types/userTypes';
+import { UserX } from 'lucide-react';
+import { If } from '@/components/IfElse';
 
 function FList({ tab }: FListProps) {
   const isExpand = useNavStore((state) => state.isExpand);
@@ -24,6 +26,17 @@ function FList({ tab }: FListProps) {
   const users: FollowingFollowers[] =
     tab === 'followers' ? userInformation.followers : userInformation.following;
 
+  if (users.length === 0) {
+    return (
+      <ul css={fList(isExpand)} className="empty">
+        <li>
+          <UserX />
+        </li>
+      </ul>
+    );
+  }
+  const isMore = users.length > 5;
+
   return (
     <>
       <ul css={fList(isExpand)}>
@@ -39,11 +52,15 @@ function FList({ tab }: FListProps) {
           </li>
         ))}
       </ul>
-      <div css={buttonContainer}>
-        <Button size={isExpand ? 'sm' : 'sm'} onClick={handleMoreClick}>
-          {isExpand ? '더보기' : '...'}
-        </Button>
-      </div>
+      <If test={isMore}>
+        <If.Then>
+          <div css={buttonContainer}>
+            <Button size={isExpand ? 'sm' : 'sm'} onClick={handleMoreClick}>
+              {isExpand ? '더보기' : '...'}
+            </Button>
+          </div>
+        </If.Then>
+      </If>
     </>
   );
 }
@@ -52,6 +69,17 @@ export default FList;
 
 const fList = (isExpand: boolean) => css`
   padding-bottom: 5px;
+  &.empty {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    li:hover {
+      cursor: initial;
+      background: none;
+      border-radius: 0;
+    }
+  }
   li {
     margin-bottom: 5px;
     padding: 8px;

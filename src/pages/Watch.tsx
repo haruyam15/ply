@@ -92,7 +92,7 @@ const watch = css`
   display: flex;
   align-items: flex-start;
   gap: 20px;
-  max-width: 1400px;
+  max-width: 1600px;
   .watch-detail {
     display: flex;
     flex-direction: column;
