@@ -66,7 +66,10 @@ const VideoGridItem: React.FC<VideoGridItemProps> = ({
           </div>
         )}
       </div>
-      <Tags tags={tags} />
+      {/* 태그를 감싸는 div에 스타일 적용 */}
+      <div css={tagContainerStyle}>
+        <Tags tags={tags} />
+      </div>
     </div>
   );
 };
@@ -100,6 +103,13 @@ const titleStyle = css`
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 100%;
+`;
+
+const tagContainerStyle = css`
+  display: flex;
+  overflow: hidden; /* 넘치는 태그를 숨김 */
+  white-space: nowrap; /* 태그가 한 줄로 유지되도록 설정 */
+  flex-wrap: nowrap; /* 태그를 한 줄로 배치 */
 `;
 
 export default VideoGridItem;
