@@ -15,6 +15,7 @@ const NicknameModal: React.FC<{
 }> = ({ onBack, nickname, setNewNickname }) => {
   const [tempNickname, setTempNickname] = useState<string>(nickname);
   const [error, setError] = useState<string>('');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
   const setUser = useUserStore((state) => state.setUser);
   const userInformation = useUserStore((state) => state.userInformation);
@@ -27,45 +28,49 @@ const NicknameModal: React.FC<{
       setError('닉네임은 2자 이상 20자 이하여야 합니다.');
     } else {
       setError('');
-
-      if (debounceTimeout.current) {
-        clearTimeout(debounceTimeout.current);
-      }
-
-      debounceTimeout.current = setTimeout(() => {
-        checkNicknameAvailability(newNickname);
-      }, 500);
+      if (debounceTimeout.current) clearTimeout(debounceTimeout.current);
+      debounceTimeout.current = setTimeout(() => checkNicknameAvailability(newNickname), 500);
     }
   };
 
   const checkNicknameAvailability = async (newNickname: string) => {
+    if (newNickname === nickname) return;
     try {
       const response = await fetch(`/api/nicknameCheck/${newNickname}`);
+      if (!response.ok) throw new Error('서버 응답 오류');
       const result = await response.json();
-
-      if (result.isDuplicate) {
-        setError('이미 존재하는 닉네임입니다.');
-      } else {
-        setError('');
-      }
+      if (result.isDuplicate) setError('이미 존재하는 닉네임입니다.');
     } catch (error) {
       console.error('닉네임 중복 확인 중 오류 발생:', error);
       setError('닉네임 중복 확인 중 오류가 발생했습니다.');
     }
   };
 
-  const handleSubmit = () => {
-    if (error) return;
-
-    setNewNickname(tempNickname);
-
-    setUser({
-      ...userInformation,
-      nickname: tempNickname,
-    });
-
-    toast.success('닉네임이 변경되었습니다.');
-    onBack();
+  const handleSubmit = async () => {
+    if (error || isLoading || tempNickname === nickname) return;
+    setIsLoading(true);
+    try {
+      const response = await fetch(`/api/profileEdit/${userInformation.userId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userName: tempNickname }),
+      });
+      const result = await response.json();
+      if (response.ok && result.success) {
+        setNewNickname(tempNickname);
+        setUser({ ...userInformation, nickname: tempNickname });
+        toast.success('닉네임이 변경되었습니다.');
+        onBack();
+      } else {
+        throw new Error(result.message || '닉네임 업데이트에 실패했습니다.');
+      }
+    } catch (error) {
+      console.error('닉네임 변경 중 오류 발생:', error);
+      toast.error(error instanceof Error ? error.message : '닉네임 변경 중 오류가 발생했습니다.');
+      setError(error instanceof Error ? error.message : '알 수 없는 오류가 발생했습니다.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (

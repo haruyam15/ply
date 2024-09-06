@@ -7,7 +7,6 @@ import Button from '@/components/Button';
 import { colors } from '@/styles/colors';
 import { toast } from 'react-toastify';
 import useUserStore from '@/stores/useUserStore';
-import { IUserData } from '@/types/userTypes';
 
 const PasswordChangeModal: React.FC<{
   onBack: () => void;
@@ -39,24 +38,14 @@ const PasswordChangeModal: React.FC<{
       const { userInformation, setUser } = useUserStore.getState();
       const response = await fetch(`/api/passwordCheck/${userInformation.userId}`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ inputPassword: currentPassword }),
       });
 
       const result = await response.json();
-
       if (response.ok && result.isPasswordValid) {
         onPasswordChange(newPassword);
-
-        const updatedUserData: IUserData = {
-          ...userInformation,
-          password: newPassword,
-        };
-
-        setUser(updatedUserData);
-
+        setUser({ ...userInformation, password: newPassword });
         toast.success('비밀번호가 성공적으로 변경되었습니다.');
         onBack();
       } else {

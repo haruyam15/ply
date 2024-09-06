@@ -14,6 +14,8 @@ const ProfileImageModal: React.FC<{
   setNewProfileImage: (image: string) => void;
 }> = ({ onBack, profileimage, setNewProfileImage }) => {
   const [isUploading, setIsUploading] = useState(false);
+  const [error, setError] = useState<string>('');
+  const [uploadedImageUrl, setUploadedImageUrl] = useState<string>(profileimage);
   const setUser = useUserStore((state) => state.setUser);
   const userInformation = useUserStore((state) => state.userInformation);
 
@@ -21,37 +23,66 @@ const ProfileImageModal: React.FC<{
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
       setIsUploading(true);
-
+      setError('');
       try {
         const formData = new FormData();
         formData.append('image', file);
 
-        const response = await fetch('/api/uploadImage', {
-          method: 'POST',
-          body: formData,
-        });
-
-        if (!response.ok) {
-          throw new Error('이미지 업로드에 실패했습니다.');
+        const uploadResponse = await fetch('/api/uploadImage', { method: 'POST', body: formData });
+        if (!uploadResponse.ok) {
+          const errorData = await uploadResponse.json();
+          throw new Error(errorData.message || '이미지 업로드에 실패했습니다.');
         }
 
-        const data = await response.json();
-        setNewProfileImage(data.imageUrl);
-        setUser({
-          ...userInformation,
-          profileImage: data.imageUrl,
-        });
-      } catch {
-        toast.error('이미지 업로드에 실패했습니다.');
+        const uploadData = await uploadResponse.json();
+        setUploadedImageUrl(uploadData.imageUrl);
+      } catch (error) {
+        console.error('이미지 업로드 중 오류 발생:', error);
+        setError(error instanceof Error ? error.message : '이미지 업로드 중 오류가 발생했습니다.');
+        toast.error(error instanceof Error ? error.message : '이미지 업로드에 실패했습니다.');
       } finally {
         setIsUploading(false);
       }
     }
   };
 
-  const handleSubmit = () => {
-    toast.success('프로필 사진이 변경되었습니다.');
-    onBack();
+  const handleSubmit = async () => {
+    if (error || !uploadedImageUrl) {
+      toast.error('오류를 해결한 후 다시 시도해주세요.');
+      return;
+    }
+
+    try {
+      const updateResponse = await fetch(`/api/profileEdit/${userInformation.userId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ profileImage: uploadedImageUrl }),
+      });
+
+      if (!updateResponse.ok) {
+        const errorData = await updateResponse.json();
+        throw new Error(errorData.message || '프로필 이미지 업데이트에 실패했습니다.');
+      }
+
+      const updateResult = await updateResponse.json();
+      if (updateResult.success) {
+        const updatedUserInfo = { ...userInformation, profileImage: uploadedImageUrl };
+        setUser(updatedUserInfo);
+        setNewProfileImage(uploadedImageUrl);
+
+        localStorage.setItem('userInformation', JSON.stringify(updatedUserInfo));
+
+        toast.success('프로필 이미지가 성공적으로 변경되었습니다.');
+        onBack();
+      } else {
+        throw new Error(updateResult.message || '프로필 이미지 업데이트에 실패했습니다.');
+      }
+    } catch (error) {
+      console.error('프로필 이미지 업데이트 중 오류 발생:', error);
+      toast.error(
+        error instanceof Error ? error.message : '프로필 이미지 업데이트에 실패했습니다.',
+      );
+    }
   };
 
   return (
@@ -61,8 +92,12 @@ const ProfileImageModal: React.FC<{
       </button>
       <h2 css={modalTitleStyle}>프로필 사진 변경</h2>
       <div css={modalProfileImageWrapper}>
-        <img src={profileimage} alt="Profile" css={modalProfileImage} />
-        <button css={editIconButton} onClick={() => document.getElementById('fileInput')?.click()}>
+        <img src={uploadedImageUrl || profileimage} alt="Profile" css={modalProfileImage} />
+        <button
+          css={editIconButton}
+          onClick={() => document.getElementById('fileInput')?.click()}
+          disabled={isUploading}
+        >
           <Pencil size={20} color={colors.white} />
         </button>
       </div>
