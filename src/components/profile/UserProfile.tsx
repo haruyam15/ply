@@ -20,7 +20,6 @@ const UserProfile: React.FC = () => {
       try {
         const response = await axios.get(`/api/profilePage/${user.userId}`);
         if (response.data) {
-          // 상태가 달라졌을 때만 업데이트
           if (
             user.followers !== response.data.followers ||
             user.myPlaylists !== response.data.myPlaylistCount
@@ -78,7 +77,6 @@ const UserProfile: React.FC = () => {
 
 export default UserProfile;
 
-// 스타일링
 const userProfileContainer = css`
   display: flex;
   justify-content: left;

@@ -5,6 +5,7 @@ import { ChevronLeft } from 'lucide-react';
 import Input from '@/components/Input';
 import Button from '@/components/Button';
 import { toast } from 'react-toastify';
+import useUserStore from '@/stores/useUserStore';
 import { colors } from '@/styles/colors';
 
 const NicknameModal: React.FC<{
@@ -15,6 +16,8 @@ const NicknameModal: React.FC<{
   const [tempNickname, setTempNickname] = useState<string>(nickname);
   const [error, setError] = useState<string>('');
   const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
+  const setUser = useUserStore((state) => state.setUser);
+  const userInformation = useUserStore((state) => state.userInformation);
 
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newNickname = e.target.value;
@@ -53,7 +56,14 @@ const NicknameModal: React.FC<{
 
   const handleSubmit = () => {
     if (error) return;
+
     setNewNickname(tempNickname);
+
+    setUser({
+      ...userInformation,
+      nickname: tempNickname,
+    });
+
     toast.success('닉네임이 변경되었습니다.');
     onBack();
   };

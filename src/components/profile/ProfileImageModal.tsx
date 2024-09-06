@@ -6,6 +6,7 @@ import Input from '@/components/Input';
 import Button from '@/components/Button';
 import { colors } from '@/styles/colors';
 import { toast } from 'react-toastify';
+import useUserStore from '@/stores/useUserStore';
 
 const ProfileImageModal: React.FC<{
   onBack: () => void;
@@ -13,6 +14,8 @@ const ProfileImageModal: React.FC<{
   setNewProfileImage: (image: string) => void;
 }> = ({ onBack, profileimage, setNewProfileImage }) => {
   const [isUploading, setIsUploading] = useState(false);
+  const setUser = useUserStore((state) => state.setUser);
+  const userInformation = useUserStore((state) => state.userInformation);
 
   const handleProfileImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -34,7 +37,10 @@ const ProfileImageModal: React.FC<{
 
         const data = await response.json();
         setNewProfileImage(data.imageUrl);
-        toast.success('프로필 이미지가 업로드되었습니다.');
+        setUser({
+          ...userInformation,
+          profileImage: data.imageUrl,
+        });
       } catch {
         toast.error('이미지 업로드에 실패했습니다.');
       } finally {
@@ -68,7 +74,9 @@ const ProfileImageModal: React.FC<{
         style={{ display: 'none' }}
       />
       <div css={buttonWrapperStyle}>
-        <Button onClick={handleSubmit}>변경하기</Button>
+        <Button onClick={handleSubmit} disabled={isUploading}>
+          {isUploading ? '업로드 중...' : '변경하기'}
+        </Button>
       </div>
     </div>
   );
