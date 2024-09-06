@@ -1,7 +1,7 @@
 import express from 'express';
 const router = express.Router();
 
-router.post('/validate', async (req, res) => {
+router.post('/signupValidate', async (req, res) => {
   const { userId, nickname } = req.body;
   const database = req.database;
   try {
