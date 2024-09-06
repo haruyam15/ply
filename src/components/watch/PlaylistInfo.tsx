@@ -20,6 +20,7 @@ interface IPlaylistInfoProps {
 
 function PlaylistInfo({ playlistId, playlistData, playingVideoTitle }: IPlaylistInfoProps) {
   const userInformation = useUserStore((state) => state.userInformation);
+  const setUser = useUserStore((state) => state.setUser);
   const [likeCnt, setLikeCnt] = useState<number>(0);
   const [isLike, setIsLike] = useState<boolean>(false);
   const [isFollowing, setIsFollowing] = useState<boolean>(false);
@@ -72,6 +73,20 @@ function PlaylistInfo({ playlistId, playlistData, playingVideoTitle }: IPlaylist
         followerUserId: userInformation.userId,
         targetUserId: playlistOwner as string,
       });
+      if (isFollowing) {
+        setUser({
+          ...userInformation,
+          following: userInformation.following.filter((f) => f.userId !== playlistOwner),
+        });
+      } else {
+        setUser({
+          ...userInformation,
+          following: [
+            ...userInformation.following,
+            { userId: playlistOwner, profileImage: playlistData.profileImage, nickname: userName },
+          ],
+        });
+      }
     },
   };
 

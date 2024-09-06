@@ -1,39 +1,46 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { Heart, History, House, Video } from 'lucide-react';
-import { Link } from 'react-router-dom';
-
+import { Link, useLocation } from 'react-router-dom';
 import useNavStore from '@/stores/useNavStore';
 import { colors } from '@/styles/colors';
+import { useEffect, useState } from 'react';
+
+const NavDataInit = [
+  { route: '', name: '홈', active: true, icon: House },
+  { route: 'timeline', name: '타임라인', active: false, icon: History },
+  { route: 'playlist', name: '플레이리스트', active: false, icon: Video },
+  { route: 'like', name: '좋아요', active: false, icon: Heart },
+];
 
 function NavList() {
+  const pathName = useLocation().pathname;
+  const [navData, setNavData] = useState(NavDataInit);
   const isExpand = useNavStore((state) => state.isExpand);
+
+  useEffect(() => {
+    const currentPath = pathName.split('/')[1];
+    setNavData((prev) =>
+      prev.map((nav) => ({
+        ...nav,
+        active: nav.route === currentPath,
+      })),
+    );
+  }, [pathName]);
+
   return (
     <ul css={navList(isExpand)}>
-      <li>
-        <Link to={'/'}>
-          <House />
-          <span>홈</span>
-        </Link>
-      </li>
-      <li>
-        <Link to={'/timeline'}>
-          <History />
-          <span>타임라인</span>
-        </Link>
-      </li>
-      <li>
-        <Link to={'/playlist'}>
-          <Video />
-          <span>플레이리스트</span>
-        </Link>
-      </li>
-      <li>
-        <Link to={'/Like'}>
-          <Heart />
-          <span>좋아요</span>
-        </Link>
-      </li>
+      {navData.map((nav, i) => {
+        const Icon = nav.icon;
+        return (
+          <li key={i} className={nav.active ? 'active' : ''}>
+            <Link to={`/${nav.route}`}>
+              <Icon />
+              <span>{nav.name}</span>
+            </Link>
+          </li>
+        );
+      })}
     </ul>
   );
 }
@@ -43,6 +50,7 @@ export default NavList;
 const navList = (isExpand: boolean) => css`
   padding: 18px;
   li {
+    border-radius: 6px;
     a {
       width: 100%;
       display: flex;
@@ -82,6 +90,9 @@ const navList = (isExpand: boolean) => css`
   li:hover {
     cursor: pointer;
     background: rgba(255, 255, 255, 0.1);
-    border-radius: 6px;
+  }
+
+  li.active {
+    background: rgba(255, 255, 255, 0.1);
   }
 `;
