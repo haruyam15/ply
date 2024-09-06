@@ -2,6 +2,18 @@
 import { css, keyframes } from '@emotion/react';
 import { colors } from '@/styles/colors';
 
+const Loading = () => {
+  return (
+    <div css={loaderStyles}>
+      <div css={[dotStyles, createDotAnimation(0)]}></div>
+      <div css={[dotStyles, createDotAnimation(0.2)]}></div>
+      <div css={[dotStyles, createDotAnimation(0.4)]}></div>
+    </div>
+  );
+};
+
+export default Loading;
+
 const leap = keyframes`
   0% { transform: translateY(0); }
   7% { transform: scale(1); }
@@ -30,15 +42,3 @@ const dotStyles = css`
 const createDotAnimation = (delay: number) => css`
   animation: ${leap} 1s ease-in-out alternate ${delay}s infinite;
 `;
-
-const Loading = () => {
-  return (
-    <div css={loaderStyles}>
-      {[0, 0.2, 0.4].map((delay, index) => (
-        <div key={index} css={[dotStyles, createDotAnimation(delay)]} />
-      ))}
-    </div>
-  );
-};
-
-export default Loading;
