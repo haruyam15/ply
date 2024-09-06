@@ -9,6 +9,7 @@ import SkeletonGridItem from '@/components/SkeletonGridItem';
 import VideoGridItem from '@/components/VideoGridItem';
 import { colors } from '@/styles/colors';
 import useUserStore from '@/stores/useUserStore';
+import throttle from 'lodash/throttle';
 
 interface PlaylistData {
   title: string;
@@ -42,40 +43,41 @@ const Home: React.FC = () => {
     if (user.userId) {
       try {
         fetchUserInformation(user.userId);
-        fetchTimelineData(user.userId); // 로그인한 경우에만 타임라인 데이터 가져오기
+        fetchTimelineData(user.userId);
       } catch (e) {
         console.error('로컬 스토리지에서 사용자 정보를 파싱하는 중 오류 발생:', e);
       }
     } else {
-      setLoading(false); // 로그인하지 않은 경우에도 로딩 상태 종료
+      setLoading(false);
     }
 
     // 탐색 데이터는 로그인 여부와 관계없이 항상 가져오기
     fetchExploreData();
 
-    const handleScroll = () => {
+    // 스크롤 핸들러를 throttle로 래핑하여 성능 최적화
+    const throttledHandleScroll = throttle(() => {
       const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
 
       // 스크롤 위치가 끝에 도달했을 때 && 로딩 중이 아닐 때 && 추가 데이터가 있을 때
       if (scrollTop + clientHeight >= scrollHeight - 5 && !loading && hasMoreExplore) {
         loadMoreItems(); // 추가 아이템 로드
       }
-    };
+    }, 500);
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', throttledHandleScroll);
+    return () => window.removeEventListener('scroll', throttledHandleScroll);
   }, [loading, hasMoreExplore, exploreVisibleItems, exploreData.length]);
 
   const loadMoreItems = () => {
     setLoading(true);
     setTimeout(() => {
-      setExploreVisibleItems((prev) => prev + 8); // 탐색 데이터의 항목 수 증가
+      setExploreVisibleItems((prev) => prev + 8);
       setLoading(false);
 
       if (exploreData.length <= exploreVisibleItems + 8) {
-        setHasMoreExplore(false); // 더 이상 추가할 탐색 데이터가 없는 경우
+        setHasMoreExplore(false);
       }
-    }, 1000);
+    }, 500);
   };
 
   const fetchUserInformation = async (userId: string) => {
@@ -120,7 +122,7 @@ const Home: React.FC = () => {
 
   const fetchExploreData = async () => {
     try {
-      const response = await fetch('/api/search'); // search.js API 호출
+      const response = await fetch('/api/search');
       if (!response.ok) {
         throw new Error('탐색 데이터를 가져오는 중 오류가 발생했습니다.');
       }
@@ -136,7 +138,7 @@ const Home: React.FC = () => {
         setError('알 수 없는 오류가 발생했습니다.');
       }
     } finally {
-      setLoading(false); // 모든 데이터 로딩이 끝난 후에 로딩 상태를 false로 설정
+      setLoading(false);
     }
   };
 
@@ -147,6 +149,8 @@ const Home: React.FC = () => {
     slidesToShow: 1,
     slidesToScroll: 1,
     arrows: true,
+    autoplay: true,
+    autoplaySpeed: 2000,
   };
 
   const navigateToTimeline = () => {
@@ -157,11 +161,11 @@ const Home: React.FC = () => {
     <div css={containerStyle}>
       <div css={[carouselStyle, slickArrowStyle]}>
         <Slider {...settings}>
-          {['pERDk4KoW-s', 'dQw4w9WgXcQ', 'C0DPdy98e4c'].map((videoId, index) => (
+          {['C0C6wvNl14w', 'ZncbtRo7RXs', 'phuiiNCxRMg'].map((videoId, index) => (
             <div key={index} css={slideStyle}>
               <img
                 src={`https://img.youtube.com/vi/${videoId}/hqdefault.jpg`}
-                alt={`video ${index + 1}`}
+                alt={`캐러셀이미지`}
                 css={thumbnailStyle}
               />
             </div>
@@ -170,7 +174,7 @@ const Home: React.FC = () => {
       </div>
 
       {/* 타임라인 섹션을 조건부로 렌더링 */}
-      {user.userId && (
+      {user.userId && playlists.length > 0 && (
         <>
           <div css={TimeLineStyle}>
             <div>타임라인</div>
@@ -233,7 +237,6 @@ const Home: React.FC = () => {
   );
 };
 
-// 스타일 정의
 const containerStyle = css`
   width: 100%;
   background-color: ${colors.black};
@@ -257,7 +260,7 @@ const slideStyle = css`
 
 const thumbnailStyle = css`
   width: 80%;
-  height: 300px;
+  height: 350px;
   object-fit: cover;
   display: block;
   margin: 0 auto;

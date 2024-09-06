@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 
-// 스켈레톤 UI 컴포넌트 정의
 const SkeletonGridItem: React.FC = () => {
   return (
     <div css={skeletonStyle}>
@@ -14,7 +13,6 @@ const SkeletonGridItem: React.FC = () => {
   );
 };
 
-// 스타일 정의
 const skeletonStyle = css`
   padding: 10px;
   background-color: #333;

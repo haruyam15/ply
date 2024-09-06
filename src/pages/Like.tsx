@@ -5,6 +5,7 @@ import SkeletonGridItem from '@/components/SkeletonGridItem';
 import TitleHeader from '@/components/TitleHeader';
 import VideoGridItem from '@/components/VideoGridItem';
 import useUserStore from '@/stores/useUserStore';
+import throttle from 'lodash/throttle';
 
 interface LikedPlaylistData {
   title: string;
@@ -78,7 +79,6 @@ const Like: React.FC = () => {
         }
         const result = await response.json();
         setLikedPlaylists(result.likedPlaylists);
-        setLoading(false);
       } catch (error) {
         if (error instanceof Error) {
           console.error('데이터 요청 오류:', error);
@@ -96,26 +96,26 @@ const Like: React.FC = () => {
   }, [userId]);
 
   useEffect(() => {
-    const handleScroll = () => {
+    const throttledHandleScroll = throttle(() => {
       const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
       if (scrollTop + clientHeight >= scrollHeight - 5 && !loading) {
         setLoading(true);
         setTimeout(() => {
           setVisibleItems((prev) => prev + 8);
           setLoading(false);
-        }, 1000);
+        }, 500);
       }
-    };
+    }, 500); // 500ms마다 한 번만 호출
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', throttledHandleScroll);
+    return () => window.removeEventListener('scroll', throttledHandleScroll);
   }, [loading]);
 
   return (
     <div css={containerStyle}>
       <TitleHeader
         profileImage={userInformation?.profileImage || '없음'}
-        nickname={userInformation?.userName || '손성오'}
+        nickname={userInformation?.userName || ''}
         actionText="좋아요한 플레이리스트"
       />
 
