@@ -12,6 +12,7 @@ import Timeline from '@/pages/Timeline';
 import Watch from '@/pages/Watch';
 import ManagePlaylist from '@/pages/ManagePlaylist';
 import ProtectedRoutes from '@/routes/ProtectedRoutes';
+import Loading from '@/pages/loading'; // Loading 컴포넌트 추가
 
 export const router = createBrowserRouter([
   {
@@ -22,6 +23,10 @@ export const router = createBrowserRouter([
       {
         path: '/',
         element: <Home />,
+      },
+      {
+        path: '/loading', // 로딩 경로 추가
+        element: <Loading />,
       },
       {
         path: '/timeline',
