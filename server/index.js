@@ -24,7 +24,7 @@ import likeDeleteRoute from './routes/likeDelete.js';
 import likeAddRoute from './routes/likeAdd.js';
 import loginRoute from './routes/login.js';
 import signupRoute from './routes/signup.js';
-import signupValidate from './routes/signupValidate.js';
+import signValidate from './routes/signValidate.js';
 import createPlaylist from './routes/createPlaylist.js';
 import likeCheckRoute from './routes/likeCheck.js';
 import nicknameCheckRoute from './routes/nicknameCheck.js';
@@ -62,7 +62,7 @@ app.use('/uploads', express.static('uploads'));
 
 app.use('/api', loginRoute);
 app.use('/api', signupRoute);
-app.use('/api', signupValidate);
+app.use('/api', signValidate);
 app.use('/api', createPlaylist);
 app.use('/api/youtube', youtubeRoute);
 app.use('/api/timeline', timelineRoute);
