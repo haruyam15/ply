@@ -7,6 +7,7 @@ import { Video, Heart } from 'lucide-react';
 import VideoGridItem from '@/components/VideoGridItem';
 import useUserStore from '@/stores/useUserStore';
 import { useParams } from 'react-router-dom';
+import Loading from '@/components/Loading';
 
 interface PlaylistData {
   title: string;
@@ -25,7 +26,7 @@ function Profile() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { userId } = useParams() as { userId: string };
-  console.log(userId);
+
   useEffect(() => {
     const fetchPlaylists = async () => {
       try {
@@ -81,7 +82,9 @@ function Profile() {
       </div>
       <div css={contentStyle}>
         {loading ? (
-          <p>로딩 중...</p>
+          <div css={emptyMessageStyle}>
+            <Loading />
+          </div>
         ) : error ? (
           <p>{error}</p>
         ) : playlists.length === 0 ? (

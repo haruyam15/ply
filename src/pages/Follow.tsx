@@ -2,7 +2,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { css } from '@emotion/react';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { colors } from '@/styles/colors';
 import Button from '@/components/Button';
 import { Users, UserCheck } from 'lucide-react';
@@ -18,9 +18,11 @@ interface UserDetail {
 
 const Follow: React.FC = () => {
   const { userId } = useParams<{ userId: string }>();
+  const [searchParams] = useSearchParams();
+  const initialTab = searchParams.get('tab') === 'following' ? 'following' : 'followers';
   const [followers, setFollowers] = useState<UserDetail[]>([]);
   const [following, setFollowing] = useState<UserDetail[]>([]);
-  const [activeTab, setActiveTab] = useState<'followers' | 'following'>('followers');
+  const [activeTab, setActiveTab] = useState<'followers' | 'following'>(initialTab);
 
   const fetchFollowers = useCallback(async () => {
     try {

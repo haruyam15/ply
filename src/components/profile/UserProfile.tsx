@@ -102,10 +102,12 @@ const UserProfile: React.FC = () => {
           <Link to={`/playlist/${urlUserId}`} css={statItem}>
             플레이리스트 <span css={statValue}>{playlistCount}</span>
           </Link>
-          <Link to={`/follow/${urlUserId}`} css={statItem}>
+
+          <Link to={`/follow/${urlUserId}?tab=follower`} css={statItem}>
             팔로워 <span css={statValue}>{profileData?.followers?.length || 0}</span>
           </Link>
-          <Link to={`/follow/${urlUserId}`} css={statItem}>
+
+          <Link to={`/follow/${urlUserId}?tab=following`} css={statItem}>
             팔로잉 <span css={statValue}>{profileData?.following?.length || 0}</span>
           </Link>
         </div>
