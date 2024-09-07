@@ -9,6 +9,8 @@ import useYoutubeDataStore from '@/stores/useYoutubeDataStore';
 import forkVideoId from '@/utils/forkVideoId';
 import useYoutubeFetch from '@/hooks/useYoutubeFetch';
 import { PlaylistDataStore, IPlaylist } from '@/types/playlistTypes';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 interface AddPlaylistProps {
   userPlyData: IPlaylist | null | undefined;
@@ -19,7 +21,6 @@ interface AddPlaylistRef {
 
 const AddPlaylist = forwardRef<AddPlaylistRef, AddPlaylistProps>(({ userPlyData }, ref) => {
   const [tags, setTags] = useState<string[]>([]);
-  const [link, setLink] = useState<string[]>([]);
   const [isComposing, setIsComposing] = useState(false);
   const [content, setContent] = useState('');
   const [videoId, setVideoId] = useState('');
@@ -30,6 +31,7 @@ const AddPlaylist = forwardRef<AddPlaylistRef, AddPlaylistProps>(({ userPlyData 
   const url = useRef<HTMLInputElement>(null);
   const youtubeDataList = useYoutubeDataStore((state) => state.youTubelistData);
   const setYoutubeListData = useYoutubeDataStore((state) => state.setYouTubelistData);
+  const { data: youTubeData } = useYoutubeFetch({ videoId, enabled: !!videoId });
 
   useImperativeHandle(ref, () => ({
     getPlaylistData,
@@ -53,9 +55,7 @@ const AddPlaylist = forwardRef<AddPlaylistRef, AddPlaylistProps>(({ userPlyData 
     if (url.current?.value) {
       const newVideoId = forkVideoId(url.current.value);
       if (newVideoId) {
-        setLink([...link, url.current?.value]);
         setVideoId(newVideoId);
-        url.current.value = '';
       }
     } else {
       if (url.current) {
@@ -64,18 +64,26 @@ const AddPlaylist = forwardRef<AddPlaylistRef, AddPlaylistProps>(({ userPlyData 
     }
   }, [url]);
 
-  const { data: youTubeData } = useYoutubeFetch({ videoId, enabled: !!videoId });
   useEffect(() => {
-    if (!!videoId && youTubeData?.items) {
+    if (url.current && !!videoId && youTubeData?.items) {
+      if (!youTubeData?.items[0].snippet.thumbnails.maxres?.url) {
+        toast.error('Youtube에서 제공되는 영상 정보를 찾을 수 없습니다.');
+        url.current.value = '';
+        setVideoId('');
+        return;
+      }
+    }
+    if (url.current && !!videoId && youTubeData?.items) {
       const youTubelist = {
         id: youTubeData.items[0].id,
         title: youTubeData.items[0].snippet.title,
-        link,
-        imgUrl: [`https://img.youtube.com/vi/${videoId}/hqdefault.jpg`],
+        link: [url.current.value],
+        imgUrl: [youTubeData.items[0].snippet.thumbnails.maxres.url],
         channelTitle: youTubeData.items[0].snippet.channelTitle,
       };
       setYoutubeListData(youTubelist);
       setVideoId('');
+      url.current.value = '';
     }
   }, [videoId, youTubeData]);
 
