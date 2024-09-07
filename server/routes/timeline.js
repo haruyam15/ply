@@ -14,22 +14,27 @@ const getTimelineData = async (userId, database) => {
       .find({ userId: { $in: user.following } })
       .toArray();
 
-    let allPlaylistIds = [];
-    followingUsers.forEach((followingUser) => {
-      allPlaylistIds = allPlaylistIds.concat(followingUser.myPlaylists || []);
-    });
-
-    allPlaylistIds = allPlaylistIds.concat(user.likes || []);
-
-    allPlaylistIds = [...new Set(allPlaylistIds)].sort(() => Math.random() - 0.5);
+    const allPlaylistIds = [
+      ...new Set([
+        ...followingUsers.flatMap((followingUser) => followingUser.myPlaylists || []),
+        ...(user.likes || []),
+      ]),
+    ].sort(() => Math.random() - 0.5);
 
     const playlistsData = await database
       .collection('playListData')
-      .find({ id: { $in: allPlaylistIds } })
-      .project({ id: 1, title: 1, userId: 1, tags: 1, imgUrl: 1, disclosureStatus: 1, link: 1 })
+      .find({ id: { $in: allPlaylistIds }, disclosureStatus: true })
+      .project({
+        id: 1,
+        title: 1,
+        userId: 1,
+        tags: 1,
+        imgUrl: 1,
+        disclosureStatus: 1,
+        link: 1,
+      })
       .toArray();
 
-    // 플레이리스트 제작자의 닉네임 가져오기
     const userIds = [...new Set(playlistsData.map((playlist) => playlist.userId))];
     const userNicknames = await database
       .collection('users')
@@ -41,12 +46,10 @@ const getTimelineData = async (userId, database) => {
       userNicknames.map((user) => [user.userId, user.nickname]),
     );
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const playlistsWithNickname = playlistsData.map(({ _id, link, ...playlist }) => ({
       ...playlist,
-      id: playlist.id,
       nickname: nicknameMap[playlist.userId],
-      videoCount: link ? link.length : 0,
+      videoCount: link?.length || 0,
     }));
 
     return {
@@ -87,4 +90,4 @@ router.use((err, req, res) => {
 export default router;
 
 // 타임라인 API 테스트 명령어 예시:
-// curl -X GET http://localhost:8080/api/timeline/lovelace
+// curl -X GET http://localhost:8080/api/timeline/dhkim511

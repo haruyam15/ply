@@ -7,17 +7,19 @@ const getRandomPlaylists = async (database) => {
     const playlistCollection = database.collection('playListData');
     const userCollection = database.collection('users');
 
-    // 모든 플레이리스트 ID 가져오기
-    const allPlaylists = await playlistCollection.find({}, { projection: { id: 1 } }).toArray();
-    const allPlaylistIds = allPlaylists.map((playlist) => playlist.id);
+    // disclosureStatus가 true인 플레이리스트만 가져오기
+    const publicPlaylists = await playlistCollection
+      .find({ disclosureStatus: true }, { projection: { id: 1 } })
+      .toArray();
+    const publicPlaylistIds = publicPlaylists.map((playlist) => playlist.id);
 
     // ID 목록을 무작위로 섞기
-    const shuffledIds = allPlaylistIds.sort(() => Math.random() - 0.5);
+    const shuffledIds = publicPlaylistIds.sort(() => Math.random() - 0.5);
 
     // 섞인 ID에 해당하는 플레이리스트 데이터 가져오기
     const playlistsData = await playlistCollection
       .find(
-        { id: { $in: shuffledIds } },
+        { id: { $in: shuffledIds }, disclosureStatus: true },
         {
           projection: {
             id: 1,
@@ -46,9 +48,8 @@ const getRandomPlaylists = async (database) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const playlistsWithNickname = playlistsData.map(({ _id, link, ...playlist }) => ({
       ...playlist,
-      id: playlist.id,
       nickname: nicknameMap[playlist.userId],
-      videoCount: link ? link.length : 0,
+      videoCount: link?.length || 0,
     }));
 
     return {
@@ -62,7 +63,7 @@ const getRandomPlaylists = async (database) => {
 };
 
 router.get('/', async (req, res, next) => {
-  const database = req.database;
+  const { database } = req;
 
   try {
     const result = await getRandomPlaylists(database);
