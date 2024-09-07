@@ -13,7 +13,7 @@ const getLikePageInfo = async (userId, database) => {
     const likedPlaylistIds = user.likes || [];
     const likedPlaylistsData = await database
       .collection('playListData')
-      .find({ id: { $in: likedPlaylistIds } })
+      .find({ id: { $in: likedPlaylistIds }, disclosureStatus: true })
       .project({ id: 1, title: 1, userId: 1, tags: 1, imgUrl: 1, disclosureStatus: 1, link: 1 })
       .toArray();
 
@@ -32,7 +32,7 @@ const getLikePageInfo = async (userId, database) => {
       ...playlist,
       id: playlist.id,
       nickname: nicknameMap[playlist.userId],
-      videoCount: link ? link.length : 0,
+      videoCount: link?.length || 0,
     }));
 
     const reversedPlaylists = playlistsWithNickname.reverse();
