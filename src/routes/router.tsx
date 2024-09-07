@@ -12,7 +12,7 @@ import Timeline from '@/pages/Timeline';
 import Watch from '@/pages/Watch';
 import ManagePlaylist from '@/pages/ManagePlaylist';
 import ProtectedRoutes from '@/routes/ProtectedRoutes';
-import Loading from '@/pages/loading'; // Loading 컴포넌트 추가
+import Loading from '@/pages/loading';
 
 export const router = createBrowserRouter([
   {
@@ -25,7 +25,7 @@ export const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: '/loading', // 로딩 경로 추가
+        path: '/loading',
         element: <Loading />,
       },
       {
@@ -37,7 +37,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: '/playlist',
+        path: '/playlist/:userId',
         element: (
           <ProtectedRoutes>
             <Playlist />
@@ -69,7 +69,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: '/follow',
+        path: '/follow/:userId',
         element: (
           <ProtectedRoutes>
             <Follow />

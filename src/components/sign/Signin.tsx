@@ -78,7 +78,7 @@ const Signin: React.FC = () => {
 
   const children: React.ReactNode = (
     <>
-      <h2 css={{ margin: '40px 0 20px', fontSize: '28px' }}>Login</h2>
+      <h2 css={{ margin: '40px 0 20px', fontSize: '28px' }}>로그인</h2>
       <form css={{ width: '330px' }} onSubmit={(e) => onLogin(e)}>
         <div css={idAndPasswordArea}>
           <input css={idAndPassword} ref={idRef} type="text" required />
@@ -88,7 +88,7 @@ const Signin: React.FC = () => {
           <input css={idAndPassword} ref={passwordRef} type="password" required />
           <label>비밀번호</label>
         </div>
-        <div css={{ fontSize: '14px' }}>
+        <div css={{ fontSize: '14px', marginTop: '15px' }}>
           <label
             css={{ cursor: 'pointer', accentColor: `${colors.primaryGreen}` }}
             htmlFor="remember"
@@ -141,13 +141,13 @@ export const idAndPasswordArea = css`
     position: absolute;
     top: 28px;
     left: 10px;
-    color: #888;
+    color: ${colors.placeHolderGray};
     transition: all 0.3s ease;
   }
   input:focus + label,
   input:valid + label {
     top: -5px;
-    color: #fff;
+    color: ${colors.placeHolderGray};
     font-size: 14px;
   }
 `;
@@ -160,10 +160,11 @@ export const idAndPassword = css`
   outline: none;
   padding: 0 10px;
   box-sizing: border-box;
-  background-color: ${colors.white};
-  color: ${colors.black};
+  background-color: ${colors.inputGray};
+  color: ${colors.white};
 `;
 export const modalMovementBtn = css`
+  margin-top: 10px;
   margin-left: 10px;
   background-color: transparent;
   border: none;
@@ -173,7 +174,7 @@ export const modalMovementBtn = css`
 export const submitBtn = css`
   width: 100%;
   height: 40px;
-  margin: 5px 0 25px;
+  margin: 10px 0 25px;
   border: none;
   border-radius: 10px;
   background-color: ${colors.primaryGreen};

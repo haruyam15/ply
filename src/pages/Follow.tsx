@@ -2,7 +2,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { css } from '@emotion/react';
 import axios from 'axios';
-import useUserStore from '@/stores/useUserStore';
+import { useParams } from 'react-router-dom';
 import { colors } from '@/styles/colors';
 import Button from '@/components/Button';
 import { Users, UserCheck } from 'lucide-react';
@@ -17,26 +17,26 @@ interface UserDetail {
 }
 
 const Follow: React.FC = () => {
-  const userInformation = useUserStore((state) => state.userInformation);
+  const { userId } = useParams<{ userId: string }>();
   const [followers, setFollowers] = useState<UserDetail[]>([]);
   const [following, setFollowing] = useState<UserDetail[]>([]);
   const [activeTab, setActiveTab] = useState<'followers' | 'following'>('followers');
 
   const fetchFollowers = useCallback(async () => {
     try {
-      if (userInformation.userId) {
-        const response = await axios.get(`/api/followerPage/${userInformation.userId}`);
+      if (userId) {
+        const response = await axios.get(`/api/followerPage/${userId}`);
         setFollowers(response.data);
       }
     } catch (error) {
       console.error('Failed to fetch followers:', error);
     }
-  }, [userInformation.userId]);
+  }, [userId]);
 
   const fetchFollowing = useCallback(async () => {
     try {
-      if (userInformation.userId) {
-        const response = await axios.get(`/api/followingPage/${userInformation.userId}`);
+      if (userId) {
+        const response = await axios.get(`/api/followingPage/${userId}`);
         const updatedFollowing = response.data.map((user: UserDetail) => ({
           ...user,
           isFollowing: true,
@@ -46,19 +46,19 @@ const Follow: React.FC = () => {
     } catch (error) {
       console.error('Failed to fetch following:', error);
     }
-  }, [userInformation.userId]);
+  }, [userId]);
 
   useEffect(() => {
-    if (userInformation.userId) {
+    if (userId) {
       fetchFollowers();
       fetchFollowing();
     }
-  }, [userInformation.userId, fetchFollowers, fetchFollowing]);
+  }, [userId, fetchFollowers, fetchFollowing]);
 
   const handleUnfollow = async (targetUserId: string) => {
     try {
-      if (userInformation.userId) {
-        await axios.delete(`/api/followDelete/${userInformation.userId}/${targetUserId}`);
+      if (userId) {
+        await axios.delete(`/api/followDelete/${userId}/${targetUserId}`);
         setFollowing((prevFollowing) =>
           prevFollowing.map((user) =>
             user.userId === targetUserId ? { ...user, isFollowing: false } : user,
@@ -72,8 +72,8 @@ const Follow: React.FC = () => {
 
   const handleFollow = async (targetUserId: string) => {
     try {
-      if (userInformation.userId) {
-        await axios.post(`/api/follow/${userInformation.userId}/${targetUserId}`);
+      if (userId) {
+        await axios.post(`/api/follow/${userId}/${targetUserId}`);
         setFollowing((prevFollowing) =>
           prevFollowing.map((user) =>
             user.userId === targetUserId ? { ...user, isFollowing: true } : user,
