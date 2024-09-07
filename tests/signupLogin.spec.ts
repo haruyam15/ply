@@ -41,11 +41,11 @@ test.describe('Signin', () => {
     });
 
     await page.getByRole('button', { name: '로그인' }).click();
-    await page.getByRole('textbox', { name: '아이디' }).fill('ssuman');
+    await page.getByRole('textbox', { name: '아이디' }).fill('ssuming');
     await page.locator('input[type="password"]').fill('abc123!');
     await page.locator('#login').click();
 
     await page.waitForTimeout(2000);
-    await expect(page.getByText('환영합니다. 수밍님')).toBeVisible();
+    await expect(page.getByText('환영합니다. 쑤밍님')).toBeVisible();
   });
 });
