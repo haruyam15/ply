@@ -17,7 +17,7 @@ interface PlaylistData {
   imgUrl: string;
   disclosureStatus: string;
   videoCount: number;
-  nickName: string;
+  nickname: string;
 }
 
 interface UserInformation {
@@ -152,7 +152,7 @@ const Timeline: React.FC = () => {
             showEdit={true}
             tags={item.tags}
             profileImage={userInformation?.profileImage || ''}
-            userName={item.nickName}
+            userName={item.nickname}
             userId={item.userId}
             imgUrl={item.imgUrl[0]}
             videoCount={item.videoCount}
