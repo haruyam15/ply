@@ -36,19 +36,23 @@ const getTimelineData = async (userId, database) => {
       .toArray();
 
     const userIds = [...new Set(playlistsData.map((playlist) => playlist.userId))];
-    const userNicknames = await database
+    const userInfo = await database
       .collection('users')
       .find({ userId: { $in: userIds } })
-      .project({ userId: 1, nickname: 1 })
+      .project({ userId: 1, nickname: 1, profileImage: 1 })
       .toArray();
 
-    const nicknameMap = Object.fromEntries(
-      userNicknames.map((user) => [user.userId, user.nickname]),
+    const userInfoMap = Object.fromEntries(
+      userInfo.map((user) => [
+        user.userId,
+        { nickname: user.nickname, profileImage: user.profileImage },
+      ]),
     );
 
-    const playlistsWithNickname = playlistsData.map(({ _id, link, ...playlist }) => ({
+    const playlistsWithUserInfo = playlistsData.map(({ _id, link, ...playlist }) => ({
       ...playlist,
-      nickname: nicknameMap[playlist.userId],
+      nickname: userInfoMap[playlist.userId].nickname,
+      profileImage: userInfoMap[playlist.userId].profileImage,
       videoCount: link?.length || 0,
     }));
 
@@ -57,7 +61,7 @@ const getTimelineData = async (userId, database) => {
       data: {
         profileImage: user.profileImage,
         following: user.following,
-        playlists: playlistsWithNickname,
+        playlists: playlistsWithUserInfo,
       },
     };
   } catch (error) {

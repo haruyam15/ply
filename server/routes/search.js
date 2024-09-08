@@ -34,27 +34,31 @@ const getRandomPlaylists = async (database) => {
       )
       .toArray();
 
-    // 플레이리스트 제작자의 닉네임 가져오기
+    // 플레이리스트 제작자의 닉네임과 프로필 이미지 가져오기
     const userIds = [...new Set(playlistsData.map((playlist) => playlist.userId))];
-    const userNicknames = await userCollection
+    const userInfo = await userCollection
       .find({ userId: { $in: userIds } })
-      .project({ userId: 1, nickname: 1 })
+      .project({ userId: 1, nickname: 1, profileImage: 1 })
       .toArray();
 
-    const nicknameMap = Object.fromEntries(
-      userNicknames.map((user) => [user.userId, user.nickname]),
+    const userInfoMap = Object.fromEntries(
+      userInfo.map((user) => [
+        user.userId,
+        { nickname: user.nickname, profileImage: user.profileImage },
+      ]),
     );
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const playlistsWithNickname = playlistsData.map(({ _id, link, ...playlist }) => ({
+    const playlistsWithUserInfo = playlistsData.map(({ _id, link, ...playlist }) => ({
       ...playlist,
-      nickname: nicknameMap[playlist.userId],
+      nickname: userInfoMap[playlist.userId].nickname,
+      profileImage: userInfoMap[playlist.userId].profileImage,
       videoCount: link?.length || 0,
     }));
 
     return {
       success: true,
-      data: playlistsWithNickname,
+      data: playlistsWithUserInfo,
     };
   } catch (error) {
     console.error('플레이리스트 데이터 처리 중 오류 발생:', error);
