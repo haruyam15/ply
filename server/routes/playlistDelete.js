@@ -5,13 +5,18 @@ const router = express.Router();
 const deletePlaylist = async (playlistDataId, database) => {
   try {
     const playlistCollection = database.collection('playListData');
+    const userCollection = database.collection('users');
     const playlist = await playlistCollection.findOne({ id: playlistDataId });
 
     if (!playlist) {
       return { success: false, message: '플레이리스트를 찾을 수 없습니다.' };
     }
 
+    const userId = playlist.userId;
+
     await playlistCollection.deleteOne({ id: playlistDataId });
+
+    await userCollection.updateOne({ userId: userId }, { $pull: { myPlaylists: playlistDataId } });
 
     return {
       success: true,
@@ -45,6 +50,3 @@ router.use((err, req, res) => {
 });
 
 export default router;
-
-// 테스트 명령어:
-// curl -X DELETE http://localhost:8080/api/playlistDelete/1
