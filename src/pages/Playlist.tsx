@@ -7,6 +7,7 @@ import TitleHeader from '@/components/TitleHeader';
 import VideoGridItem from '@/components/VideoGridItem';
 import throttle from 'lodash/throttle'; // lodash의 throttle 가져오기
 import Loading from '@/components/Loading';
+import useUserStore from '@/stores/useUserStore';
 
 interface PlaylistData {
   title: string;
@@ -27,12 +28,26 @@ interface UserInformation {
 }
 
 const PlaylistPage: React.FC = () => {
-  const { userId } = useParams<{ userId: string }>(); // URL에서 userId 가져오기
+  const { userIdParams } = useParams<{ userIdParams: string }>(); // URL에서 userId 가져오기
   const [visibleItems, setVisibleItems] = useState(8);
   const [loading, setLoading] = useState(false);
   const [playlists, setPlaylists] = useState<PlaylistData[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [userInformation, setUserInformation] = useState<UserInformation | null>(null);
+  const [titleNickName, setTitleNickName] = useState<string>('');
+  const [titleProfileImage, setTitleProfileImage] = useState<string>('');
+
+  const user = useUserStore((state) => state.userInformation);
+
+  let userId: string | null = null;
+
+  if (user.userId) {
+    try {
+      userId = user.userId;
+    } catch (e) {
+      console.error('로컬 스토리지에서 사용자 정보를 파싱하는 중 오류 발생:', e);
+    }
+  }
 
   useEffect(() => {
     const fetchUserInformation = async () => {
@@ -66,17 +81,23 @@ const PlaylistPage: React.FC = () => {
 
       try {
         setLoading(true);
-        const response = await fetch(`/api/playlistPage/${userId}`);
+        const response = await fetch(`/api/playlistPage/${userIdParams}`);
         if (!response.ok) {
           throw new Error('플레이리스트 데이터를 가져오는 중 오류가 발생했습니다.');
         }
         const result = await response.json();
 
         // 필터링 로직 적용
-        const filteredPlaylists = result.playlists.filter(
-          (playlist: PlaylistData) =>
-            userInformation?.userId === userId || playlist.disclosureStatus === true,
-        );
+        const filteredPlaylists = result.playlists.filter((playlist: PlaylistData) => {
+          if (userInformation?.userId === userIdParams) {
+            return playlist.userId === userIdParams;
+          } else {
+            setTitleNickName(playlist.nickname);
+            setTitleProfileImage(playlist.profileImage);
+            console.log(playlist, '->>>>>>> 수민이의 궁금');
+            return playlist.userId === userIdParams && playlist.disclosureStatus === true;
+          }
+        });
 
         setPlaylists(filteredPlaylists);
       } catch (error) {
@@ -93,7 +114,7 @@ const PlaylistPage: React.FC = () => {
     };
 
     fetchPlaylistData();
-  }, [userId, userInformation]); // userInformation 의존성 추가
+  }, [userId, userInformation]);
 
   const handleDeleteItem = (index: number) => {
     setPlaylists((prevPlaylists) => prevPlaylists.filter((_, i) => i !== index));
@@ -114,12 +135,14 @@ const PlaylistPage: React.FC = () => {
     window.addEventListener('scroll', throttledHandleScroll);
     return () => window.removeEventListener('scroll', throttledHandleScroll);
   }, [loading]);
+  console.log(userInformation);
 
   return (
     <div css={containerStyle}>
       <TitleHeader
-        profileImage={userInformation?.profileImage || '없음'}
-        nickname={userInformation?.userName || ''}
+        profileImage={titleProfileImage || '없음'}
+        // nickname={userInformation?.userName|| ''}
+        nickname={titleNickName || ''}
         actionText="플레이리스트"
         showAddPlaylistButton={true}
       />
