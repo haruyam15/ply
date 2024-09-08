@@ -153,7 +153,7 @@ const Signup: React.FC = () => {
           <Input id="password2" css={idAndPassword} ref={rePasswordRef} type="password" required />
           <label htmlFor="password2">비밀번호 재입력</label>
         </div>
-        <div css={{ fontSize: '14px' }}>
+        <div css={{ fontSize: '14px', marginTop: '15px' }}>
           <label
             css={{
               display: 'flex',

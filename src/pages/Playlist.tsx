@@ -1,10 +1,10 @@
 /** @jsxImportSource @emotion/react */
 import { useEffect, useState } from 'react';
 import { css } from '@emotion/react';
+import { useParams } from 'react-router-dom';
 import SkeletonGridItem from '@/components/SkeletonGridItem';
 import TitleHeader from '@/components/TitleHeader';
 import VideoGridItem from '@/components/VideoGridItem';
-import useUserStore from '@/stores/useUserStore';
 import throttle from 'lodash/throttle'; // lodash의 throttle 가져오기
 import Loading from '@/components/Loading';
 
@@ -26,22 +26,12 @@ interface UserInformation {
 }
 
 const PlaylistPage: React.FC = () => {
+  const { userId } = useParams<{ userId: string }>(); // URL에서 userId 가져오기
   const [visibleItems, setVisibleItems] = useState(8);
   const [loading, setLoading] = useState(false);
   const [playlists, setPlaylists] = useState<PlaylistData[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [userInformation, setUserInformation] = useState<UserInformation | null>(null);
-  const user = useUserStore((state) => state.userInformation);
-
-  let userId: string | null = null;
-
-  if (user.userId) {
-    try {
-      userId = user.userId;
-    } catch (e) {
-      console.error('로컬 스토리지에서 사용자 정보를 파싱하는 중 오류 발생:', e);
-    }
-  }
 
   useEffect(() => {
     const fetchUserInformation = async () => {
@@ -96,7 +86,6 @@ const PlaylistPage: React.FC = () => {
 
     fetchPlaylistData();
   }, [userId]);
-
   const handleDeleteItem = (index: number) => {
     setPlaylists((prevPlaylists) => prevPlaylists.filter((_, i) => i !== index));
   };

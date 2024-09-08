@@ -3,6 +3,7 @@ import { css } from '@emotion/react';
 import { Heart, History, House, Video } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import useNavStore from '@/stores/useNavStore';
+import useUserStore from '@/stores/useUserStore';
 import { colors } from '@/styles/colors';
 import { useEffect, useState } from 'react';
 
@@ -17,6 +18,7 @@ function NavList() {
   const pathName = useLocation().pathname;
   const [navData, setNavData] = useState(NavDataInit);
   const isExpand = useNavStore((state) => state.isExpand);
+  const loggedInUser = useUserStore((state) => state.userInformation);
 
   useEffect(() => {
     const currentPath = pathName.split('/')[1];
@@ -34,7 +36,15 @@ function NavList() {
         const Icon = nav.icon;
         return (
           <li key={i} className={nav.active ? 'active' : ''}>
-            <Link to={`/${nav.route}`}>
+            <Link
+              to={
+                nav.route === 'playlist' && loggedInUser.userId
+                  ? `/playlist/${loggedInUser.userId}`
+                  : nav.route === 'like' && loggedInUser.userId
+                    ? `/like/${loggedInUser.userId}` // 좋아요 경로 수정
+                    : `/${nav.route}`
+              }
+            >
               <Icon />
               <span>{nav.name}</span>
             </Link>
