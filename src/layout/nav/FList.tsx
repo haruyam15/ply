@@ -27,7 +27,7 @@ function FList({ tab }: FListProps) {
   });
 
   const handleMoreClick = () => {
-    navigate(`/follow?tab=${tab}`);
+    navigate(`/follow/${userInformation.userId}?tab=${tab}`);
   };
 
   const handleUserClick = (userId: string) => {
@@ -58,12 +58,11 @@ function FList({ tab }: FListProps) {
       </ul>
     );
   }
-  const isMore = data.length > 5;
-
+  const isMore = data.length > 3;
   return (
     <>
       <ul css={fList(isExpand)}>
-        {data.map((d, i) => (
+        {data.slice(0, 4).map((d, i) => (
           <li key={i}>
             <User
               profileImage={d.profileImage}

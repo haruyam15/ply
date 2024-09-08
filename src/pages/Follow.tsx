@@ -6,6 +6,7 @@ import { colors } from '@/styles/colors';
 import { Users, UserCheck } from 'lucide-react';
 import useUserStore from '@/stores/useUserStore';
 import TitleHeader from '@/components/TitleHeader';
+import Loading from '@/components/Loading';
 
 interface Playlist {
   id: string;
@@ -25,12 +26,13 @@ interface UserDetail {
   userId: string;
   isFollowing?: boolean;
 }
+
 const calculatePlaylistCount = async (userId: string): Promise<number> => {
   try {
     const response = await fetch(`/api/playlistPage/${userId}`);
     const data: { playlists: Playlist[] } = await response.json();
     const publicPlaylists = data.playlists.filter((playlist) => playlist.disclosureStatus);
-    return publicPlaylists.length; // 공개된 플레이리스트의 개수 반환
+    return publicPlaylists.length;
   } catch (error) {
     console.error('플레이리스트 개수를 가져오는 중 오류 발생:', error);
     return 0;
@@ -50,12 +52,12 @@ const Follow: React.FC = () => {
   const navigate = useNavigate();
 
   const fetchUserInfo = useCallback(async () => {
+    if (!userId) return;
     try {
       const response = await fetch(`/api/profilePage/${userId}`);
       const data: UserDetail = await response.json();
 
-      // 플레이리스트 개수 계산
-      const playlistCount = await calculatePlaylistCount(userId ?? '');
+      const playlistCount = await calculatePlaylistCount(userId);
 
       setUserInfo({
         ...data,
@@ -66,12 +68,11 @@ const Follow: React.FC = () => {
     }
   }, [userId]);
 
-  // 로그인한 사용자가 해당 사용자를 팔로우하는지 확인하는 함수 (API 호출)
   const checkFollowStatus = async (targetUserId: string): Promise<boolean> => {
     try {
       const response = await fetch(`/api/followCheck/${loggedInUser.userId}/${targetUserId}`);
       const result: { followStatus: boolean } = await response.json();
-      return result.followStatus; // 팔로우 상태 반환
+      return result.followStatus;
     } catch (error) {
       console.error('Failed to check follow status:', error);
       return false;
@@ -79,16 +80,16 @@ const Follow: React.FC = () => {
   };
 
   const fetchFollowers = useCallback(async () => {
+    if (!userId) return;
     try {
       const response = await fetch(`/api/followerPage/${userId}`);
       const data: UserDetail[] = await response.json();
 
-      // 로그인한 사용자의 팔로우 여부를 확인하여 업데이트
       const updatedFollowers = await Promise.all(
         data.map(async (follower) => ({
           ...follower,
           isFollowing: await checkFollowStatus(follower.userId),
-          myPlaylistCount: await calculatePlaylistCount(follower.userId), // 각 팔로워의 플레이리스트 개수
+          myPlaylistCount: await calculatePlaylistCount(follower.userId),
         })),
       );
       setFollowers(updatedFollowers);
@@ -99,16 +100,16 @@ const Follow: React.FC = () => {
   }, [userId, loggedInUser]);
 
   const fetchFollowing = useCallback(async () => {
+    if (!userId) return;
     try {
       const response = await fetch(`/api/followingPage/${userId}`);
       const data: UserDetail[] = await response.json();
 
-      // 로그인한 사용자의 팔로우 여부를 확인하여 업데이트
       const updatedFollowing = await Promise.all(
         data.map(async (user) => ({
           ...user,
           isFollowing: await checkFollowStatus(user.userId),
-          myPlaylistCount: await calculatePlaylistCount(user.userId), // 각 팔로잉 유저의 플레이리스트 개수
+          myPlaylistCount: await calculatePlaylistCount(user.userId),
         })),
       );
       setFollowing(updatedFollowing);
@@ -171,17 +172,6 @@ const Follow: React.FC = () => {
                   <h1 css={nicknameStyle}>{user.userName}</h1>
                   <p css={idStyle}>{user.userId}</p>
                 </div>
-                {loggedInUser.userId !== user.userId && (
-                  <button
-                    css={followBtn(user.isFollowing)}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleFollowToggle(user.userId, user.isFollowing || false);
-                    }}
-                  >
-                    {user.isFollowing ? '팔로잉' : '팔로우'}
-                  </button>
-                )}
               </div>
               <div css={statsArea}>
                 <Link
@@ -192,7 +182,7 @@ const Follow: React.FC = () => {
                   플레이리스트 <span css={statValue}>{user.myPlaylistCount}</span>{' '}
                 </Link>
                 <Link
-                  to={`/follow/${user.userId}?tab=follower`}
+                  to={`/follow/${user.userId}?tab=followers`}
                   css={statItem}
                   onClick={(e) => e.stopPropagation()}
                 >
@@ -206,6 +196,17 @@ const Follow: React.FC = () => {
                   팔로잉 <span css={statValue}>{following.length}</span>
                 </Link>
               </div>
+              {loggedInUser.userId !== user.userId && (
+                <button
+                  css={followBtn(user.isFollowing)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleFollowToggle(user.userId, user.isFollowing || false);
+                  }}
+                >
+                  {user.isFollowing ? '팔로잉' : '팔로우'}
+                </button>
+              )}
             </div>
           </div>
         ))
@@ -219,23 +220,40 @@ const Follow: React.FC = () => {
     fetchFollowing();
   }, [userId, fetchUserInfo, fetchFollowers, fetchFollowing]);
 
+  useEffect(() => {
+    const tab = searchParams.get('tab');
+    if (tab === 'following' || tab === 'followers') {
+      setActiveTab(tab);
+    }
+  }, [searchParams]);
+
+  if (!userInfo) {
+    return <Loading />;
+  }
+
   return (
     <div css={containerStyle}>
       <TitleHeader
-        profileImage={userInfo?.profileImage || '없음'}
-        nickname={userInfo?.userName || ''}
+        profileImage={userInfo.profileImage}
+        nickname={userInfo.userName}
         actionText={activeTab === 'followers' ? '팔로워' : '팔로잉'}
       />
       <div css={tabsStyle}>
         <button
           css={[tabStyle, activeTab === 'followers' && activeTabStyle]}
-          onClick={() => setActiveTab('followers')}
+          onClick={() => {
+            setActiveTab('followers');
+            navigate(`/follow/${userId}?tab=followers`, { replace: true });
+          }}
         >
           <Users size={24} /> 팔로워 {followers.length}
         </button>
         <button
           css={[tabStyle, activeTab === 'following' && activeTabStyle]}
-          onClick={() => setActiveTab('following')}
+          onClick={() => {
+            setActiveTab('following');
+            navigate(`/follow/${userId}?tab=following`, { replace: true });
+          }}
         >
           <UserCheck size={24} /> 팔로잉 {following.length}
         </button>
@@ -273,8 +291,6 @@ const profileImageArea = css`
 
 const profileInfoArea = css`
   flex: 1;
-  display: flex;
-  flex-direction: column;
 `;
 
 const headerArea = css`
@@ -285,7 +301,9 @@ const headerArea = css`
 `;
 
 const nameArea = css`
-  flex: 1;
+  margin-right: 20px;
+  display: flex;
+  gap: 20px;
 `;
 
 const nicknameStyle = css`
@@ -303,15 +321,15 @@ const idStyle = css`
 const statsArea = css`
   display: flex;
   gap: 40px;
-  margin-top: 40px;
 `;
 
 const statItem = css`
   display: flex;
-  align-items: center;
+  justify-content: flex-start;
   text-decoration: none;
   color: ${colors.white};
   font-size: 18px;
+  margin-top: 10px;
 `;
 
 const statValue = css`
@@ -324,7 +342,7 @@ const statValue = css`
 const followBtn = (isFollowing: boolean | undefined) => css`
   width: 100px;
   height: 30px;
-  margin-right: 660px;
+  margin-top: 40px;
   background-color: ${isFollowing ? colors.gray : colors.primaryGreen};
   color: ${colors.white};
   font-weight: 500;

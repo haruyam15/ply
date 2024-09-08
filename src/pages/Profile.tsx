@@ -19,6 +19,7 @@ interface PlaylistData {
   disclosureStatus: boolean;
   id: string;
   videoCount: number;
+  profileImage: string;
 }
 
 function Profile() {
@@ -64,7 +65,7 @@ function Profile() {
     };
 
     fetchPlaylists();
-  }, [selectedTab, userId]);
+  }, [selectedTab, userId, userInformation.userId]);
 
   const handleMoreClick = () => {
     if (selectedTab === 'playlist') {
@@ -127,7 +128,7 @@ function Profile() {
                   showEdit={userInformation.userId === item.userId}
                   showMenuDot={userInformation.userId === item.userId}
                   tags={item.tags}
-                  profileImage={userInformation?.profileImage || ''}
+                  profileImage={item.profileImage}
                   userName={item.nickname}
                   userId={item.userId}
                   imgUrl={item.imgUrl[0]}
