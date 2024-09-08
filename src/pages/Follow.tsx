@@ -63,12 +63,6 @@ const Follow: React.FC = () => {
     }
   }, [userId]);
 
-  useEffect(() => {
-    fetchUserInfo();
-    fetchFollowers();
-    fetchFollowing();
-  }, [userId, fetchUserInfo, fetchFollowers, fetchFollowing]);
-
   const handleFollowToggle = async (targetUserId: string, currentlyFollowing: boolean) => {
     try {
       if (currentlyFollowing) {
@@ -130,7 +124,7 @@ const Follow: React.FC = () => {
                       handleFollowToggle(user.userId, user.isFollowing || false);
                     }}
                   >
-                    {user.isFollowing ? '팔로잉 중' : '팔로우'}
+                    {user.isFollowing ? '팔로잉' : '팔로우'}
                   </button>
                 )}
               </div>
@@ -149,6 +143,13 @@ const Follow: React.FC = () => {
                 >
                   팔로워 <span css={statValue}>{user.followers}</span>
                 </Link>
+                <Link
+                  to={`/follow/${user.userId}?tab=following`}
+                  css={statItem}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  팔로잉 <span css={statValue}>{following.length}</span>
+                </Link>
               </div>
             </div>
           </div>
@@ -156,6 +157,12 @@ const Follow: React.FC = () => {
       )}
     </div>
   );
+
+  useEffect(() => {
+    fetchUserInfo();
+    fetchFollowers();
+    fetchFollowing();
+  }, [userId, fetchUserInfo, fetchFollowers, fetchFollowing]);
 
   return (
     <div css={containerStyle}>
