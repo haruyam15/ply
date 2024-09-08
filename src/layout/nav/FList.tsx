@@ -6,14 +6,25 @@ import useNavStore from '@/stores/useNavStore';
 import { Tab } from '@/types/navTypes';
 import Button from '@/components/Button';
 import useUserStore from '@/stores/useUserStore';
-import { IUserData, FollowingFollowers } from '@/types/userTypes';
+import { IUserData } from '@/types/userTypes';
 import { UserX } from 'lucide-react';
 import { If } from '@/components/IfElse';
+import useFdataFetch from '@/hooks/useFdataFetch';
+
+interface FListProps {
+  tab: Tab;
+}
 
 function FList({ tab }: FListProps) {
   const isExpand = useNavStore((state) => state.isExpand);
   const navigate = useNavigate();
   const userInformation = useUserStore((state) => state.userInformation) as IUserData;
+  const optionalKey = tab;
+  const { data, isLoading, isError } = useFdataFetch({
+    userId: userInformation.userId,
+    optionalKey,
+    enabled: !!userInformation.userId,
+  });
 
   const handleMoreClick = () => {
     navigate(`/follow?tab=${tab}`);
@@ -23,10 +34,12 @@ function FList({ tab }: FListProps) {
     navigate(`/profile/${userId}`);
   };
 
-  const users: FollowingFollowers[] =
-    tab === 'followers' ? userInformation.followers : userInformation.following;
+  if (isLoading) {
+    return <></>;
+  }
 
-  if (users.length === 0) {
+  if (isError || data === undefined) {
+    alert('팔로잉 팔로워 조회에 오류가 발생했습니다.');
     return (
       <ul css={fList(isExpand)} className="empty">
         <li>
@@ -35,19 +48,29 @@ function FList({ tab }: FListProps) {
       </ul>
     );
   }
-  const isMore = users.length > 5;
+
+  if (data.length === 0) {
+    return (
+      <ul css={fList(isExpand)} className="empty">
+        <li>
+          <UserX />
+        </li>
+      </ul>
+    );
+  }
+  const isMore = data.length > 5;
 
   return (
     <>
       <ul css={fList(isExpand)}>
-        {users.map((f, i) => (
+        {data.map((d, i) => (
           <li key={i}>
             <User
-              profileImage={f.profileImage}
-              nickname={f.nickname}
-              userId={f.userId}
+              profileImage={d.profileImage}
+              nickname={d.userName}
+              userId={d.userId}
               onlyImage={!isExpand}
-              onClick={() => handleUserClick(f.userId)}
+              onClick={() => handleUserClick(d.userId)}
             />
           </li>
         ))}
@@ -103,7 +126,3 @@ const buttonContainer = css`
   justify-content: center;
   margin-top: 20px;
 `;
-
-interface FListProps {
-  tab: Tab;
-}

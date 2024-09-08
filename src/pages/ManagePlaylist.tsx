@@ -96,7 +96,7 @@ const ManagePlaylist = () => {
         setTimeout(() => {
           clearYoutubelistData();
           navigate(`/playlist/${userData.userId}`);
-        }, 2000);
+        }, 1000);
       } catch (error) {
         toast.error('플레이리스트 업데이트 중 오류가 발생하였습니다. 다시 시도해주세요.');
         console.error(error);
