@@ -25,6 +25,7 @@ interface UserDetail {
   myPlaylistCount: number;
   userId: string;
   isFollowing?: boolean;
+  followingCount?: number;
 }
 
 const calculatePlaylistCount = async (userId: string): Promise<number> => {
@@ -35,6 +36,17 @@ const calculatePlaylistCount = async (userId: string): Promise<number> => {
     return publicPlaylists.length;
   } catch (error) {
     console.error('플레이리스트 개수를 가져오는 중 오류 발생:', error);
+    return 0;
+  }
+};
+
+const getFollowingCount = async (userId: string): Promise<number> => {
+  try {
+    const response = await fetch(`/api/followingPage/${userId}`);
+    const data: UserDetail[] = await response.json();
+    return data.length;
+  } catch (error) {
+    console.error('팔로잉 수를 가져오는 중 오류 발생:', error);
     return 0;
   }
 };
@@ -58,10 +70,12 @@ const Follow: React.FC = () => {
       const data: UserDetail = await response.json();
 
       const playlistCount = await calculatePlaylistCount(userId);
+      const followingCount = await getFollowingCount(userId);
 
       setUserInfo({
         ...data,
         myPlaylistCount: playlistCount,
+        followingCount: followingCount,
       });
     } catch (error) {
       console.error('Failed to fetch user info:', error);
@@ -90,6 +104,7 @@ const Follow: React.FC = () => {
           ...follower,
           isFollowing: await checkFollowStatus(follower.userId),
           myPlaylistCount: await calculatePlaylistCount(follower.userId),
+          followingCount: await getFollowingCount(follower.userId),
         })),
       );
       setFollowers(updatedFollowers);
@@ -110,6 +125,7 @@ const Follow: React.FC = () => {
           ...user,
           isFollowing: await checkFollowStatus(user.userId),
           myPlaylistCount: await calculatePlaylistCount(user.userId),
+          followingCount: await getFollowingCount(user.userId),
         })),
       );
       setFollowing(updatedFollowing);
@@ -193,7 +209,7 @@ const Follow: React.FC = () => {
                   css={statItem}
                   onClick={(e) => e.stopPropagation()}
                 >
-                  팔로잉 <span css={statValue}>{following.length}</span>
+                  팔로잉 <span css={statValue}>{user.followingCount}</span>
                 </Link>
               </div>
               {loggedInUser.userId !== user.userId && (
