@@ -38,30 +38,55 @@ const Follow: React.FC = () => {
     }
   }, [userId]);
 
+  // 로그인한 사용자가 해당 사용자를 팔로우하는지 확인하는 함수 (API 호출)
+  const checkFollowStatus = async (targetUserId: string): Promise<boolean> => {
+    try {
+      const response = await fetch(`/api/followCheck/${loggedInUser.userId}/${targetUserId}`);
+      const result = await response.json();
+      return result.followStatus; // 팔로우 중이면 true, 아니면 false
+    } catch (error) {
+      console.error('Failed to check follow status:', error);
+      return false;
+    }
+  };
+
   const fetchFollowers = useCallback(async () => {
     try {
       const response = await fetch(`/api/followerPage/${userId}`);
       const data = await response.json();
-      setFollowers(data);
+
+      // 로그인한 사용자의 팔로우 여부를 확인하여 업데이트
+      const updatedFollowers = await Promise.all(
+        data.map(async (follower: UserDetail) => ({
+          ...follower,
+          isFollowing: await checkFollowStatus(follower.userId),
+        })),
+      );
+      setFollowers(updatedFollowers);
     } catch (error) {
       console.error('Failed to fetch followers:', error);
     }
-  }, [userId]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userId, loggedInUser]);
 
   const fetchFollowing = useCallback(async () => {
     try {
       const response = await fetch(`/api/followingPage/${userId}`);
       const data = await response.json();
-      setFollowing(
-        data.map((user: UserDetail) => ({
+
+      // 로그인한 사용자의 팔로우 여부를 확인하여 업데이트
+      const updatedFollowing = await Promise.all(
+        data.map(async (user: UserDetail) => ({
           ...user,
-          isFollowing: true,
+          isFollowing: await checkFollowStatus(user.userId),
         })),
       );
+      setFollowing(updatedFollowing);
     } catch (error) {
       console.error('Failed to fetch following:', error);
     }
-  }, [userId]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userId, loggedInUser]);
 
   const handleFollowToggle = async (targetUserId: string, currentlyFollowing: boolean) => {
     try {
