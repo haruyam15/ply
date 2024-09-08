@@ -16,6 +16,7 @@ import followerPageRoute from './routes/followerPage.js';
 import playlistEditRoute from './routes/playlistEdit.js';
 import watchRoute from './routes/watch.js';
 import searchRoute from './routes/search.js';
+import searchsRoute from './routes/searchs.js';
 import playlistPageRoute from './routes/playlistPage.js';
 import likePageRoute from './routes/likePage.js';
 import playlistDeleteRoute from './routes/playlistDelete.js';
@@ -78,6 +79,7 @@ app.use('/api/followerPage', followerPageRoute);
 app.use('/api/playlistEdit', playlistEditRoute);
 app.use('/api/watch', watchRoute);
 app.use('/api/search', searchRoute);
+app.use('/api/searchs', searchsRoute); // 새로 추가된 searchs 라우트
 app.use('/api/playlistPage', playlistPageRoute);
 app.use('/api/likePage', likePageRoute);
 app.use('/api/playlistDelete', playlistDeleteRoute);

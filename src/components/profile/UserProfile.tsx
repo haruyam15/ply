@@ -136,7 +136,7 @@ const profileImageArea = css`
   width: 230px;
   height: 230px;
   border-radius: 50%;
-  border: 2px solid ${colors.gray};
+  border: 2px solid ${colors.primaryGreen};
   margin-right: 60px;
 `;
 
