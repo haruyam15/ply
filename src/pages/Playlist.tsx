@@ -118,11 +118,15 @@ const PlaylistPage: React.FC = () => {
       {error && <div css={errorStyle}>{error}</div>}
       {loading && (
         <>
-          <Loading />
-          <div css={gridContainerStyle}>
-            {Array.from({ length: 8 }).map((_, index) => (
-              <SkeletonGridItem key={index} />
-            ))}
+          <div>
+            <div css={LoadingStyle}>
+              <Loading />
+            </div>
+            <div css={gridContainerStyle}>
+              {Array.from({ length: 8 }).map((_, index) => (
+                <SkeletonGridItem key={index} />
+              ))}
+            </div>
           </div>
         </>
       )}
@@ -177,6 +181,14 @@ const gridContainerStyle = css`
   @media (min-width: 1200px) {
     grid-template-columns: repeat(4, 1fr);
   }
+`;
+
+const LoadingStyle = css`
+  position: absolute;
+  top: 40%;
+  left: 60%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
 `;
 
 const errorStyle = css`
