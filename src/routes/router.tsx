@@ -12,7 +12,6 @@ import Timeline from '@/pages/Timeline';
 import Watch from '@/pages/Watch';
 import ManagePlaylist from '@/pages/ManagePlaylist';
 import ProtectedRoutes from '@/routes/ProtectedRoutes';
-import Loading from '@/pages/loading';
 
 export const router = createBrowserRouter([
   {
@@ -23,10 +22,6 @@ export const router = createBrowserRouter([
       {
         path: '/',
         element: <Home />,
-      },
-      {
-        path: '/loading',
-        element: <Loading />,
       },
       {
         path: '/timeline',
