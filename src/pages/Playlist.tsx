@@ -6,6 +6,7 @@ import SkeletonGridItem from '@/components/SkeletonGridItem';
 import TitleHeader from '@/components/TitleHeader';
 import VideoGridItem from '@/components/VideoGridItem';
 import throttle from 'lodash/throttle'; // lodash의 throttle 가져오기
+import Loading from '@/components/Loading';
 
 interface PlaylistData {
   title: string;
@@ -113,9 +114,17 @@ const PlaylistPage: React.FC = () => {
         actionText="플레이리스트"
         showAddPlaylistButton={true}
       />
-
       {error && <div css={errorStyle}>{error}</div>}
-
+      {loading && (
+        <>
+          <Loading />
+          <div css={gridContainerStyle}>
+            {Array.from({ length: 8 }).map((_, index) => (
+              <SkeletonGridItem key={index} />
+            ))}
+          </div>
+        </>
+      )}
       <div css={gridContainerStyle}>
         {playlists.slice(0, visibleItems).map((item, index) => {
           return (
@@ -138,7 +147,7 @@ const PlaylistPage: React.FC = () => {
             />
           );
         })}
-        {loading && Array.from({ length: 8 }).map((_, index) => <SkeletonGridItem key={index} />)}
+        {/* {loading && Array.from({ length: 8 }).map((_, index) => <SkeletonGridItem key={index} />)} */}
       </div>
     </div>
   );

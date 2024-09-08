@@ -15,6 +15,7 @@ export interface ISnippet {
     default: IThumbnail;
     medium: IThumbnail;
     high: IThumbnail;
+    maxres: IThumbnail;
   };
   channelTitle: string;
   tags: string[];

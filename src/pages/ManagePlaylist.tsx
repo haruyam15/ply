@@ -42,7 +42,7 @@ const ManagePlaylist = () => {
         id: data?.id,
         title: data?.snippet.title,
         link: [`https://www.youtube.com/watch?v=${data?.id}`],
-        imgUrl: [`${data?.snippet.thumbnails.medium.url}`],
+        imgUrl: [data?.snippet.thumbnails.maxres.url],
         channelTitle: data?.snippet.channelTitle,
       };
       setYouTubelistData(youtubedata);
