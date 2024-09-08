@@ -40,7 +40,9 @@ function NavList() {
               to={
                 nav.route === 'playlist' && loggedInUser.userId
                   ? `/playlist/${loggedInUser.userId}`
-                  : `/${nav.route}`
+                  : nav.route === 'like' && loggedInUser.userId
+                    ? `/like/${loggedInUser.userId}` // 좋아요 경로 수정
+                    : `/${nav.route}`
               }
             >
               <Icon />

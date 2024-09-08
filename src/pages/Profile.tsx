@@ -6,8 +6,9 @@ import { colors } from '@/styles/colors';
 import { Video, Heart } from 'lucide-react';
 import VideoGridItem from '@/components/VideoGridItem';
 import useUserStore from '@/stores/useUserStore';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import Loading from '@/components/Loading';
+import Button from '@/components/Button';
 
 interface PlaylistData {
   title: string;
@@ -26,7 +27,7 @@ function Profile() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { userId } = useParams() as { userId: string };
-
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchPlaylists = async () => {
       try {
@@ -57,6 +58,14 @@ function Profile() {
 
     fetchPlaylists();
   }, [selectedTab, userId]);
+
+  const handleMoreClick = () => {
+    if (selectedTab === 'playlist') {
+      navigate(`/playlist/${userId}`);
+    } else {
+      navigate(`/like/${userId}`);
+    }
+  };
 
   const handleDeleteItem = (index: number) => {
     setPlaylists((prevPlaylists) => prevPlaylists.filter((_, i) => i !== index));
@@ -96,27 +105,35 @@ function Profile() {
             )}
           </div>
         ) : (
-          <div css={gridContainerStyle}>
-            {playlists.map((item, index) => (
-              <VideoGridItem
-                key={index}
-                videoId={item.id}
-                title={item.title}
-                user={item.userId}
-                showDelete={true}
-                showEdit={true}
-                showMenuDot={userInformation.userId === item.userId}
-                tags={item.tags}
-                profileImage={userInformation?.profileImage || ''}
-                userName={item.userId}
-                userId={item.userId}
-                imgUrl={item.imgUrl[0]}
-                videoCount={item.videoCount}
-                index={index}
-                deleteItem={handleDeleteItem}
-              />
-            ))}
-          </div>
+          <>
+            <div css={gridContainerStyle}>
+              {playlists.slice(0, 8).map((item, index) => (
+                <VideoGridItem
+                  key={index}
+                  videoId={item.id}
+                  title={item.title}
+                  user={item.userId}
+                  showDelete={userInformation.userId === item.userId}
+                  showEdit={userInformation.userId === item.userId}
+                  tags={item.tags}
+                  profileImage={userInformation?.profileImage || ''}
+                  userName={item.userId}
+                  userId={item.userId}
+                  imgUrl={item.imgUrl[0]}
+                  videoCount={item.videoCount}
+                  index={index}
+                  deleteItem={handleDeleteItem}
+                />
+              ))}
+            </div>
+            {playlists.length > 8 && (
+              <div css={moreButtonContainerStyle}>
+                <Button size="md" background={false} onClick={handleMoreClick}>
+                  더보기
+                </Button>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>
@@ -178,4 +195,11 @@ const emptyMessageStyle = css`
   color: ${colors.gray};
   padding: 40px 0;
   margin-top: 80px;
+`;
+
+const moreButtonContainerStyle = css`
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  margin-bottom: 40px;
 `;

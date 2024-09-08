@@ -4,7 +4,7 @@ import { css } from '@emotion/react';
 import SkeletonGridItem from '@/components/SkeletonGridItem';
 import TitleHeader from '@/components/TitleHeader';
 import VideoGridItem from '@/components/VideoGridItem';
-import useUserStore from '@/stores/useUserStore';
+import { useParams } from 'react-router-dom';
 import throttle from 'lodash/throttle';
 
 interface LikedPlaylistData {
@@ -30,22 +30,13 @@ const Like: React.FC = () => {
   const [likedPlaylists, setLikedPlaylists] = useState<LikedPlaylistData[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [userInformation, setUserInformation] = useState<UserInformation | null>(null);
-  const user = useUserStore((state) => state.userInformation);
 
-  let userId: string | null = null;
-
-  if (user.userId) {
-    try {
-      userId = user.userId;
-    } catch (e) {
-      console.error('로컬 스토리지에서 사용자 정보를 파싱하는 중 오류 발생:', e);
-    }
-  }
+  const { userId } = useParams<{ userId: string }>();
 
   useEffect(() => {
     const fetchUserInformation = async () => {
       if (!userId) {
-        setError('로그인된 사용자가 없습니다.');
+        setError('유저 ID가 없습니다.');
         return;
       }
 
@@ -68,13 +59,13 @@ const Like: React.FC = () => {
   useEffect(() => {
     const fetchLikedPlaylists = async () => {
       if (!userId) {
-        setError('로그인된 사용자가 없습니다.');
+        setError('유저 ID가 없습니다.');
         return;
       }
 
       try {
         setLoading(true);
-        const response = await fetch(`/api/likePage/${userId}`); // userId 기반으로 API 호출
+        const response = await fetch(`/api/likePage/${userId}`);
         if (!response.ok) {
           throw new Error('좋아요한 플레이리스트 데이터를 가져오는 중 오류가 발생했습니다.');
         }
@@ -106,7 +97,7 @@ const Like: React.FC = () => {
           setLoading(false);
         }, 500);
       }
-    }, 500); // 500ms마다 한 번만 호출
+    }, 500);
 
     window.addEventListener('scroll', throttledHandleScroll);
     return () => window.removeEventListener('scroll', throttledHandleScroll);
