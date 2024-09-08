@@ -1,11 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import { useState, useEffect, useCallback } from 'react';
 import { css } from '@emotion/react';
-import axios from 'axios';
 import { useParams, useSearchParams, Link, useNavigate } from 'react-router-dom';
 import { colors } from '@/styles/colors';
 import { Users, UserCheck } from 'lucide-react';
 import useUserStore from '@/stores/useUserStore';
+import TitleHeader from '@/components/TitleHeader';
 
 interface UserDetail {
   profileImage: string;
@@ -22,16 +22,27 @@ const Follow: React.FC = () => {
   const initialTab = searchParams.get('tab') === 'following' ? 'following' : 'followers';
   const [followers, setFollowers] = useState<UserDetail[]>([]);
   const [following, setFollowing] = useState<UserDetail[]>([]);
+  const [userInfo, setUserInfo] = useState<UserDetail | null>(null);
   const [activeTab, setActiveTab] = useState<'followers' | 'following'>(initialTab);
+
   const loggedInUser = useUserStore((state) => state.userInformation);
   const navigate = useNavigate();
 
+  const fetchUserInfo = useCallback(async () => {
+    try {
+      const response = await fetch(`/api/profile/${userId}`);
+      const data = await response.json();
+      setUserInfo(data);
+    } catch (error) {
+      console.error('Failed to fetch user info:', error);
+    }
+  }, [userId]);
+
   const fetchFollowers = useCallback(async () => {
     try {
-      if (userId) {
-        const response = await axios.get(`/api/followerPage/${userId}`);
-        setFollowers(response.data);
-      }
+      const response = await fetch(`/api/followerPage/${userId}`);
+      const data = await response.json();
+      setFollowers(data);
     } catch (error) {
       console.error('Failed to fetch followers:', error);
     }
@@ -39,32 +50,35 @@ const Follow: React.FC = () => {
 
   const fetchFollowing = useCallback(async () => {
     try {
-      if (userId) {
-        const response = await axios.get(`/api/followingPage/${userId}`);
-        const updatedFollowing = response.data.map((user: UserDetail) => ({
+      const response = await fetch(`/api/followingPage/${userId}`);
+      const data = await response.json();
+      setFollowing(
+        data.map((user: UserDetail) => ({
           ...user,
           isFollowing: true,
-        }));
-        setFollowing(updatedFollowing);
-      }
+        })),
+      );
     } catch (error) {
       console.error('Failed to fetch following:', error);
     }
   }, [userId]);
 
   useEffect(() => {
-    if (userId) {
-      fetchFollowers();
-      fetchFollowing();
-    }
-  }, [userId, fetchFollowers, fetchFollowing]);
+    fetchUserInfo();
+    fetchFollowers();
+    fetchFollowing();
+  }, [userId, fetchUserInfo, fetchFollowers, fetchFollowing]);
 
   const handleFollowToggle = async (targetUserId: string, currentlyFollowing: boolean) => {
     try {
       if (currentlyFollowing) {
-        await axios.delete(`/api/followDelete/${loggedInUser.userId}/${targetUserId}`);
+        await fetch(`/api/followDelete/${loggedInUser.userId}/${targetUserId}`, {
+          method: 'DELETE',
+        });
       } else {
-        await axios.post(`/api/follow/${loggedInUser.userId}/${targetUserId}`);
+        await fetch(`/api/follow/${loggedInUser.userId}/${targetUserId}`, {
+          method: 'POST',
+        });
       }
 
       const updatedUsers = activeTab === 'following' ? following : followers;
@@ -144,21 +158,24 @@ const Follow: React.FC = () => {
   );
 
   return (
-    <div>
+    <div css={containerStyle}>
+      <TitleHeader
+        profileImage={userInfo?.profileImage || '없음'}
+        nickname={userInfo?.userName || ''}
+        actionText={activeTab === 'followers' ? '팔로워' : '팔로잉'}
+      />
       <div css={tabsStyle}>
         <button
           css={[tabStyle, activeTab === 'followers' && activeTabStyle]}
           onClick={() => setActiveTab('followers')}
         >
-          <Users size={24} />
-          팔로워 {followers.length}
+          <Users size={24} /> 팔로워 {followers.length}
         </button>
         <button
           css={[tabStyle, activeTab === 'following' && activeTabStyle]}
           onClick={() => setActiveTab('following')}
         >
-          <UserCheck size={24} />
-          팔로잉 {following.length}
+          <UserCheck size={24} /> 팔로잉 {following.length}
         </button>
       </div>
       {activeTab === 'followers' ? renderUserList(followers) : renderUserList(following)}
@@ -168,6 +185,12 @@ const Follow: React.FC = () => {
 
 export default Follow;
 
+const containerStyle = css`
+  width: 100%;
+  margin: 0 auto;
+  padding-top: 40px;
+`;
+
 const userProfileContainer = css`
   display: flex;
   align-items: center;
@@ -175,7 +198,7 @@ const userProfileContainer = css`
   background-color: ${colors.black};
   margin: 40px 0;
   border-radius: 20px;
-  cursor: pointer; /* 전체 컨테이너 클릭 가능하게 설정 */
+  cursor: pointer;
 `;
 
 const profileImageArea = css`
