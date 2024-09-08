@@ -16,7 +16,7 @@ interface PlaylistData {
   disclosureStatus: boolean;
   id: string;
   videoCount: number;
-  nickName: string;
+  nickname: string;
 }
 
 interface UserInformation {
@@ -138,7 +138,7 @@ const PlaylistPage: React.FC = () => {
               showMenuDot={true}
               tags={item.tags}
               profileImage={userInformation?.profileImage || ''}
-              userName={item.nickName}
+              userName={item.nickname}
               userId={item.userId}
               imgUrl={item.imgUrl[0]}
               videoCount={item.videoCount}
