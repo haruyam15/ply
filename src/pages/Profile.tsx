@@ -13,6 +13,7 @@ import Button from '@/components/Button';
 interface PlaylistData {
   title: string;
   userId: string;
+  nickname: string;
   tags: string[];
   imgUrl: string[];
   disclosureStatus: boolean;
@@ -117,7 +118,7 @@ function Profile() {
                   showEdit={userInformation.userId === item.userId}
                   tags={item.tags}
                   profileImage={userInformation?.profileImage || ''}
-                  userName={item.userId}
+                  userName={item.nickname}
                   userId={item.userId}
                   imgUrl={item.imgUrl[0]}
                   videoCount={item.videoCount}
