@@ -75,7 +75,7 @@ const PlaylistPage: React.FC = () => {
         // 필터링 로직 적용
         const filteredPlaylists = result.playlists.filter(
           (playlist: PlaylistData) =>
-            userInformation?.userId === userId && playlist.disclosureStatus === true,
+            userInformation?.userId === userId || playlist.disclosureStatus === true,
         );
 
         setPlaylists(filteredPlaylists);
