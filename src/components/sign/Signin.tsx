@@ -7,6 +7,7 @@ import useModalStore from '@/stores/useModalStore';
 import useUserStore from '@/stores/useUserStore';
 import { colors } from '@/styles/colors';
 import useUserDataFetch from '@/hooks/useUserDataFetch';
+import Input from '@/components/Input';
 import { throttle } from 'lodash';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -81,11 +82,11 @@ const Signin: React.FC = () => {
       <h2 css={{ margin: '40px 0 20px', fontSize: '28px' }}>로그인</h2>
       <form css={{ width: '330px' }} onSubmit={(e) => onLogin(e)}>
         <div css={idAndPasswordArea}>
-          <input id="id" css={idAndPassword} ref={idRef} type="text" required />
+          <Input id="id" css={idAndPassword} ref={idRef} type="text" required />
           <label htmlFor="id">아이디</label>
         </div>
         <div css={idAndPasswordArea}>
-          <input id="userPassword" css={idAndPassword} ref={passwordRef} type="password" required />
+          <Input id="userPassword" css={idAndPassword} ref={passwordRef} type="password" required />
           <label htmlFor="userPassword">비밀번호</label>
         </div>
         <div css={{ fontSize: '14px', marginTop: '15px' }}>
@@ -141,27 +142,20 @@ export const idAndPasswordArea = css`
     position: absolute;
     top: 28px;
     left: 10px;
-    color: ${colors.placeHolderGray};
+    color: #888;
     transition: all 0.3s ease;
   }
   input:focus + label,
   input:valid + label {
     top: -5px;
-    color: ${colors.placeHolderGray};
+    color: ${colors.white};
     font-size: 14px;
   }
 `;
 export const idAndPassword = css`
-  width: 100%;
   height: 40px;
-  border: none;
-  border-radius: 7px;
   margin: 15px 0 20px;
   outline: none;
-  padding: 0 10px;
-  box-sizing: border-box;
-  background-color: ${colors.inputGray};
-  color: ${colors.white};
 `;
 export const modalMovementBtn = css`
   margin-top: 10px;
