@@ -187,6 +187,7 @@ const activeTabStyle = css`
 
 const containerStyle = css`
   margin: 0 20px;
+  width: 100%;
 `;
 
 const contentStyle = css`

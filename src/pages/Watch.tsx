@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 import forkVideoId from '@/utils/forkVideoId';
 import useWatchDataFetch from '@/hooks/useWatchDataFetch';
 import useYoutubeFetch from '@/hooks/useYoutubeFetch';
+import Loading from '@/components/Loading';
 
 function Watch() {
   const navigate = useNavigate();
@@ -58,7 +59,7 @@ function Watch() {
   }
 
   if (playlistIsLoading || youtubeisLoading) {
-    return null;
+    return <Loading />;
   }
 
   if (playlistData === undefined || youtubeData === undefined) {
@@ -89,10 +90,11 @@ function Watch() {
 export default Watch;
 
 const watch = css`
+  width: 100%;
+  max-width: 1600px;
   display: flex;
   align-items: flex-start;
   gap: 20px;
-  max-width: 1600px;
   .watch-detail {
     display: flex;
     flex-direction: column;

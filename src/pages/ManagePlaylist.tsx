@@ -104,7 +104,7 @@ const ManagePlaylist = () => {
     }
   };
   return (
-    <div css={{ margin: '5px 15px 0 0' }}>
+    <div css={{ width: '100%', margin: '5px 15px 0 0' }}>
       <h2 css={{ fontSize: '22px', marginBottom: '20px' }}>
         {userPlyData ? '내' : '새'} 플레이리스트 {userPlyData ? '수정' : '추가'}
       </h2>
