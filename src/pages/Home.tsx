@@ -20,6 +20,7 @@ interface PlaylistData {
   id: string;
   videoCount: number;
   nickname: string;
+  profileImage: string;
 }
 
 interface UserInformation {
@@ -198,7 +199,7 @@ const Home: React.FC = () => {
                 showDelete={true}
                 showEdit={true}
                 tags={item.tags}
-                profileImage={userInformation?.profileImage || ''}
+                profileImage={item.profileImage}
                 userName={item.nickname}
                 userId={item.userId}
                 imgUrl={item.imgUrl[0]}
@@ -227,7 +228,7 @@ const Home: React.FC = () => {
             showDelete={true}
             showEdit={true}
             tags={item.tags}
-            profileImage={userInformation?.profileImage || ''}
+            profileImage={item.profileImage}
             userName={item.nickname}
             userId={item.userId}
             imgUrl={item.imgUrl[0]}
