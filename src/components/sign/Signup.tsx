@@ -138,20 +138,20 @@ const Signup: React.FC = () => {
       <h2 css={{ margin: '40px 0 40px', fontSize: '28px' }}>회원가입</h2>
       <form css={{ width: '330px' }} onSubmit={(e) => onSignup(e)}>
         <div css={idAndPasswordArea}>
-          <Input css={idAndPassword} ref={nameRef} type="text" required />
-          <label>닉네임</label>
+          <Input id="nickname" css={idAndPassword} ref={nameRef} type="text" required />
+          <label htmlFor="nickname">닉네임</label>
         </div>
         <div css={idAndPasswordArea}>
-          <Input css={idAndPassword} ref={idRef} type="text" required />
-          <label>아이디</label>
+          <Input id="userId" css={idAndPassword} ref={idRef} type="text" required />
+          <label htmlFor="userId">아이디</label>
         </div>
         <div css={idAndPasswordArea}>
-          <Input css={idAndPassword} ref={passwordRef} type="password" required />
-          <label>비밀번호</label>
+          <Input id="password" css={idAndPassword} ref={passwordRef} type="password" required />
+          <label htmlFor="password">비밀번호</label>
         </div>
         <div css={idAndPasswordArea}>
-          <Input css={idAndPassword} ref={rePasswordRef} type="password" required />
-          <label>비밀번호 재입력</label>
+          <Input id="password2" css={idAndPassword} ref={rePasswordRef} type="password" required />
+          <label htmlFor="password2">비밀번호 재입력</label>
         </div>
         <div css={{ fontSize: '14px', marginTop: '15px' }}>
           <label

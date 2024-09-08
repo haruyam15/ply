@@ -81,12 +81,12 @@ const Signin: React.FC = () => {
       <h2 css={{ margin: '40px 0 20px', fontSize: '28px' }}>로그인</h2>
       <form css={{ width: '330px' }} onSubmit={(e) => onLogin(e)}>
         <div css={idAndPasswordArea}>
-          <input css={idAndPassword} ref={idRef} type="text" required />
-          <label>아이디</label>
+          <input id="id" css={idAndPassword} ref={idRef} type="text" required />
+          <label htmlFor="id">아이디</label>
         </div>
         <div css={idAndPasswordArea}>
-          <input css={idAndPassword} ref={passwordRef} type="password" required />
-          <label>비밀번호</label>
+          <input id="userPassword" css={idAndPassword} ref={passwordRef} type="password" required />
+          <label htmlFor="userPassword">비밀번호</label>
         </div>
         <div css={{ fontSize: '14px', marginTop: '15px' }}>
           <label
@@ -98,7 +98,7 @@ const Signin: React.FC = () => {
           </label>
         </div>
         <div>
-          <button css={submitBtn} type="submit">
+          <button id="login" css={submitBtn} type="submit">
             로그인
           </button>
         </div>
