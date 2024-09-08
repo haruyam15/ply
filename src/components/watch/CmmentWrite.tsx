@@ -34,7 +34,6 @@ function CommentWrite() {
       return;
     }
     mutate(newCommentData);
-    alert('완료');
     setCommentInput('');
   };
 

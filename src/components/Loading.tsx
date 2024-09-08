@@ -4,7 +4,7 @@ import { colors } from '@/styles/colors';
 
 const Loading = () => {
   return (
-    <div css={loaderStyles}>
+    <div css={loaderStyles} className="loading">
       <div css={[dotStyles, createDotAnimation(0)]}></div>
       <div css={[dotStyles, createDotAnimation(0.2)]}></div>
       <div css={[dotStyles, createDotAnimation(0.4)]}></div>
@@ -28,7 +28,7 @@ const loaderStyles = css`
   align-items: center;
   justify-content: space-around;
   width: 100px;
-  height: 50px;
+  height: 100%;
   margin: 0 auto;
 `;
 
