@@ -29,6 +29,7 @@ function Profile() {
   const [error, setError] = useState<string | null>(null);
   const { userId } = useParams() as { userId: string };
   const navigate = useNavigate();
+
   useEffect(() => {
     const fetchPlaylists = async () => {
       try {
@@ -116,6 +117,7 @@ function Profile() {
                   user={item.userId}
                   showDelete={userInformation.userId === item.userId}
                   showEdit={userInformation.userId === item.userId}
+                  showMenuDot={userInformation.userId === item.userId}
                   tags={item.tags}
                   profileImage={userInformation?.profileImage || ''}
                   userName={item.nickname}
