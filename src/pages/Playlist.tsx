@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom';
 import SkeletonGridItem from '@/components/SkeletonGridItem';
 import TitleHeader from '@/components/TitleHeader';
 import VideoGridItem from '@/components/VideoGridItem';
-import throttle from 'lodash/throttle'; // lodash의 throttle 가져오기
+import throttle from 'lodash/throttle';
 import Loading from '@/components/Loading';
 import useUserStore from '@/stores/useUserStore';
 
@@ -20,13 +20,15 @@ interface PlaylistData {
   nickname: string;
   profileImage: string;
 }
+
 interface UserInformation {
   profileImage: string;
   userName: string;
   userId: string;
 }
+
 const PlaylistPage: React.FC = () => {
-  const { userIdParams } = useParams<{ userIdParams: string }>(); // URL에서 userId 가져오기
+  const { userIdParams } = useParams<{ userIdParams: string }>();
   const [visibleItems, setVisibleItems] = useState(8);
   const [loading, setLoading] = useState(false);
   const [playlists, setPlaylists] = useState<PlaylistData[]>([]);
@@ -81,7 +83,7 @@ const PlaylistPage: React.FC = () => {
           throw new Error('플레이리스트 데이터를 가져오는 중 오류가 발생했습니다.');
         }
         const result = await response.json();
-        const loggedInUserId = useUserStore.getState().userInformation.userId;
+
         // 필터링 로직 적용
         const filteredPlaylists = result.playlists.filter((playlist: PlaylistData) => {
           if (userInformation?.userId === userIdParams) {
@@ -89,7 +91,6 @@ const PlaylistPage: React.FC = () => {
           } else {
             setTitleNickName(playlist.nickname);
             setTitleProfileImage(playlist.profileImage);
-            console.log(playlist, '->>>>>>> 수민이의 궁금');
             return playlist.userId === userIdParams && playlist.disclosureStatus === true;
           }
         });
@@ -113,6 +114,7 @@ const PlaylistPage: React.FC = () => {
   const handleDeleteItem = (index: number) => {
     setPlaylists((prevPlaylists) => prevPlaylists.filter((_, i) => i !== index));
   };
+
   useEffect(() => {
     const throttledHandleScroll = throttle(() => {
       const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
@@ -123,20 +125,20 @@ const PlaylistPage: React.FC = () => {
           setLoading(false);
         }, 500);
       }
-    }, 500); // 500ms마다 한 번만 호출
+    }, 500);
     window.addEventListener('scroll', throttledHandleScroll);
     return () => window.removeEventListener('scroll', throttledHandleScroll);
   }, [loading]);
-  console.log(userInformation);
+
+  const isUserViewingOwnPage = userInformation?.userId === userIdParams;
 
   return (
     <div css={containerStyle}>
       <TitleHeader
         profileImage={titleProfileImage || '없음'}
-        // nickname={userInformation?.userName|| ''}
         nickname={titleNickName || ''}
         actionText="플레이리스트"
-        showAddPlaylistButton={true}
+        showAddPlaylistButton={isUserViewingOwnPage}
       />
       {error && <div css={errorStyle}>{error}</div>}
       {loading && (
@@ -161,9 +163,9 @@ const PlaylistPage: React.FC = () => {
               videoId={item.id}
               title={item.title}
               user={item.userId}
-              showDelete={true}
-              showEdit={true}
-              showMenuDot={true}
+              showDelete={isUserViewingOwnPage} // 자신의 페이지일 경우만 삭제 버튼 표시
+              showEdit={isUserViewingOwnPage} // 자신의 페이지일 경우만 수정 버튼 표시
+              showMenuDot={isUserViewingOwnPage} // 자신의 페이지일 경우만 메뉴 표시
               tags={item.tags}
               profileImage={item.profileImage}
               userName={item.nickname}
@@ -179,26 +181,32 @@ const PlaylistPage: React.FC = () => {
     </div>
   );
 };
+
 const containerStyle = css`
   width: 100%;
   margin: 0 auto;
   padding-top: 40px;
 `;
+
 const gridContainerStyle = css`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 20px;
   padding: 20px;
+
   @media (min-width: 600px) {
     grid-template-columns: repeat(2, 1fr);
   }
+
   @media (min-width: 900px) {
     grid-template-columns: repeat(3, 1fr);
   }
+
   @media (min-width: 1200px) {
     grid-template-columns: repeat(4, 1fr);
   }
 `;
+
 const LoadingStyle = css`
   position: absolute;
   top: 40%;
@@ -206,9 +214,11 @@ const LoadingStyle = css`
   transform: translate(-50%, -50%);
   z-index: 10;
 `;
+
 const errorStyle = css`
   color: red;
   text-align: center;
   margin: 20px 0;
 `;
+
 export default PlaylistPage;
