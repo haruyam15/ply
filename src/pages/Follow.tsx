@@ -7,14 +7,35 @@ import { Users, UserCheck } from 'lucide-react';
 import useUserStore from '@/stores/useUserStore';
 import TitleHeader from '@/components/TitleHeader';
 
+interface Playlist {
+  id: string;
+  title: string;
+  userId: string;
+  tags: string[];
+  imgUrl: string[];
+  disclosureStatus: boolean;
+  videoCount: number;
+}
+
 interface UserDetail {
   profileImage: string;
   userName: string;
   followers: number;
-  myPlaylist: number;
+  myPlaylistCount: number;
   userId: string;
   isFollowing?: boolean;
 }
+const calculatePlaylistCount = async (userId: string): Promise<number> => {
+  try {
+    const response = await fetch(`/api/playlistPage/${userId}`);
+    const data: { playlists: Playlist[] } = await response.json();
+    const publicPlaylists = data.playlists.filter((playlist) => playlist.disclosureStatus);
+    return publicPlaylists.length; // 공개된 플레이리스트의 개수 반환
+  } catch (error) {
+    console.error('플레이리스트 개수를 가져오는 중 오류 발생:', error);
+    return 0;
+  }
+};
 
 const Follow: React.FC = () => {
   const { userId } = useParams<{ userId: string }>();
@@ -30,9 +51,16 @@ const Follow: React.FC = () => {
 
   const fetchUserInfo = useCallback(async () => {
     try {
-      const response = await fetch(`/api/profile/${userId}`);
-      const data = await response.json();
-      setUserInfo(data);
+      const response = await fetch(`/api/profilePage/${userId}`);
+      const data: UserDetail = await response.json();
+
+      // 플레이리스트 개수 계산
+      const playlistCount = await calculatePlaylistCount(userId ?? '');
+
+      setUserInfo({
+        ...data,
+        myPlaylistCount: playlistCount,
+      });
     } catch (error) {
       console.error('Failed to fetch user info:', error);
     }
@@ -42,8 +70,8 @@ const Follow: React.FC = () => {
   const checkFollowStatus = async (targetUserId: string): Promise<boolean> => {
     try {
       const response = await fetch(`/api/followCheck/${loggedInUser.userId}/${targetUserId}`);
-      const result = await response.json();
-      return result.followStatus; // 팔로우 중이면 true, 아니면 false
+      const result: { followStatus: boolean } = await response.json();
+      return result.followStatus; // 팔로우 상태 반환
     } catch (error) {
       console.error('Failed to check follow status:', error);
       return false;
@@ -53,13 +81,14 @@ const Follow: React.FC = () => {
   const fetchFollowers = useCallback(async () => {
     try {
       const response = await fetch(`/api/followerPage/${userId}`);
-      const data = await response.json();
+      const data: UserDetail[] = await response.json();
 
       // 로그인한 사용자의 팔로우 여부를 확인하여 업데이트
       const updatedFollowers = await Promise.all(
-        data.map(async (follower: UserDetail) => ({
+        data.map(async (follower) => ({
           ...follower,
           isFollowing: await checkFollowStatus(follower.userId),
+          myPlaylistCount: await calculatePlaylistCount(follower.userId), // 각 팔로워의 플레이리스트 개수
         })),
       );
       setFollowers(updatedFollowers);
@@ -72,13 +101,14 @@ const Follow: React.FC = () => {
   const fetchFollowing = useCallback(async () => {
     try {
       const response = await fetch(`/api/followingPage/${userId}`);
-      const data = await response.json();
+      const data: UserDetail[] = await response.json();
 
       // 로그인한 사용자의 팔로우 여부를 확인하여 업데이트
       const updatedFollowing = await Promise.all(
-        data.map(async (user: UserDetail) => ({
+        data.map(async (user) => ({
           ...user,
           isFollowing: await checkFollowStatus(user.userId),
+          myPlaylistCount: await calculatePlaylistCount(user.userId), // 각 팔로잉 유저의 플레이리스트 개수
         })),
       );
       setFollowing(updatedFollowing);
@@ -159,7 +189,7 @@ const Follow: React.FC = () => {
                   css={statItem}
                   onClick={(e) => e.stopPropagation()}
                 >
-                  플레이리스트 <span css={statValue}>{user.myPlaylist}</span>
+                  플레이리스트 <span css={statValue}>{user.myPlaylistCount}</span>{' '}
                 </Link>
                 <Link
                   to={`/follow/${user.userId}?tab=follower`}
