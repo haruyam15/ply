@@ -63,17 +63,20 @@ function FList({ tab }: FListProps) {
   return (
     <>
       <ul css={fList(isExpand)}>
-        {data.map((d, i) => (
-          <li key={i}>
-            <User
-              profileImage={d.profileImage}
-              nickname={d.userName}
-              userId={d.userId}
-              onlyImage={!isExpand}
-              onClick={() => handleUserClick(d.userId)}
-            />
-          </li>
-        ))}
+        {data.map((d, i) => {
+          if (i >= 5) return null;
+          return (
+            <li key={i}>
+              <User
+                profileImage={d.profileImage}
+                nickname={d.userName}
+                userId={d.userId}
+                onlyImage={!isExpand}
+                onClick={() => handleUserClick(d.userId)}
+              />
+            </li>
+          );
+        })}
       </ul>
       <If test={isMore}>
         <If.Then>

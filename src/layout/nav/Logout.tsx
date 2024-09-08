@@ -64,6 +64,7 @@ const logout = (isExpand: boolean) => css`
 
   ${!isExpand &&
   `
+  padding: 6px 0 4px;
 	.btn-logout {
 		flex-direction: column;
 		span{
