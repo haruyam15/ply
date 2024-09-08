@@ -67,7 +67,7 @@ const Home: React.FC = () => {
 
     window.addEventListener('scroll', throttledHandleScroll);
     return () => window.removeEventListener('scroll', throttledHandleScroll);
-  }, [loading, hasMoreExplore, exploreVisibleItems, exploreData.length]);
+  }, [hasMoreExplore, exploreVisibleItems, exploreData.length]);
 
   const loadMoreItems = () => {
     setLoading(true);

@@ -187,11 +187,4 @@ const errorStyle = css`
   margin: 20px 0;
 `;
 
-const emptyMessageStyle = css`
-  text-align: center;
-  font-size: 18px;
-  color: #555;
-  margin-top: 20px;
-`;
-
 export default Timeline;
