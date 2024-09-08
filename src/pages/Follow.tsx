@@ -2,7 +2,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { css } from '@emotion/react';
 import axios from 'axios';
-import { useParams, useSearchParams, Link } from 'react-router-dom';
+import { useParams, useSearchParams, Link, useNavigate } from 'react-router-dom';
 import { colors } from '@/styles/colors';
 import { Users, UserCheck } from 'lucide-react';
 import useUserStore from '@/stores/useUserStore';
@@ -24,6 +24,7 @@ const Follow: React.FC = () => {
   const [following, setFollowing] = useState<UserDetail[]>([]);
   const [activeTab, setActiveTab] = useState<'followers' | 'following'>(initialTab);
   const loggedInUser = useUserStore((state) => state.userInformation);
+  const navigate = useNavigate();
 
   const fetchFollowers = useCallback(async () => {
     try {
@@ -79,6 +80,10 @@ const Follow: React.FC = () => {
     }
   };
 
+  const handleProfileClick = (targetUserId: string) => {
+    navigate(`/profile/${targetUserId}`);
+  };
+
   const renderUserList = (users: UserDetail[]) => (
     <div>
       {users.length === 0 ? (
@@ -87,7 +92,11 @@ const Follow: React.FC = () => {
         </p>
       ) : (
         users.map((user) => (
-          <div key={user.userId} css={userProfileContainer}>
+          <div
+            key={user.userId}
+            css={userProfileContainer}
+            onClick={() => handleProfileClick(user.userId)}
+          >
             <img
               css={profileImageArea}
               src={user.profileImage}
@@ -102,17 +111,28 @@ const Follow: React.FC = () => {
                 {loggedInUser.userId !== user.userId && (
                   <button
                     css={followBtn(user.isFollowing)}
-                    onClick={() => handleFollowToggle(user.userId, user.isFollowing || false)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleFollowToggle(user.userId, user.isFollowing || false);
+                    }}
                   >
                     {user.isFollowing ? '팔로잉 중' : '팔로우'}
                   </button>
                 )}
               </div>
               <div css={statsArea}>
-                <Link to={`/playlist/${user.userId}`} css={statItem}>
+                <Link
+                  to={`/playlist/${user.userId}`}
+                  css={statItem}
+                  onClick={(e) => e.stopPropagation()}
+                >
                   플레이리스트 <span css={statValue}>{user.myPlaylist}</span>
                 </Link>
-                <Link to={`/follow/${user.userId}?tab=follower`} css={statItem}>
+                <Link
+                  to={`/follow/${user.userId}?tab=follower`}
+                  css={statItem}
+                  onClick={(e) => e.stopPropagation()}
+                >
                   팔로워 <span css={statValue}>{user.followers}</span>
                 </Link>
               </div>
@@ -155,6 +175,7 @@ const userProfileContainer = css`
   background-color: ${colors.black};
   margin: 40px 0;
   border-radius: 20px;
+  cursor: pointer; /* 전체 컨테이너 클릭 가능하게 설정 */
 `;
 
 const profileImageArea = css`
