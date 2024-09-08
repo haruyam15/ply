@@ -116,11 +116,15 @@ const Like: React.FC = () => {
       {error && <div css={errorStyle}>{error}</div>}
       {loading && (
         <>
-          <Loading />
-          <div css={gridContainerStyle}>
-            {Array.from({ length: 8 }).map((_, index) => (
-              <SkeletonGridItem key={index} />
-            ))}
+          <div>
+            <div css={LoadingStyle}>
+              <Loading />
+            </div>
+            <div css={gridContainerStyle}>
+              {Array.from({ length: 8 }).map((_, index) => (
+                <SkeletonGridItem key={index} />
+              ))}
+            </div>
           </div>
         </>
       )}
@@ -180,6 +184,13 @@ const errorStyle = css`
   color: red;
   text-align: center;
   margin: 20px 0;
+`;
+const LoadingStyle = css`
+  position: absolute;
+  top: 40%;
+  left: 60%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
 `;
 
 export default Like;
