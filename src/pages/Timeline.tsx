@@ -6,13 +6,15 @@ import TitleHeader from '@/components/TitleHeader';
 import VideoGridItem from '@/components/VideoGridItem';
 import useUserStore from '@/stores/useUserStore';
 import throttle from 'lodash/throttle';
+import EmptyMessage from '@/components/EmptyMessage';
+import Loading from '@/components/Loading';
 
 interface PlaylistData {
   id: string;
   title: string;
   userId: string;
   tags: string[];
-  imgUrl: string; // imgUrl 속성 추가
+  imgUrl: string;
   disclosureStatus: string;
   videoCount: number;
   nickName: string;
@@ -126,9 +128,19 @@ const Timeline: React.FC = () => {
         nickname={userInformation?.userName || ''}
         actionText="타임라인"
       />
-
       {error && <div css={errorStyle}>{error}</div>}
-
+      {loading && (
+        <>
+          <Loading />
+          <div css={gridContainerStyle}>
+            {Array.from({ length: 8 }).map((_, index) => (
+              <SkeletonGridItem key={index} />
+            ))}
+          </div>
+        </>
+      )}
+      {/* 플레이리스트가 비어있을 경우 출력 */}
+      {playlists.length === 0 && !loading && <EmptyMessage message="타임라인이 비어있습니다." />}
       <div css={gridContainerStyle}>
         {playlists.slice(0, visibleItems).map((item, index) => (
           <VideoGridItem
@@ -142,11 +154,10 @@ const Timeline: React.FC = () => {
             profileImage={userInformation?.profileImage || ''}
             userName={item.nickName}
             userId={item.userId}
-            imgUrl={item.imgUrl[0]} // imgUrl을 VideoGridItem에 전달
+            imgUrl={item.imgUrl[0]}
             videoCount={item.videoCount}
           />
         ))}
-        {loading && Array.from({ length: 8 }).map((_, index) => <SkeletonGridItem key={index} />)}
       </div>
     </div>
   );

@@ -6,6 +6,8 @@ import TitleHeader from '@/components/TitleHeader';
 import VideoGridItem from '@/components/VideoGridItem';
 import useUserStore from '@/stores/useUserStore';
 import throttle from 'lodash/throttle';
+import EmptyMessage from '@/components/EmptyMessage';
+import Loading from '@/components/Loading';
 
 interface LikedPlaylistData {
   title: string;
@@ -74,7 +76,7 @@ const Like: React.FC = () => {
 
       try {
         setLoading(true);
-        const response = await fetch(`/api/likePage/${userId}`); // userId 기반으로 API 호출
+        const response = await fetch(`/api/likePage/${userId}`);
         if (!response.ok) {
           throw new Error('좋아요한 플레이리스트 데이터를 가져오는 중 오류가 발생했습니다.');
         }
@@ -106,7 +108,7 @@ const Like: React.FC = () => {
           setLoading(false);
         }, 500);
       }
-    }, 500); // 500ms마다 한 번만 호출
+    }, 500);
 
     window.addEventListener('scroll', throttledHandleScroll);
     return () => window.removeEventListener('scroll', throttledHandleScroll);
@@ -119,14 +121,26 @@ const Like: React.FC = () => {
         nickname={userInformation?.userName || ''}
         actionText="좋아요한 플레이리스트"
       />
-
       {error && <div css={errorStyle}>{error}</div>}
-
+      {loading && (
+        <>
+          <Loading />
+          <div css={gridContainerStyle}>
+            {Array.from({ length: 8 }).map((_, index) => (
+              <SkeletonGridItem key={index} />
+            ))}
+          </div>
+        </>
+      )}
+      {/* 좋아요한 플레이리스트가 비어있을 경우 EmptyMessage 컴포넌트 사용 */}
+      {likedPlaylists.length === 0 && !loading && (
+        <EmptyMessage message="좋아요한 플레이리스트가 없습니다." />
+      )}
       <div css={gridContainerStyle}>
         {likedPlaylists.slice(0, visibleItems).map((item, index) => (
           <VideoGridItem
             key={index}
-            videoId={item.id} // imgUrl에서 videoId 추출
+            videoId={item.id}
             title={item.title}
             user={item.userId}
             showDelete={true}
@@ -135,12 +149,11 @@ const Like: React.FC = () => {
             profileImage={userInformation?.profileImage || ''}
             userName={item.nickName}
             userId={item.userId}
-            imgUrl={item.imgUrl[0]} // imgUrl 배열에서 첫 번째 요소 사용
+            imgUrl={item.imgUrl[0]}
             videoCount={item.videoCount}
             index={index}
           />
         ))}
-        {loading && Array.from({ length: 8 }).map((_, index) => <SkeletonGridItem key={index} />)}
       </div>
     </div>
   );

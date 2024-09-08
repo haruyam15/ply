@@ -42,32 +42,34 @@ const Home: React.FC = () => {
 
   useEffect(() => {
     if (user.userId) {
-      try {
-        fetchUserInformation(user.userId);
-        fetchTimelineData(user.userId);
-      } catch (e) {
-        console.error('로컬 스토리지에서 사용자 정보를 파싱하는 중 오류 발생:', e);
-      }
+      fetchUserInformation(user.userId); // 프로필 정보를 가져옴
     } else {
       setLoading(false);
     }
+  }, [user.userId]); // 프로필 정보는 userId가 변경될 때만 호출
 
-    // 탐색 데이터는 로그인 여부와 관계없이 항상 가져오기
-    fetchExploreData();
+  useEffect(() => {
+    if (user.userId) {
+      fetchTimelineData(user.userId); // 타임라인 데이터를 가져옴
+    }
+  }, [user.userId]); // 타임라인 데이터는 userId가 변경될 때만 호출
 
-    // 스크롤 핸들러를 throttle로 래핑하여 성능 최적화
+  useEffect(() => {
+    fetchExploreData(); // 탐색 데이터는 컴포넌트가 마운트될 때 한 번만 호출
+  }, []); // 초기 마운트 시 한 번만 호출되므로 의존성 배열은 빈 배열
+
+  useEffect(() => {
     const throttledHandleScroll = throttle(() => {
       const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
 
-      // 스크롤 위치가 끝에 도달했을 때 && 로딩 중이 아닐 때 && 추가 데이터가 있을 때
       if (scrollTop + clientHeight >= scrollHeight - 5 && !loading && hasMoreExplore) {
-        loadMoreItems(); // 추가 아이템 로드
+        loadMoreItems(); // 추가 데이터 로드
       }
     }, 500);
 
     window.addEventListener('scroll', throttledHandleScroll);
     return () => window.removeEventListener('scroll', throttledHandleScroll);
-  }, [loading, hasMoreExplore, exploreVisibleItems, exploreData.length]);
+  }, [hasMoreExplore, exploreVisibleItems, exploreData.length]); // 탐색 데이터와 무한 스크롤 관련 의존성 배열
 
   const loadMoreItems = () => {
     setLoading(true);
@@ -167,7 +169,7 @@ const Home: React.FC = () => {
               <div key={index} css={slideStyle}>
                 <img
                   src={`https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`}
-                  alt={`캐러셀이미지`}
+                  alt={`캐러셀 이미지`}
                   css={thumbnailStyle}
                 />
               </div>
