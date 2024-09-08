@@ -124,7 +124,7 @@ const Signup: React.FC = () => {
           setTimeout(() => {
             closeSignupModal('signup');
             openSigninModal('signin');
-          }, 2000);
+          }, 1000);
         }
       } catch (error) {
         console.error(error);
