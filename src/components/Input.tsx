@@ -36,11 +36,11 @@ const inputStyle = css`
   font-size: 16px;
   margin-bottom: 15px;
   box-sizing: border-box;
-  background-color: ${colors.inputGray};
+  background-color: ${colors.white};
   border: none;
   border-radius: 10px;
-  color: ${colors.white};
+  color: ${colors.black};
   &::placeholder {
-    color: ${colors.placeHolderGray};
+    color: #888;
   }
 `;
