@@ -7,6 +7,7 @@ import VideoGridItem from '@/components/VideoGridItem';
 import useUserStore from '@/stores/useUserStore';
 import throttle from 'lodash/throttle';
 import EmptyMessage from '@/components/EmptyMessage';
+import Loading from '@/components/Loading';
 
 interface LikedPlaylistData {
   title: string;
@@ -120,14 +121,21 @@ const Like: React.FC = () => {
         nickname={userInformation?.userName || ''}
         actionText="좋아요한 플레이리스트"
       />
-
       {error && <div css={errorStyle}>{error}</div>}
-
+      {loading && (
+        <>
+          <Loading />
+          <div css={gridContainerStyle}>
+            {Array.from({ length: 8 }).map((_, index) => (
+              <SkeletonGridItem key={index} />
+            ))}
+          </div>
+        </>
+      )}
       {/* 좋아요한 플레이리스트가 비어있을 경우 EmptyMessage 컴포넌트 사용 */}
       {likedPlaylists.length === 0 && !loading && (
         <EmptyMessage message="좋아요한 플레이리스트가 없습니다." />
       )}
-
       <div css={gridContainerStyle}>
         {likedPlaylists.slice(0, visibleItems).map((item, index) => (
           <VideoGridItem
@@ -146,7 +154,6 @@ const Like: React.FC = () => {
             index={index}
           />
         ))}
-        {loading && Array.from({ length: 8 }).map((_, index) => <SkeletonGridItem key={index} />)}
       </div>
     </div>
   );

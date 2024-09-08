@@ -52,7 +52,6 @@ const Home: React.FC = () => {
       setLoading(false);
     }
 
-    // 탐색 데이터는 로그인 여부와 관계없이 항상 가져오기
     fetchExploreData();
 
     // 스크롤 핸들러를 throttle로 래핑하여 성능 최적화
