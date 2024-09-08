@@ -8,6 +8,7 @@ import VideoGridItem from '@/components/VideoGridItem';
 import throttle from 'lodash/throttle'; // lodash의 throttle 가져오기
 import Loading from '@/components/Loading';
 import useUserStore from '@/stores/useUserStore';
+import { colors } from '@/styles/colors';
 interface PlaylistData {
   title: string;
   userId: string;
@@ -31,6 +32,7 @@ const PlaylistPage: React.FC = () => {
   const [playlists, setPlaylists] = useState<PlaylistData[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [userInformation, setUserInformation] = useState<UserInformation | null>(null);
+
   useEffect(() => {
     const fetchUserInformation = async () => {
       if (!userId) {
@@ -90,9 +92,11 @@ const PlaylistPage: React.FC = () => {
     };
     fetchPlaylistData();
   }, [userId, userInformation]);
+
   const handleDeleteItem = (index: number) => {
     setPlaylists((prevPlaylists) => prevPlaylists.filter((_, i) => i !== index));
   };
+
   useEffect(() => {
     const throttledHandleScroll = throttle(() => {
       const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
@@ -107,13 +111,18 @@ const PlaylistPage: React.FC = () => {
     window.addEventListener('scroll', throttledHandleScroll);
     return () => window.removeEventListener('scroll', throttledHandleScroll);
   }, [loading]);
+
+  // 로그인한 사용자와 해당 페이지의 userId를 비교
+  const loggedInUserId = useUserStore.getState().userInformation.userId;
+  const isOwnPage = loggedInUserId === userId;
+
   return (
     <div css={containerStyle}>
       <TitleHeader
         profileImage={userInformation?.profileImage || '없음'}
         nickname={userInformation?.userName || ''}
         actionText="플레이리스트"
-        showAddPlaylistButton={true}
+        showAddPlaylistButton={isOwnPage} // 로그인한 사용자의 페이지일 경우만 추가 버튼 표시
       />
       {error && <div css={errorStyle}>{error}</div>}
       {loading && (
@@ -130,6 +139,13 @@ const PlaylistPage: React.FC = () => {
           </div>
         </>
       )}
+      {playlists.length === 0 && (
+        <div css={emptyMessageStyle}>
+          {isOwnPage
+            ? '아직 플레이리스트가 없습니다. 플레이리스트를 만들어보세요!'
+            : '플레이리스트가 없습니다.'}
+        </div>
+      )}
       <div css={gridContainerStyle}>
         {playlists.slice(0, visibleItems).map((item, index) => {
           return (
@@ -138,8 +154,8 @@ const PlaylistPage: React.FC = () => {
               videoId={item.id}
               title={item.title}
               user={item.userId}
-              showDelete={true}
-              showEdit={true}
+              showDelete={isOwnPage} // 자신의 페이지에서만 삭제 버튼 표시
+              showEdit={isOwnPage} // 자신의 페이지에서만 수정 버튼 표시
               showMenuDot={true}
               tags={item.tags}
               profileImage={item.profileImage}
@@ -156,11 +172,13 @@ const PlaylistPage: React.FC = () => {
     </div>
   );
 };
+
 const containerStyle = css`
   width: 100%;
   margin: 0 auto;
   padding-top: 40px;
 `;
+
 const gridContainerStyle = css`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -176,6 +194,7 @@ const gridContainerStyle = css`
     grid-template-columns: repeat(4, 1fr);
   }
 `;
+
 const LoadingStyle = css`
   position: absolute;
   top: 40%;
@@ -183,9 +202,19 @@ const LoadingStyle = css`
   transform: translate(-50%, -50%);
   z-index: 10;
 `;
+
 const errorStyle = css`
   color: red;
   text-align: center;
   margin: 20px 0;
 `;
+
+const emptyMessageStyle = css`
+  text-align: center;
+  font-size: 20px;
+  color: ${colors.gray};
+  padding: 40px 0;
+  margin-top: 80px;
+`;
+
 export default PlaylistPage;

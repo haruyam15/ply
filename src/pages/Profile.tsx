@@ -110,7 +110,11 @@ function Profile() {
         ) : playlists.length === 0 ? (
           <div css={emptyMessageStyle}>
             {selectedTab === 'playlist' ? (
-              <p>아직 플레이리스트가 없습니다. 플레이리스트를 만들어보세요!</p>
+              userInformation.userId === userId ? (
+                <p>아직 플레이리스트가 없습니다. 플레이리스트를 만들어보세요!</p>
+              ) : (
+                <p>플레이리스트가 없습니다.</p>
+              )
             ) : (
               <p>좋아요한 플레이리스트가 없습니다.</p>
             )}
