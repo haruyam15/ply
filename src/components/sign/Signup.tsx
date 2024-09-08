@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /** @jsxImportSource @emotion/react */
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { debounce } from 'lodash';
+import { throttle } from 'lodash';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -93,8 +93,8 @@ const Signup: React.FC = () => {
     validation();
   }, [newUser]);
 
-  const debouncedSignup = useCallback(
-    debounce(() => {
+  const throttleSignup = useCallback(
+    throttle(() => {
       setNewUser({
         nickname: nameRef.current?.value ?? null,
         userId: idRef.current?.value ?? null,
@@ -106,7 +106,7 @@ const Signup: React.FC = () => {
 
   const onSignup = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    debouncedSignup();
+    throttleSignup();
   };
 
   const addNewUser = async () => {

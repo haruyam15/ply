@@ -40,7 +40,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: '/like/:userId',
+        path: '/like/:userId?',
         element: (
           <ProtectedRoutes>
             <Like />

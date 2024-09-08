@@ -5,7 +5,7 @@ import { css } from '@emotion/react';
 function Banner() {
   return (
     <div css={banner}>
-      <img src="./assets/images/banner.png" alt="" />
+      <img src="/assets/images/banner.png" alt="" />
     </div>
   );
 }
