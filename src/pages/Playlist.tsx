@@ -71,7 +71,14 @@ const PlaylistPage: React.FC = () => {
           throw new Error('플레이리스트 데이터를 가져오는 중 오류가 발생했습니다.');
         }
         const result = await response.json();
-        setPlaylists(result.playlists);
+
+        // 필터링 로직 적용
+        const filteredPlaylists = result.playlists.filter(
+          (playlist: PlaylistData) =>
+            userInformation?.userId === userId && playlist.disclosureStatus === true,
+        );
+
+        setPlaylists(filteredPlaylists);
       } catch (error) {
         if (error instanceof Error) {
           console.error('데이터 요청 오류:', error);
@@ -86,7 +93,8 @@ const PlaylistPage: React.FC = () => {
     };
 
     fetchPlaylistData();
-  }, [userId]);
+  }, [userId, userInformation]); // userInformation 의존성 추가
+
   const handleDeleteItem = (index: number) => {
     setPlaylists((prevPlaylists) => prevPlaylists.filter((_, i) => i !== index));
   };
@@ -118,11 +126,15 @@ const PlaylistPage: React.FC = () => {
       {error && <div css={errorStyle}>{error}</div>}
       {loading && (
         <>
-          <Loading />
-          <div css={gridContainerStyle}>
-            {Array.from({ length: 8 }).map((_, index) => (
-              <SkeletonGridItem key={index} />
-            ))}
+          <div>
+            <div css={LoadingStyle}>
+              <Loading />
+            </div>
+            <div css={gridContainerStyle}>
+              {Array.from({ length: 8 }).map((_, index) => (
+                <SkeletonGridItem key={index} />
+              ))}
+            </div>
           </div>
         </>
       )}
@@ -148,7 +160,6 @@ const PlaylistPage: React.FC = () => {
             />
           );
         })}
-        {/* {loading && Array.from({ length: 8 }).map((_, index) => <SkeletonGridItem key={index} />)} */}
       </div>
     </div>
   );
@@ -177,6 +188,14 @@ const gridContainerStyle = css`
   @media (min-width: 1200px) {
     grid-template-columns: repeat(4, 1fr);
   }
+`;
+
+const LoadingStyle = css`
+  position: absolute;
+  top: 40%;
+  left: 60%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
 `;
 
 const errorStyle = css`

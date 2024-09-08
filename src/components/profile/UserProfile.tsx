@@ -44,9 +44,13 @@ const UserProfile: React.FC = () => {
           axios.get(`/api/followCheck/${loggedInUser.userId}/${urlUserId}`),
         ]);
 
+        const publicPlaylists = playlistResponse.data.playlists?.filter(
+          (playlist) => playlist.disclosureStatus === true,
+        );
+
         setProfileData({
           ...profileResponse.data,
-          playlists: playlistResponse.data.playlists,
+          playlists: publicPlaylists,
           userId: urlUserId || loggedInUser.userId,
         });
 
@@ -94,7 +98,7 @@ const UserProfile: React.FC = () => {
             </button>
           ) : (
             <button css={followBtn(isFollowing)} onClick={handleFollowToggle}>
-              {isFollowing ? '팔로잉 중' : '팔로우'}
+              {isFollowing ? '팔로잉' : '팔로우'}
             </button>
           )}
         </div>
@@ -186,7 +190,7 @@ const statValue = css`
 const profileEditBtn = css`
   width: 100px;
   height: 30px;
-  margin-left: 320px;
+  margin-left: 160px;
   align-self: flex-start;
   background-color: ${colors.gray};
   color: ${colors.white};

@@ -47,7 +47,12 @@ function Profile() {
 
         const data = await response.json();
         const filteredPlaylists: PlaylistData[] =
-          selectedTab === 'playlist' ? data.playlists : data.likedPlaylists;
+          selectedTab === 'playlist'
+            ? data.playlists.filter(
+                (playlist: PlaylistData) =>
+                  userInformation.userId === userId || playlist.disclosureStatus === true,
+              )
+            : data.likedPlaylists;
 
         setPlaylists(filteredPlaylists);
       } catch (error) {
@@ -81,15 +86,18 @@ function Profile() {
           css={[tabStyle, selectedTab === 'playlist' && activeTabStyle]}
           onClick={() => setSelectedTab('playlist')}
         >
-          <Video size={18} />내 플레이리스트
+          <Video size={18} />
+          {userInformation.userId === userId ? '내 플레이리스트' : '플레이리스트'}
         </button>
-        <button
-          css={[tabStyle, selectedTab === 'likedPlaylist' && activeTabStyle]}
-          onClick={() => setSelectedTab('likedPlaylist')}
-        >
-          <Heart size={18} />
-          좋아요한 플레이리스트
-        </button>
+        {userInformation.userId === userId && (
+          <button
+            css={[tabStyle, selectedTab === 'likedPlaylist' && activeTabStyle]}
+            onClick={() => setSelectedTab('likedPlaylist')}
+          >
+            <Heart size={18} />
+            좋아요한 플레이리스트
+          </button>
+        )}
       </div>
       <div css={contentStyle}>
         {loading ? (
