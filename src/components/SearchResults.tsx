@@ -47,7 +47,7 @@ const SearchResults: React.FC<SearchResultsProps> = ({ results, error }) => {
             {playlists.map((playlist, index) => (
               <VideoGridItem
                 key={index}
-                videoId={playlist.id}
+                videoId={playlist.id ?? ''}
                 title={playlist.title}
                 user={playlist.userName}
                 showEdit={false}
@@ -71,6 +71,7 @@ const SearchResults: React.FC<SearchResultsProps> = ({ results, error }) => {
 const containerStyle = css`
   width: 100%;
   padding: 40px;
+  box-sizing: border-box;
 `;
 
 const sectionStyle = css`
