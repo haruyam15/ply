@@ -7,13 +7,21 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   size?: Size;
   onClick?: () => void | Promise<void>;
   background?: boolean;
+  bgColor?: string;
 }
 
 type Size = 'sm' | 'md' | 'lg';
 
-function Button({ children, size = 'sm', onClick, background = false, ...rest }: ButtonProps) {
+function Button({
+  children,
+  size = 'sm',
+  onClick,
+  background = false,
+  bgColor = '',
+  ...rest
+}: ButtonProps) {
   return (
-    <button css={btn(size, background)} onClick={onClick} {...rest}>
+    <button css={btn(size, background, bgColor)} onClick={onClick} {...rest}>
       {children}
     </button>
   );
@@ -21,7 +29,7 @@ function Button({ children, size = 'sm', onClick, background = false, ...rest }:
 
 export default Button;
 
-const btn = (size: Size, background: boolean) => css`
+const btn = (size: Size, background: boolean, bgColor: string) => css`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -56,6 +64,15 @@ const btn = (size: Size, background: boolean) => css`
     color: ${colors.black};
     &:hover {
       background-color: ${colors.primaryGreen};
+    }
+  `}
+
+  ${bgColor &&
+  `
+    background-color:${bgColor};
+    color:${colors.black};
+    &:hover{
+      background-color: #029c5a
     }
   `}
 `;

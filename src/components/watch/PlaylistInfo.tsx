@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { Heart } from 'lucide-react';
+import { Heart, UserPlus, UserRoundCheck } from 'lucide-react';
 import Button from '@/components/Button';
 import Tags from '@/components/Tags';
 import User from '@/components/User';
@@ -116,12 +116,16 @@ function PlaylistInfo({ playlistId, playlistData, playingVideoTitle }: IPlaylist
         <User profileImage={profileImage} nickname={userName} userId={userId} size="lg" />
         <If test={userId !== userInformation.userId && isFollowing && !isFollowingLoading}>
           <If.Then>
-            <Button onClick={handleEvent.following}>팔로잉 중</Button>
+            <Button onClick={handleEvent.following}>
+              <UserRoundCheck size={20} /> 팔로잉
+            </Button>
           </If.Then>
         </If>
         <If test={userId !== userInformation.userId && !isFollowing && !isFollowingLoading}>
           <If.Then>
-            <Button onClick={handleEvent.following}>팔로우</Button>
+            <Button onClick={handleEvent.following} bgColor={colors.primaryGreen}>
+              <UserPlus size={20} /> 팔로우
+            </Button>
           </If.Then>
         </If>
       </div>
