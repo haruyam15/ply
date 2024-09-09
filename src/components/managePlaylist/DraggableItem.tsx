@@ -64,7 +64,7 @@ export default DraggableItem;
 
 const videoArea = (imgUrl?: string) => css`
   min-width: 220px;
-  width: 220px;
+  width: 280px;
   height: 160px;
   background-color: #222;
   border-radius: 5px;
