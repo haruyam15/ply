@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { X } from 'lucide-react';
-
 import useModalStore from '@/stores/useModalStore';
 import { colors } from '@/styles/colors';
 

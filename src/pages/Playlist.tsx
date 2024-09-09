@@ -5,10 +5,10 @@ import { useParams } from 'react-router-dom';
 import SkeletonGridItem from '@/components/SkeletonGridItem';
 import TitleHeader from '@/components/TitleHeader';
 import VideoGridItem from '@/components/VideoGridItem';
-import throttle from 'lodash/throttle'; // lodash의 throttle 가져오기
+import throttle from 'lodash/throttle';
 import Loading from '@/components/Loading';
 import useUserStore from '@/stores/useUserStore';
-import { colors } from '@/styles/colors';
+
 interface PlaylistData {
   title: string;
   userId: string;
@@ -20,18 +20,34 @@ interface PlaylistData {
   nickname: string;
   profileImage: string;
 }
+
 interface UserInformation {
   profileImage: string;
   userName: string;
   userId: string;
 }
+
 const PlaylistPage: React.FC = () => {
-  const { userId } = useParams<{ userId: string }>(); // URL에서 userId 가져오기
+  const { userIdParams } = useParams<{ userIdParams: string }>();
   const [visibleItems, setVisibleItems] = useState(8);
   const [loading, setLoading] = useState(false);
   const [playlists, setPlaylists] = useState<PlaylistData[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [userInformation, setUserInformation] = useState<UserInformation | null>(null);
+  const [titleNickName, setTitleNickName] = useState<string>('');
+  const [titleProfileImage, setTitleProfileImage] = useState<string>('');
+
+  const user = useUserStore((state) => state.userInformation);
+
+  let userId: string | null = null;
+
+  if (user.userId) {
+    try {
+      userId = user.userId;
+    } catch (e) {
+      console.error('로컬 스토리지에서 사용자 정보를 파싱하는 중 오류 발생:', e);
+    }
+  }
 
   useEffect(() => {
     const fetchUserInformation = async () => {
@@ -62,18 +78,20 @@ const PlaylistPage: React.FC = () => {
       }
       try {
         setLoading(true);
-        const response = await fetch(`/api/playlistPage/${userId}`);
+        const response = await fetch(`/api/playlistPage/${userIdParams}`);
         if (!response.ok) {
           throw new Error('플레이리스트 데이터를 가져오는 중 오류가 발생했습니다.');
         }
         const result = await response.json();
-        const loggedInUserId = useUserStore.getState().userInformation.userId;
+
         // 필터링 로직 적용
         const filteredPlaylists = result.playlists.filter((playlist: PlaylistData) => {
-          if (loggedInUserId === userId) {
-            return true; // 로그인한 사용자의 플레이리스트 페이지일 경우 모든 플레이리스트 표시
+          if (userInformation?.userId === userIdParams) {
+            return playlist.userId === userIdParams;
           } else {
-            return playlist.disclosureStatus === true; // 다른 사용자의 페이지일 경우 공개 플레이리스트만 표시
+            setTitleNickName(playlist.nickname);
+            setTitleProfileImage(playlist.profileImage);
+            return playlist.userId === userIdParams && playlist.disclosureStatus === true;
           }
         });
 
@@ -107,22 +125,20 @@ const PlaylistPage: React.FC = () => {
           setLoading(false);
         }, 500);
       }
-    }, 500); // 500ms마다 한 번만 호출
+    }, 500);
     window.addEventListener('scroll', throttledHandleScroll);
     return () => window.removeEventListener('scroll', throttledHandleScroll);
   }, [loading]);
 
-  // 로그인한 사용자와 해당 페이지의 userId를 비교
-  const loggedInUserId = useUserStore.getState().userInformation.userId;
-  const isOwnPage = loggedInUserId === userId;
+  const isUserViewingOwnPage = userInformation?.userId === userIdParams;
 
   return (
     <div css={containerStyle}>
       <TitleHeader
-        profileImage={userInformation?.profileImage || '없음'}
-        nickname={userInformation?.userName || ''}
+        profileImage={titleProfileImage || '없음'}
+        nickname={titleNickName || ''}
         actionText="플레이리스트"
-        showAddPlaylistButton={isOwnPage} // 로그인한 사용자의 페이지일 경우만 추가 버튼 표시
+        showAddPlaylistButton={isUserViewingOwnPage}
       />
       {error && <div css={errorStyle}>{error}</div>}
       {loading && (
@@ -154,9 +170,9 @@ const PlaylistPage: React.FC = () => {
               videoId={item.id}
               title={item.title}
               user={item.userId}
-              showDelete={isOwnPage} // 자신의 페이지에서만 삭제 버튼 표시
-              showEdit={isOwnPage} // 자신의 페이지에서만 수정 버튼 표시
-              showMenuDot={true}
+              showDelete={isUserViewingOwnPage} // 자신의 페이지일 경우만 삭제 버튼 표시
+              showEdit={isUserViewingOwnPage} // 자신의 페이지일 경우만 수정 버튼 표시
+              showMenuDot={isUserViewingOwnPage} // 자신의 페이지일 경우만 메뉴 표시
               tags={item.tags}
               profileImage={item.profileImage}
               userName={item.nickname}
@@ -184,12 +200,15 @@ const gridContainerStyle = css`
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 20px;
   padding: 20px;
+
   @media (min-width: 600px) {
     grid-template-columns: repeat(2, 1fr);
   }
+
   @media (min-width: 900px) {
     grid-template-columns: repeat(3, 1fr);
   }
+
   @media (min-width: 1200px) {
     grid-template-columns: repeat(4, 1fr);
   }
@@ -207,14 +226,6 @@ const errorStyle = css`
   color: red;
   text-align: center;
   margin: 20px 0;
-`;
-
-const emptyMessageStyle = css`
-  text-align: center;
-  font-size: 20px;
-  color: ${colors.gray};
-  padding: 40px 0;
-  margin-top: 80px;
 `;
 
 export default PlaylistPage;

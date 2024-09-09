@@ -32,7 +32,7 @@ const Signin: React.FC = () => {
             setTimeout(() => {
               setUserData(userData);
               closeSigninModal('signin');
-            }, 2000);
+            }, 1500);
           }
         } catch (error) {
           console.error(error);

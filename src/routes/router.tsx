@@ -33,7 +33,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: '/playlist/:userId',
+        path: '/playlist/:userIdParams?',
         element: (
           <ProtectedRoutes>
             <Playlist />
@@ -41,7 +41,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: '/like/:userId',
+        path: '/like/:userId?',
         element: (
           <ProtectedRoutes>
             <Like />
