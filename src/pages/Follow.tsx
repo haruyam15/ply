@@ -3,10 +3,11 @@ import { useState, useEffect, useCallback } from 'react';
 import { css } from '@emotion/react';
 import { useParams, useSearchParams, Link, useNavigate } from 'react-router-dom';
 import { colors } from '@/styles/colors';
-import { Users, UserCheck } from 'lucide-react';
+import { Users, UserCheck, UserRoundCheck, UserPlus } from 'lucide-react';
 import useUserStore from '@/stores/useUserStore';
 import TitleHeader from '@/components/TitleHeader';
 import Loading from '@/components/Loading';
+import { If } from '@/components/IfElse';
 
 interface Playlist {
   id: string;
@@ -220,7 +221,15 @@ const Follow: React.FC = () => {
                     handleFollowToggle(user.userId, user.isFollowing || false);
                   }}
                 >
-                  {user.isFollowing ? '팔로잉' : '팔로우'}
+                  <If test={user.isFollowing as boolean}>
+                    <If.Then>
+                      <UserRoundCheck size={20} /> 팔로잉
+                    </If.Then>
+                    <If.Else>
+                      <UserPlus size={20} /> 팔로우
+                    </If.Else>
+                  </If>
+                  {/* {user.isFollowing ? '팔로잉' : '팔로우'} */}
                 </button>
               )}
             </div>
@@ -356,19 +365,32 @@ const statValue = css`
 `;
 
 const followBtn = (isFollowing: boolean | undefined) => css`
-  width: 100px;
-  height: 30px;
-  margin-top: 40px;
-  background-color: ${isFollowing ? colors.gray : colors.primaryGreen};
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 45px;
+  font-size: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  font-weight: 700;
+  padding: 0 13px;
   color: ${colors.white};
-  font-weight: 500;
-  border: none;
-  border-radius: 15px;
   cursor: pointer;
-  &:hover {
-    background-color: ${isFollowing ? colors.primaryGreen : colors.gray};
-    color: ${colors.white};
+  margin-top: 20px;
+  svg {
+    margin-right: 5px;
   }
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+  ${!isFollowing &&
+  `
+    background-color:${colors.primaryGreen};
+    color:${colors.black};
+    &:hover{
+      background-color: #029c5a
+    }
+  `}
 `;
 
 const tabsStyle = css`
