@@ -107,7 +107,6 @@ const MenuDot: React.FC<MenuDotProps> = ({
       )}
       {isConfirmOpen && (
         <Confirm
-          title="삭제 확인"
           text="정말 삭제하시겠습니까?"
           onConfirm={handleConfirm}
           onClose={handleCloseConfirm}

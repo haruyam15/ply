@@ -135,7 +135,7 @@ const ManagePlaylist = () => {
           position="bottom-center"
           limit={2}
           closeButton={false}
-          autoClose={3000}
+          autoClose={2000}
           hideProgressBar
         />
       </div>
