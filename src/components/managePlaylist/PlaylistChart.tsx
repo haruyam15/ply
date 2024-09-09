@@ -39,7 +39,7 @@ const PlaylistChart: React.FC = () => {
         ) : (
           <div css={playlistChartWrapper('center')}>
             <MessageCircleWarning />
-            <p>영상을 추가해 보새요.</p>
+            <p>영상을 추가해 보세요.</p>
           </div>
         )}
       </DndProvider>
