@@ -70,6 +70,7 @@ const videoArea = (imgUrl?: string) => css`
   border-radius: 5px;
   overflow: hidden;
   margin-left: 20px;
+  flex-shrink: 0;
   ${imgUrl &&
   `
   background-image: url(${imgUrl});
