@@ -136,8 +136,8 @@ const PlaylistPage: React.FC = () => {
   return (
     <div css={containerStyle}>
       <TitleHeader
-        profileImage={titleProfileImage || '없음'}
-        nickname={titleNickName || ''}
+        profileImage={titleProfileImage || userInformation?.profileImage || '없음'}
+        nickname={titleNickName || userInformation?.userName || ''}
         actionText="플레이리스트"
         showAddPlaylistButton={isUserViewingOwnPage}
       />
