@@ -58,21 +58,25 @@ function FList({ tab }: FListProps) {
       </ul>
     );
   }
-  const isMore = data.length > 3;
+  const isMore = data.length > 5;
+
   return (
     <>
       <ul css={fList(isExpand)}>
-        {data.slice(0, 4).map((d, i) => (
-          <li key={i}>
-            <User
-              profileImage={d.profileImage}
-              nickname={d.userName}
-              userId={d.userId}
-              onlyImage={!isExpand}
-              onClick={() => handleUserClick(d.userId)}
-            />
-          </li>
-        ))}
+        {data.map((d, i) => {
+          if (i >= 5) return null;
+          return (
+            <li key={i}>
+              <User
+                profileImage={d.profileImage}
+                nickname={d.userName}
+                userId={d.userId}
+                onlyImage={!isExpand}
+                onClick={() => handleUserClick(d.userId)}
+              />
+            </li>
+          );
+        })}
       </ul>
       <If test={isMore}>
         <If.Then>
