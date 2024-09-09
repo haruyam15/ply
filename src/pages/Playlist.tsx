@@ -8,6 +8,7 @@ import VideoGridItem from '@/components/VideoGridItem';
 import throttle from 'lodash/throttle';
 import Loading from '@/components/Loading';
 import useUserStore from '@/stores/useUserStore';
+import EmptyMessage from '@/components/EmptyMessage';
 
 interface PlaylistData {
   title: string;
@@ -135,8 +136,8 @@ const PlaylistPage: React.FC = () => {
   return (
     <div css={containerStyle}>
       <TitleHeader
-        profileImage={titleProfileImage || '없음'}
-        nickname={titleNickName || ''}
+        profileImage={titleProfileImage || userInformation?.profileImage || '없음'}
+        nickname={titleNickName || userInformation?.userName || ''}
         actionText="플레이리스트"
         showAddPlaylistButton={isUserViewingOwnPage}
       />
@@ -155,6 +156,7 @@ const PlaylistPage: React.FC = () => {
           </div>
         </>
       )}
+      {playlists.length === 0 && !loading && <EmptyMessage message="타임라인이 비어있습니다." />}
       <div css={gridContainerStyle}>
         {playlists.slice(0, visibleItems).map((item, index) => {
           return (
