@@ -2,18 +2,26 @@
 import { css } from '@emotion/react';
 import { colors } from '@/styles/colors';
 
-interface ButtonProps {
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
   size?: Size;
   onClick?: () => void | Promise<void>;
   background?: boolean;
+  bgColor?: string;
 }
 
 type Size = 'sm' | 'md' | 'lg';
 
-function Button({ children, size = 'sm', onClick, background = false }: ButtonProps) {
+function Button({
+  children,
+  size = 'sm',
+  onClick,
+  background = false,
+  bgColor = '',
+  ...rest
+}: ButtonProps) {
   return (
-    <button css={btn(size, background)} onClick={onClick}>
+    <button css={btn(size, background, bgColor)} onClick={onClick} {...rest}>
       {children}
     </button>
   );
@@ -21,7 +29,7 @@ function Button({ children, size = 'sm', onClick, background = false }: ButtonPr
 
 export default Button;
 
-const btn = (size: Size, background: boolean) => css`
+const btn = (size: Size, background: boolean, bgColor: string) => css`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -41,18 +49,30 @@ const btn = (size: Size, background: boolean) => css`
   ${size === 'md' &&
   `
     width: 80px;
-		height: 35px;
-		font-size:15px;
-	`}
+    height: 35px;
+    font-size:15px;
+  `}
   ${size === 'lg' &&
   `
-    height: 60px;
-    font-size: 20px;
+    height: 45px;
+    font-size: 15px;
   `}
   
   ${background &&
   `
     background-color: ${colors.white};
     color: ${colors.black};
+    &:hover {
+      background-color: ${colors.primaryGreen};
+    }
+  `}
+
+  ${bgColor &&
+  `
+    background-color:${bgColor};
+    color:${colors.black};
+    &:hover{
+      background-color: #029c5a
+    }
   `}
 `;

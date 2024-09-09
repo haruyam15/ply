@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { X } from 'lucide-react';
-
 import useModalStore from '@/stores/useModalStore';
 import { colors } from '@/styles/colors';
 
@@ -38,16 +37,15 @@ const wrapper = css`
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 14000;
 `;
 const modalArea = css`
   position: relative;
-  width: 480px;
+  width: 500px;
   display: flex;
   flex-direction: column;
-  background-color: #1d1d1d;
+  background-color: ${colors.black};
   border-radius: 15px;
-  color: ${colors.white};
   align-items: center;
 `;
 const closeBtn = css`

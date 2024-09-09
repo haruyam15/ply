@@ -1,67 +1,36 @@
 import { create } from 'zustand';
-
-interface IInformation {
-  _id: string;
-  userid: string;
-  password: string;
-  profileimage: string;
-  nickname: string;
-}
-
-export interface IUser {
-  information: IInformation;
-  followers: string[];
-  following: string[];
-}
-
+import { IUserData } from '@/types/userTypes';
+import { persist } from 'zustand/middleware';
 interface State {
-  userInformation: IUser;
-}
-interface Action {
-  setUser: (userData: IUser) => void;
-  clearUser: () => void;
+  userInformation: IUserData;
 }
 
-const useUserStore = create<State & Action>((set) => ({
-  userInformation: {
-    information: {
-      _id: '',
-      userid: '',
-      password: '',
-      profileimage: '',
-      nickname: '',
-    },
-    followers: [],
-    following: [],
-  },
-  setUser: (userData) =>
-    set(() => ({
+interface Action {
+  setUser: (userData: IUserData) => void;
+}
+
+const useUserStore = create(
+  persist<State & Action>(
+    (set) => ({
       userInformation: {
-        information: {
-          _id: userData.information._id,
-          userid: userData.information.userid,
-          password: userData.information.password,
-          profileimage: userData.information.profileimage,
-          nickname: userData.information.nickname,
-        },
-        followers: userData.followers,
-        following: userData.following,
-      },
-    })),
-  clearUser: () =>
-    set(() => ({
-      userInformation: {
-        information: {
-          _id: '',
-          userid: '',
-          password: '',
-          profileimage: '',
-          nickname: '',
-        },
+        userId: '',
+        password: '',
+        profileImage: '',
+        nickname: '',
+        likes: [],
         followers: [],
         following: [],
+        myPlaylists: [],
       },
-    })),
-}));
+      setUser: (userData: IUserData) =>
+        set(() => ({
+          userInformation: userData,
+        })),
+    }),
+    {
+      name: 'userInformation',
+    },
+  ),
+);
 
 export default useUserStore;

@@ -8,9 +8,11 @@ import Like from '@/pages/Like';
 import Playlist from '@/pages/Playlist';
 import Profile from '@/pages/Profile';
 import Search from '@/pages/Search';
+import SearchPage from '@/pages/SearchPage';
 import Timeline from '@/pages/Timeline';
 import Watch from '@/pages/Watch';
-import CreatePlaylist from '@/pages/CreatePlaylist';
+import ManagePlaylist from '@/pages/ManagePlaylist';
+import ProtectedRoutes from '@/routes/ProtectedRoutes';
 
 export const router = createBrowserRouter([
   {
@@ -24,35 +26,67 @@ export const router = createBrowserRouter([
       },
       {
         path: '/timeline',
-        element: <Timeline />,
+        element: (
+          <ProtectedRoutes>
+            <Timeline />
+          </ProtectedRoutes>
+        ),
       },
       {
-        path: '/playlist',
-        element: <Playlist />,
+        path: '/playlist/:userIdParams?',
+        element: (
+          <ProtectedRoutes>
+            <Playlist />
+          </ProtectedRoutes>
+        ),
       },
       {
-        path: '/like',
-        element: <Like />,
+        path: '/like/:userId?',
+        element: (
+          <ProtectedRoutes>
+            <Like />
+          </ProtectedRoutes>
+        ),
       },
       {
-        path: '/profile',
-        element: <Profile />,
+        path: '/profile/:userId',
+        element: (
+          <ProtectedRoutes>
+            <Profile />
+          </ProtectedRoutes>
+        ),
       },
       {
         path: '/watch/:playlistId',
-        element: <Watch />,
+        element: (
+          <ProtectedRoutes>
+            <Watch />
+          </ProtectedRoutes>
+        ),
       },
       {
-        path: '/follow',
-        element: <Follow />,
+        path: '/follow/:userId',
+        element: (
+          <ProtectedRoutes>
+            <Follow />
+          </ProtectedRoutes>
+        ),
       },
       {
         path: '/search',
         element: <Search />,
       },
       {
-        path: '/createplaylist',
-        element: <CreatePlaylist />,
+        path: '/search-results',
+        element: <SearchPage />,
+      },
+      {
+        path: '/managePlaylist/:playlistId?',
+        element: (
+          <ProtectedRoutes>
+            <ManagePlaylist />
+          </ProtectedRoutes>
+        ),
       },
     ],
   },

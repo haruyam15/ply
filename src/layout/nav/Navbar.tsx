@@ -1,16 +1,17 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-
-import { realUserData } from '@/components/sign/Signin';
 import Banner from '@/layout/nav/Banner';
 import FollowingFollowers from '@/layout/nav/FollowingFollowers';
 import Logout from '@/layout/nav/Logout';
 import NavList from '@/layout/nav/NavList';
 import NavTop from '@/layout/nav/NavTop';
 import useNavStore from '@/stores/useNavStore';
+import useUserStore from '@/stores/useUserStore';
+import { colors } from '@/styles/colors';
 
 function Navbar() {
   const isExpand = useNavStore((state) => state.isExpand);
+  const user = useUserStore((state) => state.userInformation);
 
   return (
     <nav css={nav(isExpand)}>
@@ -18,9 +19,9 @@ function Navbar() {
         <NavTop />
         <div className="scroll-area">
           <NavList />
-          <FollowingFollowers />
+          {user?.userId ? <FollowingFollowers /> : null}
           {isExpand && <Banner />}
-          {realUserData ? <Logout /> : null}
+          {user?.userId ? <Logout /> : null}
         </div>
       </div>
     </nav>
@@ -39,7 +40,7 @@ const nav = (isExpand: boolean) => css`
   z-index: 12000;
 
   .nav-inner {
-    background-color: #141517;
+    background-color: ${colors.black};
     display: flex;
     flex-direction: column;
     height: 100%;

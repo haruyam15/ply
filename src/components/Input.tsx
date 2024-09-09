@@ -1,38 +1,46 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { forwardRef } from 'react';
 import { colors } from '@/styles/colors';
 
-interface InputProps {
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   type: string;
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
 }
 
-const Input: React.FC<InputProps> = ({ type, value, onChange, placeholder }) => {
-  return (
-    <input
-      type={type}
-      value={value}
-      onChange={onChange}
-      placeholder={placeholder}
-      css={inputStyle}
-    />
-  );
-};
+const Input = forwardRef<HTMLInputElement, InputProps>(
+  ({ type, value, onChange, placeholder, ...rest }, ref) => {
+    return (
+      <input
+        type={type}
+        value={value}
+        onChange={onChange}
+        placeholder={placeholder}
+        ref={ref}
+        css={inputStyle}
+        {...rest}
+      />
+    );
+  },
+);
+
+Input.displayName = 'Input';
 
 export default Input;
 
 const inputStyle = css`
-  width: 80%;
+  width: 100%;
   padding: 12px;
   font-size: 16px;
   margin-bottom: 15px;
-  background-color: ${colors.inputGray};
+  box-sizing: border-box;
+  background-color: ${colors.white};
   border: none;
   border-radius: 10px;
-  color: ${colors.white};
+  color: ${colors.black};
   &::placeholder {
-    color: ${colors.placeHolderGray};
+    color: #888;
   }
 `;

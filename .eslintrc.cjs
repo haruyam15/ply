@@ -22,6 +22,8 @@ module.exports = {
   },
   plugins: ['react', '@typescript-eslint', 'react-hooks', 'import', 'prettier'],
   rules: {
+    'no-unused-vars': 'off',
+    '@typescript-eslint/no-unused-vars': 'warn',
     'prettier/prettier': [
       'error',
       {
@@ -30,6 +32,7 @@ module.exports = {
     ],
     'react/react-in-jsx-scope': 'off',
     'import/order': 'off',
+    'import/no-unresolved': ['error', { ignore: ['\\.woff$', '\\.woff2$'] }],
   },
   ignorePatterns: ['node_modules/', 'build/', 'dist/', 'functions'],
   settings: {
@@ -41,12 +44,12 @@ module.exports = {
         project: './tsconfig.app.json',
       },
       node: {
-        extensions: ['.js', '.ts', '.tsx'],
+        extensions: ['.js', '.ts', '.tsx', '.woff', '.woff2'],
         paths: ['src'],
       },
       alias: {
         map: [['@', './src']],
-        extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
+        extensions: ['.ts', '.tsx', '.js', '.jsx', '.json', '.woff', '.woff2'],
       },
     },
   },

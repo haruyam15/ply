@@ -1,9 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { Link } from 'react-router-dom';
-
 import Button from '@/components/Button';
-import Signin, { realUserData } from '@/components/sign/Signin';
+import Signin from '@/components/sign/Signin';
 import Signup from '@/components/sign/Signup';
 import User from '@/components/User';
 import useModalStore from '@/stores/useModalStore';
@@ -15,17 +13,15 @@ function HeaderActions() {
 
   return (
     <div css={headerActions}>
-      {realUserData?.userid === user.information.userid ? (
-        <Link to={'/profile'}>
-          <div className="user-info">
-            <User
-              profileimage={user.information.profileimage}
-              nickname={user.information.nickname}
-              userid={user.information.userid}
-              size="md"
-            />
-          </div>
-        </Link>
+      {user?.userId ? (
+        <div className="user-info">
+          <User
+            profileImage={user.profileImage}
+            nickname={user.nickname}
+            userId={user.userId}
+            size="md"
+          />
+        </div>
       ) : (
         <>
           <div onClick={() => openSigninModal('signin')}>
@@ -46,7 +42,8 @@ const headerActions = css`
   height: 100%;
   display: flex;
   justify-content: flex-end;
-  padding-right: 20px;
+  margin-top: 3px;
+  padding-right: 30px;
   box-sizing: border-box;
   align-items: center;
 `;

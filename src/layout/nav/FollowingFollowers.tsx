@@ -1,8 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { useState } from 'react';
-
 import { css } from '@emotion/react';
-
 import { If } from '@/components/IfElse';
 import FList from '@/layout/nav/FList';
 import useNavStore from '@/stores/useNavStore';
@@ -15,9 +13,10 @@ const FOLLOWERS = 'followers';
 function FollowingFollowers() {
   const isExpand = useNavStore((state) => state.isExpand);
   const [selected, setSelected] = useState<Tab>(FOLLOWERS);
+
   const handleTab = (e: React.MouseEvent<HTMLButtonElement>) => {
     const target = e.target as HTMLButtonElement;
-    setSelected(target.innerText.toLowerCase() as Tab);
+    setSelected(target.value.toLowerCase() as Tab);
   };
 
   return (
@@ -26,13 +25,13 @@ function FollowingFollowers() {
         <If.Then>
           <ul className="tab">
             <li>
-              <button onClick={handleTab} aria-selected={selected === FOLLOWERS}>
-                Followers
+              <button onClick={handleTab} aria-selected={selected === FOLLOWERS} value={FOLLOWERS}>
+                팔로워
               </button>
             </li>
             <li>
-              <button onClick={handleTab} aria-selected={selected === FOLLOWING}>
-                Following
+              <button onClick={handleTab} aria-selected={selected === FOLLOWING} value={FOLLOWING}>
+                팔로잉
               </button>
             </li>
           </ul>
@@ -40,12 +39,12 @@ function FollowingFollowers() {
         </If.Then>
         <If.Else>
           <div className="f-wrap">
-            <p>Following</p>
-            <FList tab={selected} />
+            <p>팔로잉</p>
+            <FList tab={FOLLOWING} />
           </div>
           <div className="f-wrap">
-            <p>Followers</p>
-            <FList tab={selected} />
+            <p>팔로워</p>
+            <FList tab={FOLLOWERS} />
           </div>
         </If.Else>
       </If>
@@ -60,9 +59,11 @@ const tabWrap = css`
   padding: 18px;
   min-height: 370px;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
 
   &::before {
-    background-color: ${colors.darkestGray};
+    background-color: ${colors.borderGray};
     content: '';
     height: 1px;
     left: 21px;
@@ -71,6 +72,7 @@ const tabWrap = css`
     top: 0;
   }
   .tab {
+    width: 100%;
     margin: 0 auto 22px;
     display: flex;
     justify-content: space-between;
@@ -81,30 +83,28 @@ const tabWrap = css`
       position: relative;
     }
     li:hover {
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 6px;
       cursor: pointer;
     }
     button {
       width: 100%;
       display: block;
       padding: 10px 10px 13px;
-      color: ${colors.gray};
+      color: ${colors.lightestGray};
     }
     button:hover {
       color: ${colors.lightestGray};
     }
     button[aria-selected='true'] {
-      color: ${colors.lightestGray};
+      color: ${colors.primaryGreen};
     }
     button[aria-selected='true']::after {
       content: '';
-      height: 3px;
+      height: 2px;
       position: absolute;
       left: 10px;
       right: 10px;
       bottom: 1px;
-      background-color: ${colors.white};
+      background-color: ${colors.primaryGreen};
       border-radius: 2px;
       box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
     }

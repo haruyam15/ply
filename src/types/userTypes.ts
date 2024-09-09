@@ -1,18 +1,21 @@
 import { IPlaylist } from '@/types/playlistTypes';
 
 export interface IUserData {
-  information: IUserInformation;
-  like: string[];
+  userId: string;
+  password: string;
+  profileImage: string;
+  nickname: string;
+  likes: string[];
   following: FollowingFollowers[];
   followers: FollowingFollowers[];
-  myplaylist: IPlaylist[];
+  myPlaylists: IPlaylist[];
 }
 
 export interface IUserInformation {
-  userid: string;
+  userId: string;
   password: string;
-  profileimage: string;
+  profileImage: string;
   nickname: string;
 }
 
-type FollowingFollowers = Omit<IUserInformation, 'password'>;
+export type FollowingFollowers = Omit<IUserInformation, 'password'>;

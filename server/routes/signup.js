@@ -1,23 +1,25 @@
 import express from 'express';
 const router = express.Router();
 
-router.post('/signup/validate', async (req, res) => {
-  const { userid, nickname } = req.body;
+router.post('/register', async (req, res) => {
+  const { userId, password, nickname } = req.body;
   const database = req.database;
+  if (!userId || !password || !nickname) {
+    return res.status(400).send({ message: 'All fields are required' });
+  }
   try {
-    const foundUser = await database.collection('users').findOne({
-      $or: [{ 'information.userid': userid }, { 'information.nickname': nickname }],
-    });
-
-    if (foundUser) {
-      if (foundUser.information.userid === userid) {
-        return res.status(400).send({ field: 'userid', message: 'ID is already taken' });
-      }
-      if (foundUser.information.nickname === nickname) {
-        return res.status(400).send({ field: 'nickname', message: 'Nickname is already taken' });
-      }
-    }
-    res.status(200).send({ message: 'Validation successful' });
+    const newUser = {
+      userId,
+      password,
+      profileImage: '../../public/assets/images/user-default.png',
+      nickname,
+      likes: [],
+      following: [],
+      followers: [],
+      myPlaylists: [],
+    };
+    const result = await database.collection('users').insertOne(newUser);
+    res.status(201).send({ message: 'User registered successfully', userId: result.insertedId });
   } catch (error) {
     res.status(500).send(error);
   }

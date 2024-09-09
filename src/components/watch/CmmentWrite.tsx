@@ -6,24 +6,34 @@ import { adjustTextAreaHeight } from '@/utils/adjustTextAreaHeight';
 import Button from '@/components/Button';
 import User from '@/components/User';
 import useUserStore from '@/stores/useUserStore';
+import { useCommentAdd } from '@/hooks/watch/useComment';
+import { useParams } from 'react-router-dom';
+import getDate from '@/utils/getDate';
 
 function CommentWrite() {
-  const user = useUserStore((state) => state.userInformation).information;
-  const { profileimage, nickname, userid } = user;
+  const playlistId = useParams().playlistId as string;
+  const userInformation = useUserStore((state) => state.userInformation);
+  const { profileImage, nickname, userId } = userInformation;
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [commentInput, setCommentInput] = useState<string>('');
+  const { mutate } = useCommentAdd(playlistId, profileImage, userId);
+
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setCommentInput(e.target.value);
   };
 
   const submitComment = () => {
     const comment = commentInput;
+    const newCommentData = {
+      content: comment,
+      date: getDate(),
+      writer: userId,
+    };
     if (comment.length === 0) {
       alert('댓글을 입력해주세요');
       return;
     }
-    alert('완료');
-    console.log(comment);
+    mutate(newCommentData);
     setCommentInput('');
   };
 
@@ -37,9 +47,9 @@ function CommentWrite() {
       <div className="write-wrap">
         <div className="writer">
           <User
-            profileimage={profileimage}
+            profileImage={profileImage}
             nickname={nickname}
-            userid={userid}
+            userId={userId}
             size="md"
             onlyImage={true}
           />
@@ -66,6 +76,7 @@ const commentWrite = css`
       border-bottom: 1px solid ${colors.darkestGray};
       resize: none;
       overflow: auto;
+      padding-top: 10px;
     }
     button {
       flex-shrink: 0;

@@ -1,80 +1,93 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { useNavigate } from 'react-router-dom';
 import User from '@/components/User';
 import useNavStore from '@/stores/useNavStore';
-import { IUserData } from '@/types/userTypes';
 import { Tab } from '@/types/navTypes';
+import Button from '@/components/Button';
+import useUserStore from '@/stores/useUserStore';
+import { IUserData } from '@/types/userTypes';
+import { UserX } from 'lucide-react';
+import { If } from '@/components/IfElse';
+import useFdataFetch from '@/hooks/useFdataFetch';
 
-interface IFListProps {
+interface FListProps {
   tab: Tab;
 }
 
-const TESTURL = [
-  'https://avatars.githubusercontent.com/u/131119152?s=64&v=4',
-  'https://avatars.githubusercontent.com/u/143858798?s=64&v=4',
-  'https://avatars.githubusercontent.com/u/147500032?s=64&v=4',
-  'https://avatars.githubusercontent.com/u/169154369?s=64&v=4',
-  'https://avatars.githubusercontent.com/u/110523397?v=4',
-];
-const user: IUserData = {
-  information: {
-    userid: 'haruyam15',
-    profileimage: TESTURL[4],
-    nickname: '하루얌',
-    password: '1234',
-  },
-  like: ['playlist1', 'playlist2'],
-  following: [
-    {
-      userid: 'Sonseongoh',
-      nickname: '성오',
-      profileimage: TESTURL[0],
-    },
-    {
-      userid: 'dhkim511',
-      nickname: '도형',
-      profileimage: TESTURL[1],
-    },
-    {
-      userid: 'love1ace',
-      nickname: '동영',
-      profileimage: TESTURL[2],
-    },
-    {
-      userid: 'ssumanlife',
-      nickname: '수민',
-      profileimage: TESTURL[3],
-    },
-    {
-      userid: 'abcde',
-      nickname: 'hahaha',
-      profileimage: TESTURL[4],
-    },
-  ],
-  followers: [
-    { userid: 'Sonseongoh', nickname: '성오', profileimage: TESTURL[0] },
-    { userid: 'dhkim511', nickname: '도형', profileimage: TESTURL[1] },
-    { userid: 'love1ace', nickname: '동영', profileimage: TESTURL[2] },
-    { userid: 'ssumanlife', nickname: '수민', profileimage: TESTURL[3] },
-  ],
-  myplaylist: [],
-};
-
-function FList({ tab }: IFListProps) {
+function FList({ tab }: FListProps) {
   const isExpand = useNavStore((state) => state.isExpand);
-  return (
-    <ul css={fList(isExpand)}>
-      {user[tab].map((f, i) => (
-        <li key={i}>
-          <User
-            profileimage={f.profileimage}
-            nickname={f.nickname}
-            userid={f.userid}
-            onlyImage={!isExpand}
-          />
+  const navigate = useNavigate();
+  const userInformation = useUserStore((state) => state.userInformation) as IUserData;
+  const optionalKey = tab;
+  const { data, isLoading, isError } = useFdataFetch({
+    userId: userInformation.userId,
+    optionalKey,
+    enabled: !!userInformation.userId,
+  });
+
+  const handleMoreClick = () => {
+    navigate(`/follow/${userInformation.userId}?tab=${tab}`);
+  };
+
+  const handleUserClick = (userId: string) => {
+    navigate(`/profile/${userId}`);
+  };
+
+  if (isLoading) {
+    return <></>;
+  }
+
+  if (isError || data === undefined) {
+    alert('팔로잉 팔로워 조회에 오류가 발생했습니다.');
+    return (
+      <ul css={fList(isExpand)} className="empty">
+        <li>
+          <UserX />
         </li>
-      ))}
-    </ul>
+      </ul>
+    );
+  }
+
+  if (data.length === 0) {
+    return (
+      <ul css={fList(isExpand)} className="empty">
+        <li>
+          <UserX />
+        </li>
+      </ul>
+    );
+  }
+  const isMore = data.length > 5;
+
+  return (
+    <>
+      <ul css={fList(isExpand)}>
+        {data.map((d, i) => {
+          if (i >= 5) return null;
+          return (
+            <li key={i}>
+              <User
+                profileImage={d.profileImage}
+                nickname={d.userName}
+                userId={d.userId}
+                onlyImage={!isExpand}
+                onClick={() => handleUserClick(d.userId)}
+              />
+            </li>
+          );
+        })}
+      </ul>
+      <If test={isMore}>
+        <If.Then>
+          <div css={buttonContainer}>
+            <Button size={isExpand ? 'sm' : 'sm'} onClick={handleMoreClick}>
+              {isExpand ? '더보기' : '...'}
+            </Button>
+          </div>
+        </If.Then>
+      </If>
+    </>
   );
 }
 
@@ -82,6 +95,17 @@ export default FList;
 
 const fList = (isExpand: boolean) => css`
   padding-bottom: 5px;
+  &.empty {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    li:hover {
+      cursor: initial;
+      background: none;
+      border-radius: 0;
+    }
+  }
   li {
     margin-bottom: 5px;
     padding: 8px;
@@ -94,8 +118,14 @@ const fList = (isExpand: boolean) => css`
   }
   ${!isExpand &&
   `
-		li{
-			padding:4px
-		}
+    li {
+      padding: 4px;
+    }
   `}
+`;
+
+const buttonContainer = css`
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
 `;

@@ -1,43 +1,54 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-
 import { If } from '@/components/IfElse';
 import { colors } from '@/styles/colors';
-import { IUserInformation } from '@/types/userTypes';
+import { Link } from 'react-router-dom';
 
-interface IUserProps extends Omit<IUserInformation, 'password'> {
+interface IUserProps {
+  profileImage: string;
+  nickname: string;
+  userId: string;
   onlyImage?: boolean;
   size?: Size;
+  onClick?: () => void;
 }
 
-type Size = 'sm' | 'md' | 'lg';
+type Size = 'sm' | 'md' | 'lg' | 'xl';
 
-function User({ profileimage, nickname, userid, onlyImage = false, size = 'sm' }: IUserProps) {
+function User({
+  profileImage,
+  nickname,
+  userId,
+  onlyImage = false,
+  size = 'sm',
+  onClick,
+}: IUserProps) {
   return (
-    <div css={userWrap(size)}>
-      <If test={onlyImage}>
-        <If.Then>
-          <div className="profile">
-            <img src={profileimage} alt="" />
-          </div>
-        </If.Then>
-        <If.Else>
-          <div className="profile">
-            <img width="26" height="26" src={profileimage} alt="" />
-          </div>
-          <div className="user-info">
-            <p>{nickname}</p>
-            <span>{userid}</span>
-          </div>
-        </If.Else>
-      </If>
-    </div>
+    <Link to={`/profile/${userId}`}>
+      <div css={userWrap(size)} onClick={onClick}>
+        <If test={onlyImage}>
+          <If.Then>
+            <div className="profile">
+              <img src={profileImage} alt="" />
+            </div>
+          </If.Then>
+          <If.Else>
+            <div className="profile">
+              <img width="26" height="26" src={profileImage} alt="" />
+            </div>
+            <div className="user-info">
+              <p>{nickname}</p>
+              <span>{userId}</span>
+            </div>
+          </If.Else>
+        </If>
+      </div>
+    </Link>
   );
 }
 export default User;
 
 const userWrap = (size: Size) => css`
-  width: 100%;
   display: flex;
   position: relative;
   align-items: center;
@@ -46,7 +57,7 @@ const userWrap = (size: Size) => css`
 
   .profile {
     display: flex;
-    border: 1px solid transparent;
+    border: 1px solid ${colors.primaryGreen};
     border-radius: 50%;
     position: relative;
     background-clip: content-box, border-box;
@@ -75,6 +86,7 @@ const userWrap = (size: Size) => css`
     }
     span {
       font-size: 12px;
+      color: ${colors.lightestGray};
     }
   }
 
@@ -107,6 +119,23 @@ const userWrap = (size: Size) => css`
 		font-size: 18px;
 		span {
 			font-size: 16px;
+		}
+	}
+  `}
+
+  ${size === 'xl' &&
+  `
+	.profile {
+		img{
+			width:150px;
+			height:150px;
+		}
+	}
+	.user-info {
+    margin-left: 20px;
+		font-size: 22px;
+		span {
+			font-size: 18px;
 		}
 	}
   `}

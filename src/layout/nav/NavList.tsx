@@ -1,39 +1,56 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { Heart, History, House, Video } from 'lucide-react';
-import { Link } from 'react-router-dom';
-
+import { Link, useLocation } from 'react-router-dom';
 import useNavStore from '@/stores/useNavStore';
+import useUserStore from '@/stores/useUserStore';
 import { colors } from '@/styles/colors';
+import { useEffect, useState } from 'react';
+
+const NavDataInit = [
+  { route: '', name: '홈', active: true, icon: House },
+  { route: 'timeline', name: '타임라인', active: false, icon: History },
+  { route: 'playlist', name: '플레이리스트', active: false, icon: Video },
+  { route: 'like', name: '좋아요', active: false, icon: Heart },
+];
 
 function NavList() {
+  const pathName = useLocation().pathname;
+  const [navData, setNavData] = useState(NavDataInit);
   const isExpand = useNavStore((state) => state.isExpand);
+  const loggedInUser = useUserStore((state) => state.userInformation);
+
+  useEffect(() => {
+    const currentPath = pathName.split('/')[1];
+    setNavData((prev) =>
+      prev.map((nav) => ({
+        ...nav,
+        active: nav.route === currentPath,
+      })),
+    );
+  }, [pathName]);
+
   return (
     <ul css={navList(isExpand)}>
-      <li>
-        <Link to={'/'}>
-          <House />
-          <span>Home</span>
-        </Link>
-      </li>
-      <li>
-        <Link to={'/timeline'}>
-          <History />
-          <span>Timeline</span>
-        </Link>
-      </li>
-      <li>
-        <Link to={'/playlist'}>
-          <Video />
-          <span>Playlist</span>
-        </Link>
-      </li>
-      <li>
-        <Link to={'/Like'}>
-          <Heart />
-          <span>Like</span>
-        </Link>
-      </li>
+      {navData.map((nav, i) => {
+        const Icon = nav.icon;
+        return (
+          <li key={i} className={nav.active ? 'active' : ''}>
+            <Link
+              to={
+                nav.route === 'playlist' && loggedInUser.userId
+                  ? `/playlist/${loggedInUser.userId}`
+                  : nav.route === 'like' && loggedInUser.userId
+                    ? `/like/${loggedInUser.userId}` // 좋아요 경로 수정
+                    : `/${nav.route}`
+              }
+            >
+              <Icon />
+              <span>{nav.name}</span>
+            </Link>
+          </li>
+        );
+      })}
     </ul>
   );
 }
@@ -43,6 +60,7 @@ export default NavList;
 const navList = (isExpand: boolean) => css`
   padding: 18px;
   li {
+    border-radius: 6px;
     a {
       width: 100%;
       display: flex;
@@ -72,7 +90,8 @@ const navList = (isExpand: boolean) => css`
 			text-align: center;
 			box-sizing: border-box;
 			span{
-				margin-left:0
+				margin-left:0;
+        display:block
 			}
       }
     `}
@@ -81,6 +100,9 @@ const navList = (isExpand: boolean) => css`
   li:hover {
     cursor: pointer;
     background: rgba(255, 255, 255, 0.1);
-    border-radius: 6px;
+  }
+
+  li.active {
+    background: rgba(255, 255, 255, 0.1);
   }
 `;

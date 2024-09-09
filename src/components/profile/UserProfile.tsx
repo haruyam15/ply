@@ -1,213 +1,214 @@
 /** @jsxImportSource @emotion/react */
-import { useState } from 'react';
-import { css, Global } from '@emotion/react';
-import { Pencil } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import Button from '@/components/Button';
-import Input from '@/components/Input';
-import Modal from '@/components/Modal';
+import { useEffect, useState } from 'react';
+import { css } from '@emotion/react';
+import { Link, useParams } from 'react-router-dom';
 import useModalStore from '@/stores/useModalStore';
-import useUserStore, { IUser } from '@/stores/useUserStore';
+import useUserStore from '@/stores/useUserStore';
 import { colors } from '@/styles/colors';
-import Confirm, { ConfirmStyles } from '@/components/Confirm';
+import ProfileEditModal from './ProfileEditModal';
+import axios from 'axios';
+import { FollowingFollowers } from '@/types/userTypes';
+import Button from '@/components/Button';
+import { If } from '@/components/IfElse';
+import { UserPlus, UserRoundCheck } from 'lucide-react';
 
-interface ProfileProps {
-  user: IUser;
+interface ProfileData {
+  profileImage: string;
+  userName: string;
+  followers: FollowingFollowers[];
+  following: FollowingFollowers[];
+  playlists?: {
+    id: string;
+    title: string;
+    userId: string;
+    tags: string[];
+    imgUrl: string[];
+    disclosureStatus: boolean;
+    videoCount: number;
+  }[];
+  userId: string;
 }
 
-export interface RealUserData {
-  userid: string;
-  profileimage: string;
-  nickname: string;
-  password: string;
-  followers: string[];
-  following: string[];
-}
-
-const UserProfile: React.FC<ProfileProps> = ({ user }) => {
+const UserProfile: React.FC = () => {
   const profileModal = useModalStore((state) => state.modals);
   const openProfileModal = useModalStore((state) => state.openModal);
-  const closeProfileModal = useModalStore((state) => state.closeModal);
+  const { userId: urlUserId } = useParams<{ userId: string }>();
 
-  const { setUser } = useUserStore();
-  const { profileimage, nickname, userid } = user.information;
-  const storageUserData = localStorage.getItem('userInformation');
-  const realUserData: RealUserData | null = storageUserData ? JSON.parse(storageUserData) : null;
+  const loggedInUser = useUserStore((state) => state.userInformation);
+  const [profileData, setProfileData] = useState<ProfileData | null>(null);
+  const [isFollowing, setIsFollowing] = useState<boolean>(false);
 
-  const [newProfileImage, setNewProfileImage] = useState<string>(profileimage);
-  const [newNickname, setNewNickname] = useState<string>(nickname);
-  const [newPassword, setNewPassword] = useState<string>('');
-  const [showConfirm, setShowConfirm] = useState(false);
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      try {
+        const [profileResponse, playlistResponse, followCheckResponse] = await Promise.all([
+          axios.get<ProfileData>(`/api/profilePage/${urlUserId}`),
+          axios.get<{ playlists: ProfileData['playlists'] }>(`/api/playlistPage/${urlUserId}`),
+          axios.get(`/api/followCheck/${loggedInUser.userId}/${urlUserId}`),
+        ]);
 
-  const handleOpenProfileModal = () => {
-    setNewNickname(nickname);
-    setNewPassword('');
-    openProfileModal('profileEdit');
-  };
-
-  const handleCloseProfileModal = () => closeProfileModal('profileEdit');
-
-  const handleProfileUpdate = async () => {
-    try {
-      const response = await fetch('/api/updateUserInfo', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          userid,
-          profileimage: newProfileImage,
-          password: newPassword,
-          nickname: newNickname,
-        }),
-      });
-
-      const result = await response.json();
-      if (response.ok) {
-        setUser({
-          information: {
-            _id: user.information._id,
-            userid,
-            password: newPassword || user.information.password,
-            profileimage: newProfileImage,
-            nickname: newNickname,
-          },
-          followers: user.followers,
-          following: user.following,
-        });
-
-        localStorage.setItem(
-          'userInformation',
-          JSON.stringify({
-            userid,
-            profileimage: newProfileImage,
-            nickname: newNickname,
-            password: newPassword || user.information.password,
-            followers: user.followers,
-            following: user.following,
-          }),
+        const publicPlaylists = playlistResponse.data.playlists?.filter(
+          (playlist) => playlist.disclosureStatus === true,
         );
 
-        handleCloseProfileModal();
+        setProfileData({
+          ...profileResponse.data,
+          playlists: publicPlaylists,
+          userId: urlUserId || loggedInUser.userId,
+        });
+
+        setIsFollowing(followCheckResponse.data.followStatus);
+      } catch (error) {
+        console.error('프로필 데이터를 가져오는 중 오류 발생:', error);
+      }
+    };
+
+    fetchProfileData();
+  }, [urlUserId, loggedInUser]);
+
+  const handleFollowToggle = async () => {
+    try {
+      if (isFollowing) {
+        await axios.delete(`/api/followDelete/${loggedInUser.userId}/${urlUserId}`);
+        setIsFollowing(false);
       } else {
-        console.error(result.message);
+        await axios.post(`/api/follow/${loggedInUser.userId}/${urlUserId}`);
+        setIsFollowing(true);
       }
     } catch (error) {
-      console.error('Failed to update profile:', error);
+      console.error('팔로우 상태를 변경하는 중 오류 발생:', error);
     }
   };
 
-  const handleImageEdit = () => {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*';
-    input.onchange = (e) => {
-      const file = (e.target as HTMLInputElement).files?.[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          setNewProfileImage(e.target?.result as string);
-        };
-        reader.readAsDataURL(file);
-      }
-    };
-    input.click();
+  const handleOpenProfileModal = () => {
+    openProfileModal('profileEdit');
   };
 
-  const handleShowConfirm = () => {
-    setShowConfirm(true);
-  };
-
-  const handleConfirm = () => {
-    handleProfileUpdate();
-    setShowConfirm(false);
-  };
-
-  const handleCloseConfirm = () => {
-    setShowConfirm(false);
-  };
+  const playlistCount = profileData?.playlists?.length || 0;
 
   return (
-    <div css={{ display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '20px' }}>
-      <Global styles={ConfirmStyles} />
-      <img css={profileimageArea} src={newProfileImage} alt="Profile" />
-      <div css={{ marginLeft: '30px' }}>
-        <h1 css={{ fontSize: '32px' }}>{newNickname}</h1>
-        <div
-          css={{
-            width: '300px',
-            display: 'flex',
-            justifyContent: 'space-between',
-            margin: '30px 5px 20px',
-            color: `${colors.lightestGray}`,
-          }}
-        >
-          <p>@{userid}</p>
-          <Link to="/follow" css={{ color: `${colors.lightestGray}` }}>
-            팔로워 {user.followers?.length || 0}
+    <div css={userProfileContainer}>
+      <img css={profileImageArea} src={profileData?.profileImage} alt="Profile" />
+      <div css={profileInfoArea}>
+        <div css={headerArea}>
+          <div css={nameArea}>
+            <h1 css={nicknameStyle}>{profileData?.userName}</h1>
+            <p css={idStyle}>{profileData?.userId}</p>
+          </div>
+        </div>
+        <div css={statsArea}>
+          <Link to={`/playlist/${urlUserId}`} css={statItem}>
+            플레이리스트 <span css={statValue}>{playlistCount}</span>
           </Link>
-          <Link to="/playlist" css={{ color: `${colors.lightestGray}` }}>
-            플레이리스트 {user.following?.length || 0}
+          <Link to={`/follow/${urlUserId}?tab=follower`} css={statItem}>
+            팔로워 <span css={statValue}>{profileData?.followers?.length || 0}</span>
+          </Link>
+          <Link to={`/follow/${urlUserId}?tab=following`} css={statItem}>
+            팔로잉 <span css={statValue}>{profileData?.following?.length || 0}</span>
           </Link>
         </div>
-        {realUserData?.userid === userid ? (
-          <button css={profileEditOrFollowerBtn} onClick={handleOpenProfileModal}>
-            프로필 수정
-          </button>
-        ) : (
-          <button css={profileEditOrFollowerBtn}>팔로우</button>
-        )}
+        <div css={buttonContainer}>
+          {loggedInUser.userId === urlUserId ? (
+            <Button onClick={handleOpenProfileModal} size="lg">
+              프로필 수정
+            </Button>
+          ) : (
+            <If test={isFollowing}>
+              <If.Then>
+                <Button size="lg" onClick={handleFollowToggle}>
+                  <UserRoundCheck size={20} /> 팔로잉
+                </Button>
+              </If.Then>
+              <If.Else>
+                <Button size="lg" onClick={handleFollowToggle} bgColor={colors.primaryGreen}>
+                  <UserPlus size={20} /> 팔로우
+                </Button>
+              </If.Else>
+            </If>
+          )}
+        </div>
       </div>
-      {profileModal.modalName === 'profileEdit' && profileModal.modalState && (
-        <Modal modalName="profileEdit">
-          <div css={modalContentStyle}>
-            <div css={profileImageSection}>
-              <img src={newProfileImage} css={modalProfileImage} />
-              <button css={editIconButton} onClick={handleImageEdit}>
-                <Pencil size={20} color={colors.white} />
-              </button>
-            </div>
-            <Input
-              type="text"
-              value={newNickname}
-              onChange={(e) => setNewNickname(e.target.value)}
-              placeholder="새 닉네임"
-            />
-            <Input
-              type="password"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-              placeholder="새 비밀번호"
-            />
-            <div css={buttonWrapperStyle}>
-              <Button size="md" onClick={handleShowConfirm}>
-                수정
-              </Button>
-            </div>
-          </div>
-        </Modal>
-      )}
-      {showConfirm && (
-        <Confirm
-          title="프로필 수정"
-          text="정말로 수정하시겠습니까?"
-          onConfirm={handleConfirm}
-          onClose={handleCloseConfirm}
-        />
-      )}
+      {profileModal.modalName === 'profileEdit' && profileModal.modalState && <ProfileEditModal />}
     </div>
   );
 };
 
 export default UserProfile;
 
-const profileimageArea = css`
+const userProfileContainer = css`
+  display: flex;
+  align-items: center;
+  padding: 40px;
+  background-color: ${colors.black};
+  margin: 40px 0;
+  border-radius: 20px;
+`;
+
+const profileImageArea = css`
   width: 230px;
   height: 230px;
   border-radius: 50%;
+  border: 2px solid ${colors.primaryGreen};
+  margin-right: 60px;
 `;
 
-const profileEditOrFollowerBtn = css`
+const profileInfoArea = css`
+  flex: 1;
+`;
+
+const headerArea = css`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 15px;
+`;
+
+const nameArea = css`
+  margin-right: 20px;
+  display: flex;
+  gap: 20px;
+`;
+
+const nicknameStyle = css`
+  font-size: 32px;
+  margin: 0;
+  color: ${colors.white};
+`;
+
+const idStyle = css`
+  font-size: 20px;
+  color: ${colors.gray};
+  margin-top: 10px;
+`;
+
+const statsArea = css`
+  display: flex;
+  gap: 40px;
+`;
+
+const statItem = css`
+  display: flex;
+  justify-content: flex-start;
+  text-decoration: none;
+  color: ${colors.white};
+  font-size: 18px;
+  margin-top: 10px;
+`;
+
+const statValue = css`
+  font-size: 16px;
+  font-weight: bold;
+  color: ${colors.primaryGreen};
+  margin-left: 12px;
+`;
+
+const buttonContainer = css`
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 40px;
+`;
+
+const profileEditBtn = css`
   width: 100px;
   height: 30px;
   background-color: ${colors.gray};
@@ -217,71 +218,7 @@ const profileEditOrFollowerBtn = css`
   border-radius: 15px;
   cursor: pointer;
   &:hover {
-    background-color: #878787;
-  }
-`;
-
-const modalContentStyle = css`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 30px;
-  background-color: #1e1e1e;
-  border-radius: 10px;
-  width: 100%;
-  max-width: 400px;
-`;
-
-const profileImageSection = css`
-  display: flex;
-  align-items: center;
-  margin-bottom: 30px;
-  position: relative;
-`;
-
-const modalProfileImage = css`
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  object-fit: cover;
-  background-color: ${colors.lightestGray};
-  margin-right: 30px;
-`;
-
-const editIconButton = css`
-  background-color: ${colors.lightGray};
-  border: none;
-  border-radius: 50%;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  &:hover {
-    background-color: #00cc75;
-  }
-`;
-
-const buttonWrapperStyle = css`
-  width: 85%;
-  margin-top: 15px;
-
-  button {
-    width: 100%;
-    font-size: 16px;
     background-color: ${colors.primaryGreen};
     color: ${colors.white};
-    text-align: center;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    &:hover {
-      background-color: ${colors.primaryGreen};
-      opacity: 0.8;
-    }
   }
 `;

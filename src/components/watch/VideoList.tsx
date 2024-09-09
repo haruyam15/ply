@@ -1,71 +1,39 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { Play } from 'lucide-react';
+import { CopyPlus, Play } from 'lucide-react';
 import { colors } from '@/styles/colors';
 import forkVideoId from '@/utils/forkVideoId';
-import { useNavigate, useParams } from 'react-router-dom';
-import useYoutubeFecth from '@/hooks/useYoutubeFetch';
-import useWatchData from '@/hooks/useWatchData';
-import { useEffect, useState } from 'react';
-import useNowPlayingStore from '@/stores/useNowPlayingStore';
+import { Link } from 'react-router-dom';
 import { If } from '@/components/IfElse';
+import { IPlaylist } from '@/types/playlistTypes';
+import { IYoutubeVideoResponse } from '@/types/youtubeResponseTypes';
+import useUserStore from '@/stores/useUserStore';
 
-function VideoList() {
-  const playlistId = useParams().playlistId as string;
-  const navigate = useNavigate();
-  const playingVideoId = useNowPlayingStore((state) => state.playingVideoId);
-
-  const {
-    isLoading: playlistLoading,
-    data: playlistData,
-    error: playlistError,
-  } = useWatchData(playlistId);
-
-  const [videoId, setVideoId] = useState<string>('');
-
-  useEffect(() => {
-    if (playlistData) {
-      const { link } = playlistData;
-      setVideoId(link.map((l) => forkVideoId(l)).join(','));
-    }
-  }, [playlistData]);
-
-  const {
-    data: youtubeData,
-    error: youtubeError,
-    isLoading: youtubeIsLoading,
-  } = useYoutubeFecth(playlistId, videoId, !!videoId);
-
-  if (playlistLoading || youtubeIsLoading) {
-    return <div></div>;
-  }
-
-  if (playlistError) {
-    alert('플레이리스트 조회에 오류가 발생했습니다.');
-    navigate('/');
-    return null;
-  }
-
-  if (youtubeError) {
-    alert('유튜브 조회에 오류가 발생했습니다.');
-    navigate('/');
-    return null;
-  }
-
-  if (!youtubeData || !playlistData) {
-    return null;
-  }
-  console.log(playlistData);
-  const title = playlistData.title;
-  const totalVideoCnt = playlistData.link.length;
+interface IVideoListProps {
+  playlistId: string;
+  playingVideoId: string;
+  playlistData: IPlaylist;
+  youtubeData: IYoutubeVideoResponse;
+}
+function VideoList({ playlistId, playingVideoId, playlistData, youtubeData }: IVideoListProps) {
+  const user = useUserStore((state) => state.userInformation);
+  const { title, userName } = playlistData;
+  const totalVideoCnt = youtubeData.items.length;
   const nowPlayingindex = playlistData.link.map((li) => forkVideoId(li)).indexOf(playingVideoId);
 
   return (
     <div className="video-list" css={list}>
       <div className="list-header">
-        <p>{title}</p>
+        <div css={{ display: 'flex', justifyContent: 'space-between' }}>
+          <p>{title}</p>
+          {user.userId === playlistData.userId ? (
+            <Link to={`/managePlaylist/${playlistId}`} css={{ color: 'white' }}>
+              <CopyPlus />
+            </Link>
+          ) : null}
+        </div>
         <span>
-          하루얌(플리데이터에 유저데이터 담아져오면 수정해야 함){' '}
+          {userName}
           <em>
             - {nowPlayingindex + 1} / {totalVideoCnt}
           </em>
@@ -74,23 +42,26 @@ function VideoList() {
       <ul className="list-body">
         {youtubeData.items.map((item, i) => {
           const { title, channelTitle, thumbnails } = item.snippet;
+          const youtubeVideoId = item.id;
           return (
-            <li key={i}>
-              <div className="num">
-                <If test={i === nowPlayingindex}>
-                  <If.Then>
-                    <Play size={12} fill={colors.white} />
-                  </If.Then>
-                  <If.Else>{i + 1}</If.Else>
-                </If>
-              </div>
-              <div className="thumb">
-                <img src={thumbnails.default.url} alt="" />
-              </div>
-              <div className="video-info">
-                <p>{title}</p>
-                <span>{channelTitle}</span>
-              </div>
+            <li key={i} className={i === nowPlayingindex ? 'active' : ''}>
+              <Link to={`/watch/${playlistId}?v=${youtubeVideoId}`}>
+                <div className="num">
+                  <If test={i === nowPlayingindex}>
+                    <If.Then>
+                      <Play size={12} fill={colors.white} />
+                    </If.Then>
+                    <If.Else>{i + 1}</If.Else>
+                  </If>
+                </div>
+                <div className="thumb">
+                  <img src={thumbnails.default.url} alt="" />
+                </div>
+                <div className="video-info">
+                  <p>{title}</p>
+                  <span>{channelTitle}</span>
+                </div>
+              </Link>
             </li>
           );
         })}
@@ -102,6 +73,7 @@ function VideoList() {
 export default VideoList;
 
 const list = css`
+  width: 400px;
   flex: 3;
   box-sizing: border-box;
   border-radius: 8px;
@@ -133,14 +105,18 @@ const list = css`
   }
 
   .list-body {
-    /* max-height: calc(100% - 80px); */
-    overflow-y: auto;
     li {
-      display: flex;
-      padding: 10px 5px;
-      align-items: center;
-      gap: 10px;
+      a {
+        display: flex;
+        padding: 10px 5px;
+        align-items: center;
+        gap: 10px;
+        color: ${colors.lightestGray};
+      }
       .num {
+        width: 12px;
+        flex-shrink: 0;
+        text-align: center;
       }
       .thumb {
         width: 100px;
@@ -170,6 +146,9 @@ const list = css`
 
     li:hover {
       cursor: pointer;
+      background: rgba(255, 255, 255, 0.1);
+    }
+    li.active {
       background: rgba(255, 255, 255, 0.1);
     }
   }
