@@ -27,7 +27,7 @@ function FList({ tab }: FListProps) {
   });
 
   const handleMoreClick = () => {
-    navigate(`/follow?tab=${tab}`);
+    navigate(`/follow/${userInformation.userId}?tab=${tab}`);
   };
 
   const handleUserClick = (userId: string) => {

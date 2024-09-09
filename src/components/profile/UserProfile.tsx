@@ -92,6 +92,19 @@ const UserProfile: React.FC = () => {
             <h1 css={nicknameStyle}>{profileData?.userName}</h1>
             <p css={idStyle}>{profileData?.userId}</p>
           </div>
+        </div>
+        <div css={statsArea}>
+          <Link to={`/playlist/${urlUserId}`} css={statItem}>
+            플레이리스트 <span css={statValue}>{playlistCount}</span>
+          </Link>
+          <Link to={`/follow/${urlUserId}?tab=follower`} css={statItem}>
+            팔로워 <span css={statValue}>{profileData?.followers?.length || 0}</span>
+          </Link>
+          <Link to={`/follow/${urlUserId}?tab=following`} css={statItem}>
+            팔로잉 <span css={statValue}>{profileData?.following?.length || 0}</span>
+          </Link>
+        </div>
+        <div css={buttonContainer}>
           {loggedInUser.userId === urlUserId ? (
             <button css={profileEditBtn} onClick={handleOpenProfileModal}>
               프로필 수정
@@ -101,19 +114,6 @@ const UserProfile: React.FC = () => {
               {isFollowing ? '팔로잉' : '팔로우'}
             </button>
           )}
-        </div>
-        <div css={statsArea}>
-          <Link to={`/playlist/${urlUserId}`} css={statItem}>
-            플레이리스트 <span css={statValue}>{playlistCount}</span>
-          </Link>
-
-          <Link to={`/follow/${urlUserId}?tab=follower`} css={statItem}>
-            팔로워 <span css={statValue}>{profileData?.followers?.length || 0}</span>
-          </Link>
-
-          <Link to={`/follow/${urlUserId}?tab=following`} css={statItem}>
-            팔로잉 <span css={statValue}>{profileData?.following?.length || 0}</span>
-          </Link>
         </div>
       </div>
       {profileModal.modalName === 'profileEdit' && profileModal.modalState && <ProfileEditModal />}
@@ -136,7 +136,7 @@ const profileImageArea = css`
   width: 230px;
   height: 230px;
   border-radius: 50%;
-  border: 2px solid ${colors.gray};
+  border: 2px solid ${colors.primaryGreen};
   margin-right: 60px;
 `;
 
@@ -146,12 +146,15 @@ const profileInfoArea = css`
 
 const headerArea = css`
   display: flex;
-  align-items: center;
+  justify-content: space-between;
+  align-items: flex-start;
   margin-bottom: 15px;
 `;
 
 const nameArea = css`
   margin-right: 20px;
+  display: flex;
+  gap: 20px;
 `;
 
 const nicknameStyle = css`
@@ -169,15 +172,15 @@ const idStyle = css`
 const statsArea = css`
   display: flex;
   gap: 40px;
-  margin-top: 40px;
 `;
 
 const statItem = css`
   display: flex;
-  align-items: center;
+  justify-content: flex-start;
   text-decoration: none;
   color: ${colors.white};
   font-size: 18px;
+  margin-top: 10px;
 `;
 
 const statValue = css`
@@ -187,11 +190,15 @@ const statValue = css`
   margin-left: 12px;
 `;
 
+const buttonContainer = css`
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 40px;
+`;
+
 const profileEditBtn = css`
   width: 100px;
   height: 30px;
-  margin-left: 160px;
-  align-self: flex-start;
   background-color: ${colors.gray};
   color: ${colors.white};
   font-weight: 500;
@@ -207,8 +214,6 @@ const profileEditBtn = css`
 const followBtn = (isFollowing: boolean) => css`
   width: 100px;
   height: 30px;
-  margin-left: 320px;
-  align-self: flex-start;
   background-color: ${isFollowing ? colors.gray : colors.primaryGreen};
   color: ${colors.white};
   font-weight: 500;

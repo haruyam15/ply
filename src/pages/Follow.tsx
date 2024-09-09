@@ -6,15 +6,50 @@ import { colors } from '@/styles/colors';
 import { Users, UserCheck } from 'lucide-react';
 import useUserStore from '@/stores/useUserStore';
 import TitleHeader from '@/components/TitleHeader';
+import Loading from '@/components/Loading';
+
+interface Playlist {
+  id: string;
+  title: string;
+  userId: string;
+  tags: string[];
+  imgUrl: string[];
+  disclosureStatus: boolean;
+  videoCount: number;
+}
 
 interface UserDetail {
   profileImage: string;
   userName: string;
   followers: number;
-  myPlaylist: number;
+  myPlaylistCount: number;
   userId: string;
   isFollowing?: boolean;
+  followingCount?: number;
 }
+
+const calculatePlaylistCount = async (userId: string): Promise<number> => {
+  try {
+    const response = await fetch(`/api/playlistPage/${userId}`);
+    const data: { playlists: Playlist[] } = await response.json();
+    const publicPlaylists = data.playlists.filter((playlist) => playlist.disclosureStatus);
+    return publicPlaylists.length;
+  } catch (error) {
+    console.error('플레이리스트 개수를 가져오는 중 오류 발생:', error);
+    return 0;
+  }
+};
+
+const getFollowingCount = async (userId: string): Promise<number> => {
+  try {
+    const response = await fetch(`/api/followingPage/${userId}`);
+    const data: UserDetail[] = await response.json();
+    return data.length;
+  } catch (error) {
+    console.error('팔로잉 수를 가져오는 중 오류 발생:', error);
+    return 0;
+  }
+};
 
 const Follow: React.FC = () => {
   const { userId } = useParams<{ userId: string }>();
@@ -29,39 +64,76 @@ const Follow: React.FC = () => {
   const navigate = useNavigate();
 
   const fetchUserInfo = useCallback(async () => {
+    if (!userId) return;
     try {
-      const response = await fetch(`/api/profile/${userId}`);
-      const data = await response.json();
-      setUserInfo(data);
+      const response = await fetch(`/api/profilePage/${userId}`);
+      const data: UserDetail = await response.json();
+
+      const playlistCount = await calculatePlaylistCount(userId);
+      const followingCount = await getFollowingCount(userId);
+
+      setUserInfo({
+        ...data,
+        myPlaylistCount: playlistCount,
+        followingCount: followingCount,
+      });
     } catch (error) {
       console.error('Failed to fetch user info:', error);
     }
   }, [userId]);
 
+  const checkFollowStatus = async (targetUserId: string): Promise<boolean> => {
+    try {
+      const response = await fetch(`/api/followCheck/${loggedInUser.userId}/${targetUserId}`);
+      const result: { followStatus: boolean } = await response.json();
+      return result.followStatus;
+    } catch (error) {
+      console.error('Failed to check follow status:', error);
+      return false;
+    }
+  };
+
   const fetchFollowers = useCallback(async () => {
+    if (!userId) return;
     try {
       const response = await fetch(`/api/followerPage/${userId}`);
-      const data = await response.json();
-      setFollowers(data);
+      const data: UserDetail[] = await response.json();
+
+      const updatedFollowers = await Promise.all(
+        data.map(async (follower) => ({
+          ...follower,
+          isFollowing: await checkFollowStatus(follower.userId),
+          myPlaylistCount: await calculatePlaylistCount(follower.userId),
+          followingCount: await getFollowingCount(follower.userId),
+        })),
+      );
+      setFollowers(updatedFollowers);
     } catch (error) {
       console.error('Failed to fetch followers:', error);
     }
-  }, [userId]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userId, loggedInUser]);
 
   const fetchFollowing = useCallback(async () => {
+    if (!userId) return;
     try {
       const response = await fetch(`/api/followingPage/${userId}`);
-      const data = await response.json();
-      setFollowing(
-        data.map((user: UserDetail) => ({
+      const data: UserDetail[] = await response.json();
+
+      const updatedFollowing = await Promise.all(
+        data.map(async (user) => ({
           ...user,
-          isFollowing: true,
+          isFollowing: await checkFollowStatus(user.userId),
+          myPlaylistCount: await calculatePlaylistCount(user.userId),
+          followingCount: await getFollowingCount(user.userId),
         })),
       );
+      setFollowing(updatedFollowing);
     } catch (error) {
       console.error('Failed to fetch following:', error);
     }
-  }, [userId]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userId, loggedInUser]);
 
   const handleFollowToggle = async (targetUserId: string, currentlyFollowing: boolean) => {
     try {
@@ -116,17 +188,6 @@ const Follow: React.FC = () => {
                   <h1 css={nicknameStyle}>{user.userName}</h1>
                   <p css={idStyle}>{user.userId}</p>
                 </div>
-                {loggedInUser.userId !== user.userId && (
-                  <button
-                    css={followBtn(user.isFollowing)}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleFollowToggle(user.userId, user.isFollowing || false);
-                    }}
-                  >
-                    {user.isFollowing ? '팔로잉' : '팔로우'}
-                  </button>
-                )}
               </div>
               <div css={statsArea}>
                 <Link
@@ -134,10 +195,10 @@ const Follow: React.FC = () => {
                   css={statItem}
                   onClick={(e) => e.stopPropagation()}
                 >
-                  플레이리스트 <span css={statValue}>{user.myPlaylist}</span>
+                  플레이리스트 <span css={statValue}>{user.myPlaylistCount}</span>{' '}
                 </Link>
                 <Link
-                  to={`/follow/${user.userId}?tab=follower`}
+                  to={`/follow/${user.userId}?tab=followers`}
                   css={statItem}
                   onClick={(e) => e.stopPropagation()}
                 >
@@ -148,9 +209,20 @@ const Follow: React.FC = () => {
                   css={statItem}
                   onClick={(e) => e.stopPropagation()}
                 >
-                  팔로잉 <span css={statValue}>{following.length}</span>
+                  팔로잉 <span css={statValue}>{user.followingCount}</span>
                 </Link>
               </div>
+              {loggedInUser.userId !== user.userId && (
+                <button
+                  css={followBtn(user.isFollowing)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleFollowToggle(user.userId, user.isFollowing || false);
+                  }}
+                >
+                  {user.isFollowing ? '팔로잉' : '팔로우'}
+                </button>
+              )}
             </div>
           </div>
         ))
@@ -164,23 +236,40 @@ const Follow: React.FC = () => {
     fetchFollowing();
   }, [userId, fetchUserInfo, fetchFollowers, fetchFollowing]);
 
+  useEffect(() => {
+    const tab = searchParams.get('tab');
+    if (tab === 'following' || tab === 'followers') {
+      setActiveTab(tab);
+    }
+  }, [searchParams]);
+
+  if (!userInfo) {
+    return <Loading />;
+  }
+
   return (
     <div css={containerStyle}>
       <TitleHeader
-        profileImage={userInfo?.profileImage || '없음'}
-        nickname={userInfo?.userName || ''}
+        profileImage={userInfo.profileImage}
+        nickname={userInfo.userName}
         actionText={activeTab === 'followers' ? '팔로워' : '팔로잉'}
       />
       <div css={tabsStyle}>
         <button
           css={[tabStyle, activeTab === 'followers' && activeTabStyle]}
-          onClick={() => setActiveTab('followers')}
+          onClick={() => {
+            setActiveTab('followers');
+            navigate(`/follow/${userId}?tab=followers`, { replace: true });
+          }}
         >
           <Users size={24} /> 팔로워 {followers.length}
         </button>
         <button
           css={[tabStyle, activeTab === 'following' && activeTabStyle]}
-          onClick={() => setActiveTab('following')}
+          onClick={() => {
+            setActiveTab('following');
+            navigate(`/follow/${userId}?tab=following`, { replace: true });
+          }}
         >
           <UserCheck size={24} /> 팔로잉 {following.length}
         </button>
@@ -218,8 +307,6 @@ const profileImageArea = css`
 
 const profileInfoArea = css`
   flex: 1;
-  display: flex;
-  flex-direction: column;
 `;
 
 const headerArea = css`
@@ -230,7 +317,9 @@ const headerArea = css`
 `;
 
 const nameArea = css`
-  flex: 1;
+  margin-right: 20px;
+  display: flex;
+  gap: 20px;
 `;
 
 const nicknameStyle = css`
@@ -248,15 +337,15 @@ const idStyle = css`
 const statsArea = css`
   display: flex;
   gap: 40px;
-  margin-top: 40px;
 `;
 
 const statItem = css`
   display: flex;
-  align-items: center;
+  justify-content: flex-start;
   text-decoration: none;
   color: ${colors.white};
   font-size: 18px;
+  margin-top: 10px;
 `;
 
 const statValue = css`
@@ -269,7 +358,7 @@ const statValue = css`
 const followBtn = (isFollowing: boolean | undefined) => css`
   width: 100px;
   height: 30px;
-  margin-right: 660px;
+  margin-top: 40px;
   background-color: ${isFollowing ? colors.gray : colors.primaryGreen};
   color: ${colors.white};
   font-weight: 500;

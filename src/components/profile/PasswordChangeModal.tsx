@@ -70,7 +70,7 @@ const PasswordChangeModal: React.FC<{
   };
 
   return (
-    <div css={modalContentStyle}>
+    <div css={modalContentStyle} onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}>
       <button css={backButtonStyle} onClick={onBack}>
         <ChevronLeft size={28} />
       </button>

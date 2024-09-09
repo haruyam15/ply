@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { css } from '@emotion/react';
 import { Pencil, ChevronLeft } from 'lucide-react';
 import Input from '@/components/Input';
@@ -18,6 +18,21 @@ const ProfileImageModal: React.FC<{
   const [uploadedImageUrl, setUploadedImageUrl] = useState<string>(profileimage);
   const setUser = useUserStore((state) => state.setUser);
   const userInformation = useUserStore((state) => state.userInformation);
+
+  // 엔터 키를 눌렀을 때 handleSubmit 함수 호출
+  useEffect(() => {
+    const handleKeyPress = (event: KeyboardEvent) => {
+      if (event.key === 'Enter' && !isUploading && uploadedImageUrl) {
+        handleSubmit();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyPress);
+    return () => {
+      document.removeEventListener('keydown', handleKeyPress);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isUploading, uploadedImageUrl]);
 
   const handleProfileImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -72,7 +87,7 @@ const ProfileImageModal: React.FC<{
 
         localStorage.setItem('userInformation', JSON.stringify(updatedUserInfo));
 
-        toast.success('프로필 이미지가 성공적으로 변경되었습니다.');
+        toast.success('프로필 이미지가 변경되었습니다.');
         onBack();
       } else {
         throw new Error(updateResult.message || '프로필 이미지 업데이트에 실패했습니다.');

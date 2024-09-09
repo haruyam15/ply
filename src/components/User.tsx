@@ -13,7 +13,7 @@ interface IUserProps {
   onClick?: () => void;
 }
 
-type Size = 'sm' | 'md' | 'lg';
+type Size = 'sm' | 'md' | 'lg' | 'xl';
 
 function User({
   profileImage,
@@ -86,6 +86,7 @@ const userWrap = (size: Size) => css`
     }
     span {
       font-size: 12px;
+      color: ${colors.lightestGray};
     }
   }
 
@@ -118,6 +119,23 @@ const userWrap = (size: Size) => css`
 		font-size: 18px;
 		span {
 			font-size: 16px;
+		}
+	}
+  `}
+
+  ${size === 'xl' &&
+  `
+	.profile {
+		img{
+			width:150px;
+			height:150px;
+		}
+	}
+	.user-info {
+    margin-left: 20px;
+		font-size: 22px;
+		span {
+			font-size: 18px;
 		}
 	}
   `}
