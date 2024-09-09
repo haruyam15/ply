@@ -24,7 +24,7 @@ const PlaylistChart: React.FC = () => {
   return (
     <div css={playlistChartWrapper('top')}>
       <DndProvider backend={HTML5Backend}>
-        {youTubelistData ? (
+        {youTubelistData.length > 0 ? (
           <ul css={{ width: '100%' }}>
             {youTubelistData.map((youTubelistData, index) => (
               <DraggableItem
@@ -51,7 +51,7 @@ export default PlaylistChart;
 
 const playlistChartWrapper = (position: string) => css`
   width: 100%;
-  max-height: 790px;
+  height: 790px;
   margin-left: 20px;
   box-sizing: border-box;
   display: flex;
