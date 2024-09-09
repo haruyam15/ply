@@ -51,7 +51,7 @@ export default PlaylistChart;
 
 const playlistChartWrapper = (position: string) => css`
   width: 100%;
-  max-height: 800px;
+  max-height: 790px;
   margin-left: 20px;
   box-sizing: border-box;
   display: flex;
