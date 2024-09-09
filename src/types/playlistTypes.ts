@@ -1,5 +1,5 @@
 export interface IPlaylist {
-  id: string;
+  id?: string;
   title: string;
   content: string;
   link: string[];

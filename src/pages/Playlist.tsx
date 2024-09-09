@@ -155,13 +155,6 @@ const PlaylistPage: React.FC = () => {
           </div>
         </>
       )}
-      {playlists.length === 0 && (
-        <div css={emptyMessageStyle}>
-          {isOwnPage
-            ? '아직 플레이리스트가 없습니다. 플레이리스트를 만들어보세요!'
-            : '플레이리스트가 없습니다.'}
-        </div>
-      )}
       <div css={gridContainerStyle}>
         {playlists.slice(0, visibleItems).map((item, index) => {
           return (

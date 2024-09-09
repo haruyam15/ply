@@ -77,7 +77,7 @@ const userWrap = (size: Size) => css`
   }
 
   .user-info {
-    color: ${colors.white};
+    color: ${colors.lightestGray};
     margin-left: 10px;
     overflow: hidden;
     font-size: 15px;
