@@ -8,6 +8,9 @@ import { colors } from '@/styles/colors';
 import ProfileEditModal from './ProfileEditModal';
 import axios from 'axios';
 import { FollowingFollowers } from '@/types/userTypes';
+import Button from '@/components/Button';
+import { If } from '@/components/IfElse';
+import { UserPlus, UserRoundCheck } from 'lucide-react';
 
 interface ProfileData {
   profileImage: string;
@@ -106,13 +109,22 @@ const UserProfile: React.FC = () => {
         </div>
         <div css={buttonContainer}>
           {loggedInUser.userId === urlUserId ? (
-            <button css={profileEditBtn} onClick={handleOpenProfileModal}>
+            <Button onClick={handleOpenProfileModal} size="lg">
               프로필 수정
-            </button>
+            </Button>
           ) : (
-            <button css={followBtn(isFollowing)} onClick={handleFollowToggle}>
-              {isFollowing ? '팔로잉' : '팔로우'}
-            </button>
+            <If test={isFollowing}>
+              <If.Then>
+                <Button size="lg" onClick={handleFollowToggle}>
+                  <UserRoundCheck size={20} /> 팔로잉
+                </Button>
+              </If.Then>
+              <If.Else>
+                <Button size="lg" onClick={handleFollowToggle} bgColor={colors.primaryGreen}>
+                  <UserPlus size={20} /> 팔로우
+                </Button>
+              </If.Else>
+            </If>
           )}
         </div>
       </div>
@@ -207,21 +219,6 @@ const profileEditBtn = css`
   cursor: pointer;
   &:hover {
     background-color: ${colors.primaryGreen};
-    color: ${colors.white};
-  }
-`;
-
-const followBtn = (isFollowing: boolean) => css`
-  width: 100px;
-  height: 30px;
-  background-color: ${isFollowing ? colors.gray : colors.primaryGreen};
-  color: ${colors.white};
-  font-weight: 500;
-  border: none;
-  border-radius: 15px;
-  cursor: pointer;
-  &:hover {
-    background-color: ${isFollowing ? colors.primaryGreen : colors.gray};
     color: ${colors.white};
   }
 `;

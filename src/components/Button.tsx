@@ -54,8 +54,8 @@ const btn = (size: Size, background: boolean, bgColor: string) => css`
   `}
   ${size === 'lg' &&
   `
-    height: 60px;
-    font-size: 20px;
+    height: 45px;
+    font-size: 15px;
   `}
   
   ${background &&
