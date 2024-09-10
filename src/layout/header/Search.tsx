@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { css } from '@emotion/react';
 import { Search as LucideSearch, X } from 'lucide-react';
 import { colors } from '@/styles/colors';
@@ -13,9 +13,11 @@ function Search() {
   const [value, setValue] = useState('');
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
   const [showRecent, setShowRecent] = useState(false);
-  const [isAutoSave, setIsAutoSave] = useState(true); // 자동저장 설정 상태 추가
+  const [isAutoSave, setIsAutoSave] = useState(true);
   const navigate = useNavigate();
+  const location = useLocation();
   const setSearchTerm = useSearchStore((state) => state.setSearchTerm);
+  const searchTerm = useSearchStore((state) => state.searchTerm);
   const recentSearchRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -24,7 +26,6 @@ function Search() {
       setRecentSearches(JSON.parse(storedSearches));
     }
 
-    // 외부 클릭 감지해서 창 닫기
     const handleClickOutside = (e: MouseEvent) => {
       if (
         recentSearchRef.current &&
@@ -43,10 +44,20 @@ function Search() {
     };
   }, [isFocus]);
 
+  // Reset search text when location changes, but not immediately after search
+  useEffect(() => {
+    if (location.pathname !== '/searchResults') {
+      setValue('');
+      setSearchTerm('');
+    } else {
+      setValue(searchTerm);
+    }
+  }, [location, setSearchTerm, searchTerm]);
+
   const handleFocus = () => {
     setIsFocus(true);
     if (recentSearches.length > 0) {
-      setShowRecent(true); // 최근 검색어 창을 항상 열도록
+      setShowRecent(true);
     }
   };
 
@@ -70,9 +81,8 @@ function Search() {
     if (value.trim()) {
       setSearchTerm(value);
       addRecentSearch(value);
-      setShowRecent(false); // 검색 후 최근 검색어 창 닫기
-      // 검색 후에도 검색창 클릭 시 다시 최근 검색어 창이 열리도록 setIsFocus(false)를 제거
-      navigate('/search-results');
+      setShowRecent(false);
+      navigate('/searchResults');
     }
   };
 
@@ -80,8 +90,8 @@ function Search() {
     setValue(term);
     setSearchTerm(term);
     addRecentSearch(term);
-    setShowRecent(false); // 검색어 선택 시 창 닫기
-    navigate('/search-results');
+    setShowRecent(false);
+    navigate('/searchResults');
   };
 
   const removeRecentSearch = (term: string) => {
@@ -90,7 +100,6 @@ function Search() {
     localStorage.setItem('recentSearches', JSON.stringify(updatedSearches));
   };
 
-  // 자동저장 기능 토글
   const toggleAutoSave = (e: React.ChangeEvent<HTMLInputElement>) => {
     setIsAutoSave(e.target.checked);
   };
@@ -102,7 +111,7 @@ function Search() {
           <input
             title="검색어"
             value={value}
-            onFocus={handleFocus} // 검색 후 클릭해도 최근 검색어 창이 뜨도록 handleFocus 유지
+            onFocus={handleFocus}
             onChange={handleChange}
             placeholder="검색어를 입력하세요"
           />
@@ -135,6 +144,8 @@ function Search() {
     </div>
   );
 }
+
+export default Search;
 
 const searchContainer = css`
   position: relative;
@@ -256,5 +267,3 @@ const autoSaveToggle = css`
     }
   }
 `;
-
-export default Search;

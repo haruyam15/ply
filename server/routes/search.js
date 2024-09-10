@@ -56,9 +56,12 @@ const getRandomPlaylists = async (database) => {
       videoCount: link?.length || 0,
     }));
 
+    // 최종 결과를 다시 한 번 섞기
+    const shuffledPlaylists = playlistsWithUserInfo.sort(() => Math.random() - 0.5);
+
     return {
       success: true,
-      data: playlistsWithUserInfo,
+      data: shuffledPlaylists,
     };
   } catch (error) {
     console.error('플레이리스트 데이터 처리 중 오류 발생:', error);
