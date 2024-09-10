@@ -118,6 +118,10 @@ const AddPlaylist = forwardRef<AddPlaylistRef, AddPlaylistProps>(({ userPlyData 
     }
   };
 
+  const handleToggle = () => {
+    setDisclosureStatus((prevStatus) => !prevStatus);
+  };
+
   const handleDeleteTag = (index: number) => {
     setTags((prevTags) => prevTags.filter((_, i) => i !== index));
   };
@@ -146,26 +150,8 @@ const AddPlaylist = forwardRef<AddPlaylistRef, AddPlaylistProps>(({ userPlyData 
         </div>
         <p>공개 여부</p>
         <div css={disclosureStatusWrapper}>
-          <label htmlFor="public">
-            <input
-              type="radio"
-              name="disclosureStatus"
-              id="public"
-              checked={disclosureStatus === true}
-              onChange={() => setDisclosureStatus(true)}
-            />
-            <p>공개</p>
-          </label>
-          <label htmlFor="nondisclosure" css={{ marginLeft: '20px' }}>
-            <input
-              type="radio"
-              name="disclosureStatus"
-              id="nondisclosure"
-              checked={disclosureStatus === false}
-              onChange={() => setDisclosureStatus(false)}
-            />
-            <p>비공개</p>
-          </label>
+          <input css={checkBox} type="checkbox" id="toggleBtn" onChange={handleToggle} />
+          <label css={toggleBtn(disclosureStatus)} htmlFor="toggleBtn" />
         </div>
         <div>
           <p>설명</p>
@@ -296,19 +282,66 @@ const titleArea = css`
 
 const disclosureStatusWrapper = css`
   display: flex;
-  align-items: center;
+  z-index: 0;
+`;
+
+const checkBox = css`
+  display: none;
+`;
+
+const toggleBtn = (disclosureStatus: boolean) => css`
+  z-index: 10;
+  width: 120px;
+  height: 28px;
+  border-radius: 30px;
+  background-color: ${colors.gray};
   font-size: 14px;
-  margin-top: 10px;
-  & label {
-    height: 20px;
+  margin-top: 15px;
+
+  ::before {
     display: flex;
+    position: absolute;
+    content: '공개';
+    padding-left: 15px;
+    justify-content: flex-start;
     align-items: center;
-    accent-color: ${colors.black};
-    & p {
-      padding-top: 3px;
-      margin-left: 5px;
-    }
+    width: 90px;
+    height: 28px;
+    color: #2b2b2b;
+    transition: all 0.2s ease-in-out;
   }
+  ::after {
+    display: flex;
+    position: relative;
+    content: '비공개';
+    justify-content: center;
+    align-items: center;
+    width: 75px;
+    left: 50px;
+    top: -1px;
+    height: 30px;
+    color: ${colors.black};
+    border-radius: 30px;
+    background-color: ${colors.primaryGreen};
+    box-shadow: 1px 2px 8px rgba(0, 0, 0, 0.16);
+    transition: all 0.2s ease-in-out;
+  }
+  ${disclosureStatus &&
+  `
+    &::before {
+      padding-right: 15px;
+      content: '비공개';
+      justify-content: flex-end;
+    }
+    &::after {
+      content: '공개';
+      width: 60px;
+      height: 30px;
+      top: -1px;
+      left: 0;
+      box-shadow: 1px 2px 8px rgba(0, 0, 0, 0.16);
+    }
+  `}
 `;
 
 const discriptionArea = css`
