@@ -5,10 +5,16 @@ import VideoGridItem from './VideoGridItem';
 import User from './User';
 import { colors } from '@/styles/colors';
 
+interface UserResult {
+  type: 'user';
+  userId: string;
+  userName: string;
+  profileImage: string;
+}
+
 interface SearchResultsProps {
-  results: (IPlaylist | { type: 'user'; userId: string; userName: string; profileImage: string })[];
+  results: (IPlaylist | UserResult)[];
   error: string | null;
-  searchTerm: string;
 }
 
 const SearchResults: React.FC<SearchResultsProps> = ({ results, error }) => {
@@ -16,8 +22,7 @@ const SearchResults: React.FC<SearchResultsProps> = ({ results, error }) => {
   if (results.length === 0) return <div css={emptyStyle}>검색 결과가 없습니다.</div>;
 
   const users = results.filter(
-    (result): result is { type: 'user'; userId: string; userName: string; profileImage: string } =>
-      'type' in result && result.type === 'user',
+    (result): result is UserResult => 'type' in result && result.type === 'user',
   );
   const playlists = results.filter((result): result is IPlaylist => !('type' in result));
 
@@ -85,6 +90,7 @@ const playlistSectionStyle = css`
 const subHeadingStyle = css`
   font-size: 24px;
   font-weight: bold;
+  margin-top: 20px;
   margin-bottom: 40px;
   color: ${colors.white};
 `;
@@ -92,7 +98,7 @@ const subHeadingStyle = css`
 const subHeadingpStyle = css`
   font-size: 24px;
   font-weight: bold;
-  margin-top: 80px;
+  margin-top: 160px;
   margin-bottom: 40px;
   color: ${colors.white};
 `;
