@@ -72,7 +72,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: '/search-results',
+        path: '/searchResults',
         element: <SearchPage />,
       },
       {

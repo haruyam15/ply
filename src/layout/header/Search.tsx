@@ -46,7 +46,7 @@ function Search() {
 
   // Reset search text when location changes, but not immediately after search
   useEffect(() => {
-    if (location.pathname !== '/search-results') {
+    if (location.pathname !== '/searchResults') {
       setValue('');
       setSearchTerm('');
     } else {
@@ -82,7 +82,7 @@ function Search() {
       setSearchTerm(value);
       addRecentSearch(value);
       setShowRecent(false);
-      navigate('/search-results');
+      navigate('/searchResults');
     }
   };
 
@@ -91,7 +91,7 @@ function Search() {
     setSearchTerm(term);
     addRecentSearch(term);
     setShowRecent(false);
-    navigate('/search-results');
+    navigate('/searchResults');
   };
 
   const removeRecentSearch = (term: string) => {
