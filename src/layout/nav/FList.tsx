@@ -19,7 +19,7 @@ function FList({ tab }: FListProps) {
   const isExpand = useNavStore((state) => state.isExpand);
   const navigate = useNavigate();
   const userInformation = useUserStore((state) => state.userInformation) as IUserData;
-  const optionalKey = tab;
+  const optionalKey = tab === 'followers' ? 'follower' : 'following';
   const { data, isLoading, isError } = useFdataFetch({
     userId: userInformation.userId,
     optionalKey,

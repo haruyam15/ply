@@ -1,3 +1,4 @@
+import { TabForApi } from '@/types/navTypes';
 import axios from 'axios';
 
 interface IUseFdata {
@@ -8,13 +9,9 @@ interface IUseFdata {
   myPlaylist: number;
 }
 
-export const getFdata = async (
-  userId: string,
-  optionalKey: 'following' | 'followers',
-): Promise<IUseFdata[]> => {
+export const getFdata = async (userId: string, optionalKey: TabForApi): Promise<IUseFdata[]> => {
   try {
-    const apiType = optionalKey === 'following' ? 'followingPage' : 'followerPage';
-    const response = await axios.get(`http://localhost:8080/api/${apiType}/${userId}`);
+    const response = await axios.get(`http://localhost:8080/api/${optionalKey}Page/${userId}`);
     return response.data;
   } catch (error) {
     console.error('플레이리스트 데이터 호출을 실패했습니다.:', error);
