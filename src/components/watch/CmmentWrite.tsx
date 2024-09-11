@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { colors } from '@/styles/colors';
-import { ChangeEvent, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { ChangeEvent, useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { adjustTextAreaHeight } from '@/utils/adjustTextAreaHeight';
 import Button from '@/components/Button';
 import User from '@/components/User';
