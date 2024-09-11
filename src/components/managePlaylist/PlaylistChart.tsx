@@ -1,24 +1,24 @@
 /** @jsxImportSource @emotion/react */
 import DraggableItem from '@/components/managePlaylist/DraggableItem';
-import usePlaylistDataStore from '@/stores/useYoutubeDataStore';
+import useYoutubeDataStore from '@/stores/useYoutubeDataStore';
 import { css } from '@emotion/react';
 import { MessageCircleWarning } from 'lucide-react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 
 const PlaylistChart: React.FC = () => {
-  const youTubelistData = usePlaylistDataStore((state) => state.youTubelistData);
-  const draggabledData = usePlaylistDataStore((state) => state.draggabledData);
+  const youTubelistData = useYoutubeDataStore((state) => state.youTubelistData);
+  const draggedData = useYoutubeDataStore((state) => state.draggedData);
 
   const handleDragDrop = (dragIndex: number, hoverIndex: number) => {
     const dropItem = [...youTubelistData];
     const draggedItem = dropItem.splice(dragIndex, 1);
     dropItem.splice(hoverIndex, 0, draggedItem[0]);
-    draggabledData(dropItem);
+    draggedData(dropItem);
   };
 
   const handleDeletePlaylist = (index: number) => {
-    draggabledData(youTubelistData.filter((_, i) => i !== index));
+    draggedData(youTubelistData.filter((_, i) => i !== index));
   };
 
   return (

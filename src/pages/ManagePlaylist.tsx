@@ -76,13 +76,14 @@ const ManagePlaylist = () => {
   };
 
   const fetchCreatePlaylistData = (type: string) => {
-    if (playlistDataToAdd.current?.getPlaylistData()) {
+    const newPlyData = playlistDataToAdd.current?.getPlaylistData();
+    if (newPlyData) {
       const playlistData = {
         userId: userData.userId,
-        title: playlistDataToAdd.current?.getPlaylistData().title,
-        content: playlistDataToAdd.current?.getPlaylistData().content,
-        disclosureStatus: playlistDataToAdd.current?.getPlaylistData().disclosureStatus,
-        tags: playlistDataToAdd.current?.getPlaylistData().tags,
+        title: newPlyData.title,
+        content: newPlyData.content,
+        disclosureStatus: newPlyData.disclosureStatus,
+        tags: newPlyData.tags,
         link: addedPlaylist.map((item) => item.link?.[0]),
         imgUrl: addedPlaylist.map((item) => item.imgUrl?.[0]),
       };
@@ -103,6 +104,7 @@ const ManagePlaylist = () => {
       }
     }
   };
+
   return (
     <div css={{ width: '100%', margin: '5px 15px 0 0' }}>
       <h2 css={{ fontSize: '22px', marginBottom: '20px' }}>
