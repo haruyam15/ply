@@ -1,7 +1,11 @@
 import axios from 'axios';
 import { IPlaylist } from '@/types/playlistTypes';
 
-export const searchPlaylists = async (searchTerm: string): Promise<IPlaylist[]> => {
+export const searchPlaylists = async (
+  searchTerm: string,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _filter: string,
+): Promise<IPlaylist[]> => {
   try {
     const response = await axios.get('/api/searchs', {
       params: { term: searchTerm },

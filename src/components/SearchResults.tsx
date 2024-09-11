@@ -5,19 +5,26 @@ import VideoGridItem from './VideoGridItem';
 import User from './User';
 import { colors } from '@/styles/colors';
 
+interface UserResult {
+  type: 'user';
+  userId: string;
+  userName: string;
+  profileImage: string;
+}
+
 interface SearchResultsProps {
-  results: (IPlaylist | { type: 'user'; userId: string; userName: string; profileImage: string })[];
+  results: (IPlaylist | UserResult)[];
   error: string | null;
   searchTerm: string;
 }
 
-const SearchResults: React.FC<SearchResultsProps> = ({ results, error }) => {
+const SearchResults: React.FC<SearchResultsProps> = ({ results, error, searchTerm }) => {
   if (error) return <div css={errorStyle}>오류: {error}</div>;
-  if (results.length === 0) return <div css={emptyStyle}>검색 결과가 없습니다.</div>;
+  if (results.length === 0)
+    return <div css={emptyStyle}>'{searchTerm}'에 대한 검색 결과가 없습니다.</div>;
 
   const users = results.filter(
-    (result): result is { type: 'user'; userId: string; userName: string; profileImage: string } =>
-      'type' in result && result.type === 'user',
+    (result): result is UserResult => 'type' in result && result.type === 'user',
   );
   const playlists = results.filter((result): result is IPlaylist => !('type' in result));
 
@@ -27,9 +34,9 @@ const SearchResults: React.FC<SearchResultsProps> = ({ results, error }) => {
         <div css={sectionStyle}>
           <h3 css={subHeadingStyle}>사용자</h3>
           <div css={resultsStyle}>
-            {users.map((user, index) => (
+            {users.map((user) => (
               <User
-                key={index}
+                key={user.userId}
                 profileImage={user.profileImage}
                 nickname={user.userName}
                 userId={user.userId}
@@ -44,9 +51,9 @@ const SearchResults: React.FC<SearchResultsProps> = ({ results, error }) => {
         <div css={[sectionStyle, playlistSectionStyle]}>
           <h3 css={subHeadingpStyle}>플레이리스트</h3>
           <div css={resultsStyle}>
-            {playlists.map((playlist, index) => (
+            {playlists.map((playlist) => (
               <VideoGridItem
-                key={index}
+                key={playlist.id ?? playlist.title}
                 videoId={playlist.id ?? ''}
                 title={playlist.title}
                 user={playlist.userName}
@@ -85,6 +92,7 @@ const playlistSectionStyle = css`
 const subHeadingStyle = css`
   font-size: 24px;
   font-weight: bold;
+  margin-top: 20px;
   margin-bottom: 40px;
   color: ${colors.white};
 `;
@@ -92,7 +100,7 @@ const subHeadingStyle = css`
 const subHeadingpStyle = css`
   font-size: 24px;
   font-weight: bold;
-  margin-top: 80px;
+  margin-top: 160px;
   margin-bottom: 40px;
   color: ${colors.white};
 `;
