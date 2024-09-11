@@ -100,7 +100,7 @@ const UserProfile: React.FC = () => {
           <Link to={`/playlist/${urlUserId}`} css={statItem}>
             플레이리스트 <span css={statValue}>{playlistCount}</span>
           </Link>
-          <Link to={`/follow/${urlUserId}?tab=follower`} css={statItem}>
+          <Link to={`/follow/${urlUserId}?tab=followers`} css={statItem}>
             팔로워 <span css={statValue}>{profileData?.followers?.length || 0}</span>
           </Link>
           <Link to={`/follow/${urlUserId}?tab=following`} css={statItem}>
@@ -206,19 +206,4 @@ const buttonContainer = css`
   display: flex;
   justify-content: flex-start;
   margin-top: 40px;
-`;
-
-const profileEditBtn = css`
-  width: 100px;
-  height: 30px;
-  background-color: ${colors.gray};
-  color: ${colors.white};
-  font-weight: 500;
-  border: none;
-  border-radius: 15px;
-  cursor: pointer;
-  &:hover {
-    background-color: ${colors.primaryGreen};
-    color: ${colors.white};
-  }
 `;
