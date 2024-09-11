@@ -9,17 +9,16 @@ const ErrorPage: React.FC = () => {
   const [timeLeft, setTimeLeft] = useState(10);
 
   useEffect(() => {
-    if (!timeLeft) return;
-    const intervalId = setInterval(() => {
-      setTimeLeft(timeLeft - 1);
-    }, 1000);
-    return () => clearInterval(intervalId);
-  }, [timeLeft]);
-
-  useEffect(() => {
     if (timeLeft === 0) {
       window.location.href = '/';
+      return;
     }
+
+    const intervalId = setInterval(() => {
+      setTimeLeft((prevTime) => prevTime - 1);
+    }, 1000);
+
+    return () => clearInterval(intervalId);
   }, [timeLeft]);
 
   return (
