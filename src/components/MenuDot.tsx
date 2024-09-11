@@ -44,14 +44,12 @@ const MenuDot: React.FC<MenuDotProps> = ({
 
   const handleConfirm = async () => {
     try {
-      if (index !== undefined && videoId) {
-        await deletePlaylist(videoId, () => {
-          if (deleteItem) {
+      if (index !== undefined && deleteItem) {
+        if (videoId) {
+          await deletePlaylist(videoId, () => {
             deleteItem(index);
-          }
-        });
-      } else {
-        if (index !== undefined && deleteItem) {
+          });
+        } else {
           deleteItem(index);
         }
       }

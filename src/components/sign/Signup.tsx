@@ -41,57 +41,59 @@ const Signup: React.FC = () => {
 
   const checkbox = document.getElementById('check') as HTMLInputElement;
   const passwordCheckRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,}$/;
+
   useEffect(() => {
-    const validation = async () => {
-      try {
-        if (!signupModal.modalState) {
+    validation();
+  }, [newUser]);
+
+  const validation = async () => {
+    try {
+      if (!signupModal.modalState) {
+        return;
+      }
+      if (
+        newUser.password &&
+        newUser.nickname &&
+        newUser.userId &&
+        !checkbox?.checked &&
+        signupModal.modalState
+      ) {
+        toast.error('모두 확인하였는지 체크해주세요.');
+        return;
+      }
+      if (newUser.password) {
+        if (!passwordCheckRegex.test(newUser.password)) {
+          toast.error('비밀번호는 6자 이상이어야 하며 숫자, 영문, 특수문자를 포함해야 합니다.');
           return;
         }
-        if (
-          newUser.password &&
-          newUser.nickname &&
-          newUser.userId &&
-          !checkbox?.checked &&
-          signupModal.modalState
-        ) {
-          toast.error('모두 확인하였는지 체크해주세요.');
+      }
+      if (rePasswordRef.current) {
+        if (rePasswordRef.current.value !== newUser.password) {
+          toast.error('비밀번호가 일치하지 않습니다.');
           return;
         }
-        if (newUser.password) {
-          if (!passwordCheckRegex.test(newUser.password)) {
-            toast.error('비밀번호는 6자 이상이어야 하며 숫자, 영문, 특수문자를 포함해야 합니다.');
-            return;
-          }
-        }
-        if (rePasswordRef.current) {
-          if (rePasswordRef.current.value !== newUser.password) {
-            toast.error('비밀번호가 일치하지 않습니다.');
-            return;
-          }
-        }
-        const userData = {
-          userId: newUser.userId,
-          nickname: newUser.nickname,
-        };
-        const res = await mutateAsync({ api: 'signValidate', userData });
-        if (res === 200) {
-          addNewUser();
-        }
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          if (error.response && error.response.status === 400) {
-            const { field } = error.response.data;
-            if (field === 'userId') {
-              toast.error('중복된 ID 입니다.');
-            } else if (field === 'nickname') {
-              toast.error('중복된 닉네임입니다.');
-            }
+      }
+      const userData = {
+        userId: newUser.userId,
+        nickname: newUser.nickname,
+      };
+      const res = await mutateAsync({ api: 'signValidate', userData });
+      if (res === 200) {
+        addNewUser();
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.response && error.response.status === 401) {
+          const { field } = error.response.data;
+          if (field === 'userId') {
+            toast.error('중복된 ID 입니다.');
+          } else if (field === 'nickname') {
+            toast.error('중복된 닉네임입니다.');
           }
         }
       }
-    };
-    validation();
-  }, [newUser]);
+    }
+  };
 
   const throttleSignup = useCallback(
     throttle(() => {

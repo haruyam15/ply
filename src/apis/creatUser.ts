@@ -11,10 +11,14 @@ const createUser = async (api: string, userData: SignupData): Promise<number | I
     return res.status;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
-      throw error;
-    } else {
-      throw new Error('API요청 중 오류가 발생하였습니다.');
+      const status = error.response.status;
+      if (status === 401) {
+        console.warn('인증 실패');
+        return 401;
+      }
     }
+    console.error('데이터 호출 중 실패하였습니다.', error);
+    return 0;
   }
 };
 

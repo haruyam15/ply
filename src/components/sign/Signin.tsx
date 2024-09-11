@@ -55,7 +55,7 @@ const Signin: React.FC = () => {
           }
         } catch (error) {
           if (axios.isAxiosError(error)) {
-            if (error.response && error.response.status === 400) {
+            if (error.response && error.response.status === 401) {
               const { field } = error.response.data;
               if (field === 'userId') {
                 toast.error('존재하지 않는 계정입니다.');
