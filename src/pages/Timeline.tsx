@@ -8,6 +8,7 @@ import useUserStore from '@/stores/useUserStore';
 import throttle from 'lodash/throttle';
 import EmptyMessage from '@/components/EmptyMessage';
 import Loading from '@/components/Loading';
+import useFetchUserInformation from '@/hooks/useFetchUserInformation';
 
 interface PlaylistData {
   id: string;
@@ -21,53 +22,16 @@ interface PlaylistData {
   profileImage: string;
 }
 
-interface UserInformation {
-  profileImage: string;
-  userName: string;
-  userId: string;
-}
-
 const Timeline: React.FC = () => {
   const [visibleItems, setVisibleItems] = useState(16);
   const [loading, setLoading] = useState(false);
   const [playlists, setPlaylists] = useState<PlaylistData[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(true);
-  const [userInformation, setUserInformation] = useState<UserInformation | null>(null);
   const user = useUserStore((state) => state.userInformation);
+  const userId = user?.userId || null;
 
-  let userId: string | null = null;
-
-  if (user.userId) {
-    try {
-      userId = user.userId;
-    } catch (e) {
-      console.error('로컬 스토리지에서 사용자 정보를 파싱하는 중 오류 발생:', e);
-    }
-  }
-
-  useEffect(() => {
-    const fetchUserInformation = async () => {
-      if (!userId) {
-        setError('로그인된 사용자가 없습니다.');
-        return;
-      }
-
-      try {
-        const response = await fetch(`/api/profile/${userId}`);
-        if (!response.ok) {
-          throw new Error('사용자 정보를 가져오는 중 오류가 발생했습니다.');
-        }
-        const data = await response.json();
-        setUserInformation(data);
-      } catch (e) {
-        console.error('사용자 정보 요청 오류:', e);
-        setError('사용자 정보를 불러오는 중 오류가 발생했습니다.');
-      }
-    };
-
-    fetchUserInformation();
-  }, [userId]);
+  const { userInformation } = useFetchUserInformation(userId);
 
   useEffect(() => {
     const fetchTimelineData = async () => {
@@ -110,7 +74,6 @@ const Timeline: React.FC = () => {
         setTimeout(() => {
           setVisibleItems((prev) => prev + 8);
           setLoading(false);
-          console.log('추가 데이터 로드 완료, 아이템 수:', visibleItems);
           if (playlists.length <= visibleItems + 8) {
             setHasMore(false);
           }
@@ -144,7 +107,6 @@ const Timeline: React.FC = () => {
           </div>
         </>
       )}
-      {/* 플레이리스트가 비어있을 경우 출력 */}
       {playlists.length === 0 && !loading && <EmptyMessage message="타임라인이 비어있습니다." />}
       <div css={gridContainerStyle}>
         {playlists.slice(0, visibleItems).map((item, index) => (
