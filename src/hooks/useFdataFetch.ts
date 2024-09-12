@@ -1,9 +1,10 @@
 import { getFdata } from '@/apis/getFdata';
+import { TabForApi } from '@/types/navTypes';
 import { useQuery } from '@tanstack/react-query';
 
 interface IUseFdataFetch {
   userId: string;
-  optionalKey: 'following' | 'followers';
+  optionalKey: TabForApi;
   enabled?: boolean;
 }
 

@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { colors } from '@/styles/colors';
-import { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { adjustTextAreaHeight } from '@/utils/adjustTextAreaHeight';
 import Button from '@/components/Button';
 import User from '@/components/User';
@@ -18,26 +18,25 @@ function CommentWrite() {
   const [commentInput, setCommentInput] = useState<string>('');
   const { mutate } = useCommentAdd(playlistId, profileImage, userId);
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = useCallback((e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setCommentInput(e.target.value);
-  };
+  }, []);
 
   const submitComment = () => {
-    const comment = commentInput;
-    const newCommentData = {
-      content: comment,
-      date: getDate(),
-      writer: userId,
-    };
-    if (comment.length === 0) {
+    if (commentInput.length === 0) {
       alert('댓글을 입력해주세요');
       return;
     }
+    const newCommentData = {
+      content: commentInput,
+      date: getDate(),
+      writer: userId,
+    };
     mutate(newCommentData);
     setCommentInput('');
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     adjustTextAreaHeight(textareaRef);
   }, [commentInput]);
 
