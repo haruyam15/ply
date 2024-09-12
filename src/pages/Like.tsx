@@ -36,26 +36,26 @@ const Like: React.FC = () => {
 
   const { userId } = useParams<{ userId: string }>();
 
+  const fetchUserInformation = async () => {
+    if (!userId) {
+      setError('유저 ID가 없습니다.');
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/profile/${userId}`);
+      if (!response.ok) {
+        throw new Error('사용자 정보를 가져오는 중 오류가 발생했습니다.');
+      }
+      const data = await response.json();
+      setUserInformation(data);
+    } catch (e) {
+      console.error('사용자 정보 요청 오류:', e);
+      setError('사용자 정보를 불러오는 중 오류가 발생했습니다.');
+    }
+  };
+
   useEffect(() => {
-    const fetchUserInformation = async () => {
-      if (!userId) {
-        setError('유저 ID가 없습니다.');
-        return;
-      }
-
-      try {
-        const response = await fetch(`/api/profile/${userId}`);
-        if (!response.ok) {
-          throw new Error('사용자 정보를 가져오는 중 오류가 발생했습니다.');
-        }
-        const data = await response.json();
-        setUserInformation(data);
-      } catch (e) {
-        console.error('사용자 정보 요청 오류:', e);
-        setError('사용자 정보를 불러오는 중 오류가 발생했습니다.');
-      }
-    };
-
     fetchUserInformation();
   }, [userId]);
 
