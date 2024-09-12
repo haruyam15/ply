@@ -30,10 +30,9 @@ const ManagePlaylist = () => {
   });
   const { data: userPlyData } = useWatchDataFetch({
     playlistId,
-    optionalKey: 'Edit',
     enabled: !!playlistId,
   });
-  const { mutate } = useNewPlaylist();
+  const { mutate } = useNewPlaylist(playlistId);
   const navigate = useNavigate();
 
   useEffect(() => {
