@@ -23,31 +23,16 @@ interface PlaylistData {
   profileImage: string;
 }
 
-interface UserInformation {
-  profileImage: string;
-  userName: string;
-  userId: string;
-}
-
 const Home: React.FC = () => {
   const navigate = useNavigate();
-  const [visibleItems, setVisibleItems] = useState(8); // 타임라인의 초기 항목 수
+  const [visibleItems] = useState(8); // 타임라인의 초기 항목 수
   const [exploreVisibleItems, setExploreVisibleItems] = useState(12); // 탐색의 초기 항목 수
   const [loading, setLoading] = useState(true); // 초기 로딩 상태
   const [playlists, setPlaylists] = useState<PlaylistData[]>([]);
   const [exploreData, setExploreData] = useState<PlaylistData[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [userInformation, setUserInformation] = useState<UserInformation | null>(null);
   const [hasMoreExplore, setHasMoreExplore] = useState(true); // 탐색 데이터의 무한 스크롤 상태 관리
   const user = useUserStore((state) => state.userInformation);
-
-  useEffect(() => {
-    if (user.userId) {
-      fetchUserInformation(user.userId); // 프로필 정보를 가져옴
-    } else {
-      setLoading(false);
-    }
-  }, [user.userId]); // 프로필 정보는 userId가 변경될 때만 호출
 
   useEffect(() => {
     if (user.userId) {
@@ -82,25 +67,6 @@ const Home: React.FC = () => {
         setHasMoreExplore(false);
       }
     }, 500);
-  };
-
-  const fetchUserInformation = async (userId: string) => {
-    try {
-      const response = await fetch(`/api/profile/${userId}`);
-      if (!response.ok) {
-        throw new Error('사용자 정보를 가져오는 중 오류가 발생했습니다.');
-      }
-      const data = await response.json();
-      setUserInformation(data);
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        console.error('사용자 정보 요청 오류:', error.message);
-        setError('사용자 정보를 불러오는 중 오류가 발생했습니다.');
-      } else {
-        console.error('알 수 없는 오류:', error);
-        setError('알 수 없는 오류가 발생했습니다.');
-      }
-    }
   };
 
   const fetchTimelineData = async (userId: string) => {
