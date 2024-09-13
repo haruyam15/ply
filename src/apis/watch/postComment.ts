@@ -7,7 +7,7 @@ interface INewCommentData {
 }
 const postComment = async (playlistId: string, newCommentData: INewCommentData) => {
   try {
-    const response = await axios.post(`http://localhost:8080/api/commentAdd/${playlistId}`, {
+    const response = await axios.post(`/api/commentAdd/${playlistId}`, {
       commentsContent: newCommentData.content,
       commentsDate: newCommentData.date,
       commentsWriter: newCommentData.writer,

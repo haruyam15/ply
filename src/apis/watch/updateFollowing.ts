@@ -9,13 +9,9 @@ const updateFollowing = async (
     let response: AxiosResponse<{ message: string }>;
 
     if (type === 'follow') {
-      response = await axios.post(
-        `http://localhost:8080/api/${type}/${followerUserId}/${targetUserId}`,
-      );
+      response = await axios.post(`/api/${type}/${followerUserId}/${targetUserId}`);
     } else {
-      response = await axios.delete(
-        `http://localhost:8080/api/${type}/${followerUserId}/${targetUserId}`,
-      );
+      response = await axios.delete(`/api/${type}/${followerUserId}/${targetUserId}`);
     }
 
     return response.data;
