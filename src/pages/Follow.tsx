@@ -31,10 +31,10 @@ interface UserDetail {
 
 const calculatePlaylistCount = async (userId: string): Promise<number> => {
   try {
-    const response = await fetch(`/api/playlistPage/${userId}`);
-    const data: { playlists: Playlist[] } = await response.json();
-    const publicPlaylists = data.playlists.filter((playlist) => playlist.disclosureStatus);
-    return publicPlaylists.length;
+    const { playlists }: { playlists: Playlist[] } = await fetch(
+      `/api/playlistPage/${userId}`,
+    ).then((response) => response.json());
+    return playlists.filter((playlist) => playlist.disclosureStatus).length;
   } catch (error) {
     console.error('플레이리스트 개수를 가져오는 중 오류 발생:', error);
     return 0;
@@ -43,8 +43,9 @@ const calculatePlaylistCount = async (userId: string): Promise<number> => {
 
 const getFollowingCount = async (userId: string): Promise<number> => {
   try {
-    const response = await fetch(`/api/followingPage/${userId}`);
-    const data: UserDetail[] = await response.json();
+    const data: UserDetail[] = await fetch(`/api/followingPage/${userId}`).then((response) =>
+      response.json(),
+    );
     return data.length;
   } catch (error) {
     console.error('팔로잉 수를 가져오는 중 오류 발생:', error);
@@ -55,11 +56,15 @@ const getFollowingCount = async (userId: string): Promise<number> => {
 const Follow: React.FC = () => {
   const { userId } = useParams<{ userId: string }>();
   const [searchParams] = useSearchParams();
-  const initialTab = searchParams.get('tab') === 'following' ? 'following' : 'followers';
+
+  const initialTab = searchParams.get('tab') || 'followers';
+
   const [followers, setFollowers] = useState<UserDetail[]>([]);
   const [following, setFollowing] = useState<UserDetail[]>([]);
   const [userInfo, setUserInfo] = useState<UserDetail | null>(null);
-  const [activeTab, setActiveTab] = useState<'followers' | 'following'>(initialTab);
+  const [activeTab, setActiveTab] = useState<'followers' | 'following'>(
+    initialTab as 'followers' | 'following',
+  );
 
   const loggedInUser = useUserStore((state) => state.userInformation);
   const navigate = useNavigate();
@@ -67,8 +72,9 @@ const Follow: React.FC = () => {
   const fetchUserInfo = useCallback(async () => {
     if (!userId) return;
     try {
-      const response = await fetch(`/api/profilePage/${userId}`);
-      const data: UserDetail = await response.json();
+      const data: UserDetail = await fetch(`/api/profilePage/${userId}`).then((response) =>
+        response.json(),
+      );
 
       const playlistCount = await calculatePlaylistCount(userId);
       const followingCount = await getFollowingCount(userId);
@@ -85,9 +91,10 @@ const Follow: React.FC = () => {
 
   const checkFollowStatus = async (targetUserId: string): Promise<boolean> => {
     try {
-      const response = await fetch(`/api/followCheck/${loggedInUser.userId}/${targetUserId}`);
-      const result: { followStatus: boolean } = await response.json();
-      return result.followStatus;
+      const { followStatus }: { followStatus: boolean } = await fetch(
+        `/api/followCheck/${loggedInUser.userId}/${targetUserId}`,
+      ).then((response) => response.json());
+      return followStatus;
     } catch (error) {
       console.error('Failed to check follow status:', error);
       return false;
@@ -97,8 +104,9 @@ const Follow: React.FC = () => {
   const fetchFollowers = useCallback(async () => {
     if (!userId) return;
     try {
-      const response = await fetch(`/api/followerPage/${userId}`);
-      const data: UserDetail[] = await response.json();
+      const data: UserDetail[] = await fetch(`/api/followerPage/${userId}`).then((response) =>
+        response.json(),
+      );
 
       const updatedFollowers = await Promise.all(
         data.map(async (follower) => ({
@@ -118,8 +126,9 @@ const Follow: React.FC = () => {
   const fetchFollowing = useCallback(async () => {
     if (!userId) return;
     try {
-      const response = await fetch(`/api/followingPage/${userId}`);
-      const data: UserDetail[] = await response.json();
+      const data: UserDetail[] = await fetch(`/api/followingPage/${userId}`).then((response) =>
+        response.json(),
+      );
 
       const updatedFollowing = await Promise.all(
         data.map(async (user) => ({
@@ -229,7 +238,6 @@ const Follow: React.FC = () => {
                       <UserPlus size={20} /> 팔로우
                     </If.Else>
                   </If>
-                  {/* {user.isFollowing ? '팔로잉' : '팔로우'} */}
                 </button>
               )}
             </div>

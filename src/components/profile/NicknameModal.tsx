@@ -24,31 +24,43 @@ const NicknameModal: React.FC<{
     const newNickname = e.target.value;
     setTempNickname(newNickname);
 
-    if (newNickname.length < 2 || newNickname.length > 20) {
-      setError('닉네임은 2자 이상 20자 이하여야 합니다.');
-    } else {
-      setError('');
-      if (debounceTimeout.current) clearTimeout(debounceTimeout.current);
-      debounceTimeout.current = setTimeout(() => checkNicknameAvailability(newNickname), 500);
-    }
+    if (debounceTimeout.current) clearTimeout(debounceTimeout.current);
   };
 
   const checkNicknameAvailability = async (newNickname: string) => {
-    if (newNickname === nickname) return;
+    if (newNickname === nickname) return true;
     try {
       const response = await fetch(`/api/nicknameCheck/${newNickname}`);
       if (!response.ok) throw new Error('서버 응답 오류');
       const result = await response.json();
-      if (result.isDuplicate) setError('이미 존재하는 닉네임입니다.');
+      if (result.isDuplicate) {
+        setError('이미 존재하는 닉네임입니다.');
+        return false;
+      }
+      return true;
     } catch (error) {
       console.error('닉네임 중복 확인 중 오류 발생:', error);
       setError('닉네임 중복 확인 중 오류가 발생했습니다.');
+      return false;
     }
   };
 
   const handleSubmit = async () => {
-    if (error || isLoading || tempNickname === nickname) return;
+    if (tempNickname.length < 2 || tempNickname.length > 20) {
+      setError('닉네임은 2자 이상 20자 이하여야 합니다.');
+      return;
+    }
+
+    if (isLoading || tempNickname === nickname) return;
+
     setIsLoading(true);
+
+    const isAvailable = await checkNicknameAvailability(tempNickname);
+    if (!isAvailable) {
+      setIsLoading(false);
+      return;
+    }
+
     try {
       const response = await fetch(`/api/profileEdit/${userInformation.userId}`, {
         method: 'PUT',
@@ -82,8 +94,8 @@ const NicknameModal: React.FC<{
       <Input value={tempNickname} onChange={handleNicknameChange} type="text" />
       {<p css={errorStyle(!!error)}>{error || ' '}</p>}
       <div css={buttonWrapperStyle}>
-        <Button onClick={handleSubmit} disabled={!!error}>
-          변경하기
+        <Button onClick={handleSubmit} disabled={isLoading}>
+          {isLoading ? '변경 중...' : '변경하기'}
         </Button>
       </div>
     </div>

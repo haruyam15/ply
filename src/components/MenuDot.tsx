@@ -44,14 +44,12 @@ const MenuDot: React.FC<MenuDotProps> = ({
 
   const handleConfirm = async () => {
     try {
-      if (index !== undefined && videoId) {
-        await deletePlaylist(videoId, () => {
-          if (deleteItem) {
+      if (index !== undefined && deleteItem) {
+        if (videoId) {
+          await deletePlaylist(videoId, () => {
             deleteItem(index);
-          }
-        });
-      } else {
-        if (index !== undefined && deleteItem) {
+          });
+        } else {
           deleteItem(index);
         }
       }
@@ -66,17 +64,15 @@ const MenuDot: React.FC<MenuDotProps> = ({
     setIsConfirmOpen(false);
   };
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
-    };
+  const handleClickOutside = (event: MouseEvent) => {
+    if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+      setIsOpen(false);
+    }
+  };
 
+  useEffect(() => {
     if (isOpen) {
       window.addEventListener('click', handleClickOutside);
-    } else {
-      window.removeEventListener('click', handleClickOutside);
     }
 
     return () => {
