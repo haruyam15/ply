@@ -22,7 +22,7 @@ const useSearch = () => {
       setError(null);
 
       try {
-        const results = await searchPlaylists(searchTerm, filter);
+        const results = await searchPlaylists(searchTerm);
         setSearchResults(results);
       } catch (err) {
         setError('검색 중 오류가 발생했습니다.');

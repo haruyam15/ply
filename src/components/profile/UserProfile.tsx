@@ -207,18 +207,3 @@ const buttonContainer = css`
   justify-content: flex-start;
   margin-top: 40px;
 `;
-
-const profileEditBtn = css`
-  width: 100px;
-  height: 30px;
-  background-color: ${colors.gray};
-  color: ${colors.white};
-  font-weight: 500;
-  border: none;
-  border-radius: 15px;
-  cursor: pointer;
-  &:hover {
-    background-color: ${colors.primaryGreen};
-    color: ${colors.white};
-  }
-`;
