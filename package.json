@@ -17,6 +17,7 @@
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
     "@tanstack/react-query": "^5.52.2",
+    "aws-sdk": "^2.1691.0",
     "axios": "^1.7.4",
     "bcrypt": "^5.1.1",
     "byul": "^1.3.0",
