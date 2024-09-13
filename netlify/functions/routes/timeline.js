@@ -1,5 +1,4 @@
-import express from 'express';
-
+const express = require('express');
 const router = express.Router();
 
 const getTimelineData = async (userId, database) => {
@@ -91,7 +90,4 @@ router.use((err, req, res) => {
   res.status(500).json({ message: '서버 오류', error: err.message });
 });
 
-export default router;
-
-// 타임라인 API 테스트 명령어 예시:
-// curl -X GET http://localhost:8080/api/timeline/dhkim511
+module.exports = router;

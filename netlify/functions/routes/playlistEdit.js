@@ -1,5 +1,4 @@
-import express from 'express';
-
+const express = require('express');
 const router = express.Router();
 
 const updatePlaylist = async (playlistDataId, updateData, database) => {
@@ -48,10 +47,4 @@ router.use((err, req, res) => {
   res.status(500).json({ message: '서버 오류', error: err.message });
 });
 
-export default router;
-
-// curl -X PUT -H "Content-Type: application/json" -d '{"title": "New Title", "content": "Updated content", "tags": ["new", "tags"], "link": ["https://newlink.com"], "imgUrl": ["https://newimage.com"]}' http://localhost:8080/api/playlistEdit/1
-
-// 주의: 위의 예시에서 '1'는 실제 데이터베이스에 존재하는 플레이리스트 ID입니다.
-// playListData 컬렉션에서 해당 플레이리스트 ID를 가진 문서를 찾습니다.
-// 추가 테스트 코드: curl -X PUT -H "Content-Type: application/json" -d '{"title": "Another New Title", "content": "Another updated content", "tags": ["another", "tags"], "link": ["https://anotherlink.com"], "imgUrl": ["https://anotherimage.com"]}' http://localhost:8080/api/playlistEdit/2
+module.exports = router;

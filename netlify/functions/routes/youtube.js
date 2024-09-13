@@ -1,5 +1,5 @@
-import axios from 'axios';
-import express from 'express';
+const axios = require('axios');
+const express = require('express');
 const router = express.Router();
 
 router.get('/videos', async (req, res) => {
@@ -21,4 +21,4 @@ router.get('/videos', async (req, res) => {
   }
 });
 
-export default router;
+module.exports = router;

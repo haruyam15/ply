@@ -1,4 +1,4 @@
-import express from 'express';
+const express = require('express');
 const router = express.Router();
 
 const updateProfile = async (userId, newProfileData, database) => {
@@ -55,6 +55,4 @@ router.use((err, req, res) => {
   res.status(500).json({ message: '서버 오류', error: err.message });
 });
 
-export default router;
-
-// curl -X PUT -H "Content-Type: application/json" -d '{"profileImage":"newimage.jpg", "userName":"동영김", "password":"1234"}' http://localhost:8080/api/profileEdit/lovelace
+module.exports = router;

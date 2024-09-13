@@ -1,4 +1,4 @@
-import express from 'express';
+const express = require('express');
 const router = express.Router();
 
 // 닉네임 중복 검사 함수
@@ -46,4 +46,4 @@ router.use((err, req, res, next) => {
   res.status(500).json({ message: '서버 오류', error: err.message });
 });
 
-export default router;
+module.exports = router;

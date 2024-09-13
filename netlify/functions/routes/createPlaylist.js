@@ -1,5 +1,5 @@
-import express from 'express';
-import crypto from 'crypto';
+const express = require('express');
+const crypto = require('crypto');
 const router = express.Router();
 
 router.post('/createPlaylist', async (req, res) => {
@@ -39,4 +39,4 @@ router.post('/createPlaylist', async (req, res) => {
   }
 });
 
-export default router;
+module.exports = router;

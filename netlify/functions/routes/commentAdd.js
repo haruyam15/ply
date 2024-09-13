@@ -1,5 +1,5 @@
-import express from 'express';
-import { ObjectId } from 'mongodb';
+const express = require('express');
+const { ObjectId } = require('mongodb');
 
 const router = express.Router();
 
@@ -58,7 +58,4 @@ router.use((err, req, res) => {
   res.status(500).json({ message: '서버 오류', error: err.message });
 });
 
-export default router;
-
-// 테스트 명령어:
-// curl -X POST -H "Content-Type: application/json" -d '{"commentsContent": "새로운 댓글입니다.", "commentsDate": "2023-05-20", "commentsWriter": "lovelace"}' http://localhost:8080/api/commentAdd/1
+module.exports = router;

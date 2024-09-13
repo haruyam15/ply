@@ -1,4 +1,4 @@
-import express from 'express';
+const express = require('express');
 const router = express.Router();
 
 const getProfilePageInfo = async (userId, database) => {
@@ -47,6 +47,4 @@ router.use((err, req, res) => {
   res.status(500).json({ message: '서버 오류', error: err.message });
 });
 
-export default router;
-
-// curl -X GET http://localhost:8080/api/profilePage/lovelace
+module.exports = router;

@@ -1,5 +1,4 @@
-import express from 'express';
-
+const express = require('express');
 const router = express.Router();
 
 const getPlaylistDetails = async (playlistDataId, database) => {
@@ -73,8 +72,4 @@ router.use((err, req, res) => {
   res.status(500).json({ message: '서버 오류', error: err.message });
 });
 
-export default router;
-
-// 테스트 코드
-// 예시: curl -X GET http://localhost:8080/api/watch/1
-// 이 요청은 ID가 1인 플레이리스트의 상세 정보를 가져옵니다.
+module.exports = router;

@@ -1,4 +1,4 @@
-import express from 'express';
+const express = require('express');
 const router = express.Router();
 
 const deleteFollow = async (followerUserId, targetUserId, database) => {
@@ -47,7 +47,4 @@ router.use((err, req, res) => {
   res.status(500).json({ message: '서버 오류', error: err.message });
 });
 
-export default router;
-
-// curl -X DELETE http://localhost:8080/api/followDelete/조회할유저ID/대상유저ID
-// 예: curl -X DELETE http://localhost:8080/api/followDelete/lovelace/sumin
+module.exports = router;

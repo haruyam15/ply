@@ -1,4 +1,4 @@
-import express from 'express';
+const express = require('express');
 const router = express.Router();
 
 const checkPassword = async (userId, inputPassword, database) => {
@@ -43,7 +43,4 @@ router.use((err, req, res) => {
   res.status(500).json({ message: '서버 오류', error: err.message });
 });
 
-export default router;
-
-// curl -X POST -H "Content-Type: application/json" -d '{"inputPassword":"123"}' http://localhost:8080/api/passwordCheck/lovelace
-// 예: curl -X POST -H "Content-Type: application/json" -d '{"inputPassword":"13"}' http://localhost:8080/api/passwordCheck/lovelace
+module.exports = router;
