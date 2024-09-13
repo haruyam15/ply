@@ -31,7 +31,7 @@ interface UserDetail {
 
 const calculatePlaylistCount = async (userId: string): Promise<number> => {
   try {
-    const response = await fetch(`/api/playlistPage/${userId}`);
+    const response = await fetch(`/.netlify/functions/server/api/playlistPage/${userId}`);
     const data: { playlists: Playlist[] } = await response.json();
     const publicPlaylists = data.playlists.filter((playlist) => playlist.disclosureStatus);
     return publicPlaylists.length;
@@ -43,7 +43,7 @@ const calculatePlaylistCount = async (userId: string): Promise<number> => {
 
 const getFollowingCount = async (userId: string): Promise<number> => {
   try {
-    const response = await fetch(`/api/followingPage/${userId}`);
+    const response = await fetch(`/.netlify/functions/server/api/followingPage/${userId}`);
     const data: UserDetail[] = await response.json();
     return data.length;
   } catch (error) {
@@ -67,7 +67,7 @@ const Follow: React.FC = () => {
   const fetchUserInfo = useCallback(async () => {
     if (!userId) return;
     try {
-      const response = await fetch(`/api/profilePage/${userId}`);
+      const response = await fetch(`/.netlify/functions/server/api/profilePage/${userId}`);
       const data: UserDetail = await response.json();
 
       const playlistCount = await calculatePlaylistCount(userId);
@@ -85,7 +85,9 @@ const Follow: React.FC = () => {
 
   const checkFollowStatus = async (targetUserId: string): Promise<boolean> => {
     try {
-      const response = await fetch(`/api/followCheck/${loggedInUser.userId}/${targetUserId}`);
+      const response = await fetch(
+        `/.netlify/functions/server/api/followCheck/${loggedInUser.userId}/${targetUserId}`,
+      );
       const result: { followStatus: boolean } = await response.json();
       return result.followStatus;
     } catch (error) {
@@ -97,7 +99,7 @@ const Follow: React.FC = () => {
   const fetchFollowers = useCallback(async () => {
     if (!userId) return;
     try {
-      const response = await fetch(`/api/followerPage/${userId}`);
+      const response = await fetch(`/.netlify/functions/server/api/followerPage/${userId}`);
       const data: UserDetail[] = await response.json();
 
       const updatedFollowers = await Promise.all(
@@ -118,7 +120,7 @@ const Follow: React.FC = () => {
   const fetchFollowing = useCallback(async () => {
     if (!userId) return;
     try {
-      const response = await fetch(`/api/followingPage/${userId}`);
+      const response = await fetch(`/.netlify/functions/server/api/followingPage/${userId}`);
       const data: UserDetail[] = await response.json();
 
       const updatedFollowing = await Promise.all(
@@ -139,13 +141,19 @@ const Follow: React.FC = () => {
   const handleFollowToggle = async (targetUserId: string, currentlyFollowing: boolean) => {
     try {
       if (currentlyFollowing) {
-        await fetch(`/api/followDelete/${loggedInUser.userId}/${targetUserId}`, {
-          method: 'DELETE',
-        });
+        await fetch(
+          `/.netlify/functions/server/api/followDelete/${loggedInUser.userId}/${targetUserId}`,
+          {
+            method: 'DELETE',
+          },
+        );
       } else {
-        await fetch(`/api/follow/${loggedInUser.userId}/${targetUserId}`, {
-          method: 'POST',
-        });
+        await fetch(
+          `/.netlify/functions/server/api/follow/${loggedInUser.userId}/${targetUserId}`,
+          {
+            method: 'POST',
+          },
+        );
       }
 
       const updatedUsers = activeTab === 'following' ? following : followers;

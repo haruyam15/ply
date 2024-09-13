@@ -54,7 +54,7 @@ const Timeline: React.FC = () => {
       }
 
       try {
-        const response = await fetch(`/api/profile/${userId}`);
+        const response = await fetch(`/.netlify/functions/server/api/profile/${userId}`);
         if (!response.ok) {
           throw new Error('사용자 정보를 가져오는 중 오류가 발생했습니다.');
         }
@@ -78,7 +78,7 @@ const Timeline: React.FC = () => {
 
       try {
         setLoading(true);
-        const response = await fetch(`/api/timeline/${userId}`);
+        const response = await fetch(`/.netlify/functions/server/api/timeline/${userId}`);
         if (!response.ok) {
           throw new Error('데이터를 가져오는 중 오류가 발생했습니다.');
         }

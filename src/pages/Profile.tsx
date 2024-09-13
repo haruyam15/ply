@@ -37,9 +37,9 @@ function Profile() {
         setLoading(true);
         let response;
         if (selectedTab === 'playlist') {
-          response = await fetch(`/api/playlistPage/${userId}`);
+          response = await fetch(`/.netlify/functions/server/api/playlistPage/${userId}`);
         } else {
-          response = await fetch(`/api/likePage/${userId}`);
+          response = await fetch(`/.netlify/functions/server/api/likePage/${userId}`);
         }
 
         if (!response.ok) {

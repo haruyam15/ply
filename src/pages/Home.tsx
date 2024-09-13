@@ -78,7 +78,7 @@ const Home: React.FC = () => {
 
   const fetchUserInformation = async (userId: string) => {
     try {
-      const response = await fetch(`/api/profile/${userId}`);
+      const response = await fetch(`/.netlify/functions/server/api/profile/${userId}`);
       if (!response.ok) {
         throw new Error('사용자 정보를 가져오는 중 오류가 발생했습니다.');
       }
@@ -93,7 +93,7 @@ const Home: React.FC = () => {
 
   const fetchTimelineData = async (userId: string) => {
     try {
-      const response = await fetch(`/api/timeline/${userId}`);
+      const response = await fetch(`/.netlify/functions/server/api/timeline/${userId}`);
       if (!response.ok) {
         throw new Error('데이터를 가져오는 중 오류가 발생했습니다.');
       }
@@ -112,7 +112,7 @@ const Home: React.FC = () => {
 
   const fetchExploreData = async () => {
     try {
-      const response = await fetch('/api/search');
+      const response = await fetch('/.netlify/functions/server/api/search');
       if (!response.ok) {
         throw new Error('탐색 데이터를 가져오는 중 오류가 발생했습니다.');
       }

@@ -7,7 +7,7 @@ interface INewCommentData {
 }
 const postComment = async (playlistId: string, newCommentData: INewCommentData) => {
   try {
-    const response = await axios.post(`/api/commentAdd/${playlistId}`, {
+    const response = await axios.post(`/.netlify/functions/server/api/commentAdd/${playlistId}`, {
       commentsContent: newCommentData.content,
       commentsDate: newCommentData.date,
       commentsWriter: newCommentData.writer,

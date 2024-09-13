@@ -5,14 +5,14 @@ test.describe('Signup', () => {
     await page.goto('http://localhost:5173');
   });
   test('should be able to sign up', async ({ page }) => {
-    await page.route('/api/register', (route) => {
+    await page.route('/.netlify/functions/server/api/register', (route) => {
       const res = {
         status: 200,
         body: JSON.stringify({ message: '가입이 완료되었습니다.' }),
       };
       route.fulfill(res);
     });
-    await page.route('/api/login', (route) => {
+    await page.route('/.netlify/functions/server/api/login', (route) => {
       const res = {
         status: 200,
         body: JSON.stringify({ message: 'Login successful' }),

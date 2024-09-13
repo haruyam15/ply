@@ -44,7 +44,7 @@ const Like: React.FC = () => {
       }
 
       try {
-        const response = await fetch(`/api/profile/${userId}`);
+        const response = await fetch(`/.netlify/functions/server/api/profile/${userId}`);
         if (!response.ok) {
           throw new Error('사용자 정보를 가져오는 중 오류가 발생했습니다.');
         }
@@ -68,7 +68,7 @@ const Like: React.FC = () => {
 
       try {
         setLoading(true);
-        const response = await fetch(`/api/likePage/${userId}`);
+        const response = await fetch(`/.netlify/functions/server/api/likePage/${userId}`);
         if (!response.ok) {
           throw new Error('좋아요한 플레이리스트 데이터를 가져오는 중 오류가 발생했습니다.');
         }

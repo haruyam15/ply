@@ -36,7 +36,7 @@ const NicknameModal: React.FC<{
   const checkNicknameAvailability = async (newNickname: string) => {
     if (newNickname === nickname) return;
     try {
-      const response = await fetch(`/api/nicknameCheck/${newNickname}`);
+      const response = await fetch(`/.netlify/functions/server/api/nicknameCheck/${newNickname}`);
       if (!response.ok) throw new Error('서버 응답 오류');
       const result = await response.json();
       if (result.isDuplicate) setError('이미 존재하는 닉네임입니다.');
@@ -50,11 +50,14 @@ const NicknameModal: React.FC<{
     if (error || isLoading || tempNickname === nickname) return;
     setIsLoading(true);
     try {
-      const response = await fetch(`/api/profileEdit/${userInformation.userId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userName: tempNickname }),
-      });
+      const response = await fetch(
+        `/.netlify/functions/server/api/profileEdit/${userInformation.userId}`,
+        {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userName: tempNickname }),
+        },
+      );
       const result = await response.json();
       if (response.ok && result.success) {
         setNewNickname(tempNickname);

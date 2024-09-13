@@ -14,7 +14,7 @@ export const getFdata = async (
 ): Promise<IUseFdata[]> => {
   try {
     const apiType = optionalKey === 'following' ? 'followingPage' : 'followerPage';
-    const response = await axios.get(`/api/${apiType}/${userId}`);
+    const response = await axios.get(`/.netlify/functions/server/api/${apiType}/${userId}`);
     return response.data;
   } catch (error) {
     console.error('플레이리스트 데이터 호출을 실패했습니다.:', error);

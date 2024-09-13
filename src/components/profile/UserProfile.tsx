@@ -42,9 +42,13 @@ const UserProfile: React.FC = () => {
     const fetchProfileData = async () => {
       try {
         const [profileResponse, playlistResponse, followCheckResponse] = await Promise.all([
-          axios.get<ProfileData>(`/api/profilePage/${urlUserId}`),
-          axios.get<{ playlists: ProfileData['playlists'] }>(`/api/playlistPage/${urlUserId}`),
-          axios.get(`/api/followCheck/${loggedInUser.userId}/${urlUserId}`),
+          axios.get<ProfileData>(`/.netlify/functions/server/api/profilePage/${urlUserId}`),
+          axios.get<{ playlists: ProfileData['playlists'] }>(
+            `/.netlify/functions/server/api/playlistPage/${urlUserId}`,
+          ),
+          axios.get(
+            `/.netlify/functions/server/api/followCheck/${loggedInUser.userId}/${urlUserId}`,
+          ),
         ]);
 
         const publicPlaylists = playlistResponse.data.playlists?.filter(
@@ -69,10 +73,14 @@ const UserProfile: React.FC = () => {
   const handleFollowToggle = async () => {
     try {
       if (isFollowing) {
-        await axios.delete(`/api/followDelete/${loggedInUser.userId}/${urlUserId}`);
+        await axios.delete(
+          `/.netlify/functions/server/api/followDelete/${loggedInUser.userId}/${urlUserId}`,
+        );
         setIsFollowing(false);
       } else {
-        await axios.post(`/api/follow/${loggedInUser.userId}/${urlUserId}`);
+        await axios.post(
+          `/.netlify/functions/server/api/follow/${loggedInUser.userId}/${urlUserId}`,
+        );
         setIsFollowing(true);
       }
     } catch (error) {
