@@ -18,13 +18,11 @@ let database;
 
 async function connectToDB() {
   try {
-    const client = await mongoose.connect(MONGOURL, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    const client = await mongoose.connect(MONGOURL);
     database = client.connection.db;
+    console.log('MongoDB connected');
   } catch (error) {
-    console.error(error);
+    console.error('Failed to connect to MongoDB', error);
   }
 }
 
