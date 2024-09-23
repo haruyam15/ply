@@ -3,7 +3,7 @@ import { IPlaylist } from '@/types/playlistTypes';
 
 export const searchPlaylists = async (searchTerm: string): Promise<IPlaylist[]> => {
   try {
-    const response = await axios.get('/.netlify/functions/server/searchs', {
+    const response = await axios.get('/.netlify/functions/server/api/searchs', {
       params: { term: searchTerm },
     });
     return response.data;
