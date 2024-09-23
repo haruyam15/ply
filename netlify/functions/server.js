@@ -88,5 +88,13 @@ app.use('/api/likeCheck', likeCheckRoute);
 app.use('/api/nicknameCheck', nicknameCheckRoute);
 app.use('/api/uploadImage', uploadImageRoute);
 
+exports.handler = async (event) => {
+  console.log('Client IP:', event.headers['x-nf-client-connection-ip']);
+  return {
+    statusCode: 200,
+    body: JSON.stringify({ message: 'Check the logs for the IP address' }),
+  };
+};
+
 // 서버리스 함수로 변환
 module.exports.handler = serverless(app);
