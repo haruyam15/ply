@@ -17,7 +17,11 @@ let database;
 
 async function connectToDB() {
   try {
-    const client = await mongoose.connect(MONGOURL);
+    const client = await mongoose.connect(MONGOURL, {
+      connectTimeoutMS: 30000, // 연결 타임아웃 30초로 설정
+      socketTimeoutMS: 45000, // 소켓 타임아웃 45초로 설정
+    });
+
     database = client.connection.db;
     console.log('MongoDB connected');
   } catch (error) {
