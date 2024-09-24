@@ -33,3 +33,14 @@ app.get('/test-connection', async (req, res) => {
 
 // 서버리스 함수로 변환
 module.exports.handler = serverless(app);
+
+const axios = require('axios');
+
+axios
+  .get('/.netlify/functions/server/test-connection')
+  .then((response) => {
+    console.log(response.data);
+  })
+  .catch((error) => {
+    console.error('Error:', error.message);
+  });
