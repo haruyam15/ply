@@ -1,8 +1,2 @@
 [build]
   functions = "netlify/functions"
-
-[functions]
-  # 각 함수별로 타임아웃 설정
-  [[functions.timeout]]
-    path = "/api/*"  # 특정 경로에 적용 (모든 API 경로에 적용)
-    timeout = 30  # 타임아웃을 30초로 설정
