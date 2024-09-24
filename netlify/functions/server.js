@@ -20,6 +20,8 @@ async function connectToDB() {
     console.log('MongoDB connected successfully');
   } catch (error) {
     console.error('Failed to connect to MongoDB:', error.message);
+    // 에러 응답을 클라이언트에 반환
+    return { success: false, message: error.message };
   } finally {
     mongoose.connection.close(); // 테스트 후 연결 종료
   }
