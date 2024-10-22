@@ -127,6 +127,10 @@ const Home: React.FC = () => {
     navigate('/timeline');
   };
 
+  if (error) {
+    return null;
+  }
+
   return (
     <div css={containerStyle}>
       <div css={[carouselStyle, slickArrowStyle]}>
