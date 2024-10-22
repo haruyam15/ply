@@ -9,10 +9,10 @@ const updateLike = async (
     let response: AxiosResponse<{ message: string }>;
 
     if (addOrDel === 'likeAdd') {
-      response = await axios.post(`http://localhost:8080/api/${addOrDel}/${userId}/${playlistId}`);
+      response = await axios.post(`http://15.164.228.103/api/${addOrDel}/${userId}/${playlistId}`);
     } else {
       response = await axios.delete(
-        `http://localhost:8080/api/${addOrDel}/${userId}/${playlistId}`,
+        `http://15.164.228.103/api/${addOrDel}/${userId}/${playlistId}`,
       );
     }
 

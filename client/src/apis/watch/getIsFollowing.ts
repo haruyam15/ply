@@ -3,7 +3,7 @@ import axios from 'axios';
 const getIsFollowing = async (userId: string, targetUserId: string): Promise<boolean> => {
   try {
     const response = await axios.get(
-      `http://localhost:8080/api/followCheck/${userId}/${targetUserId}`,
+      `http://15.164.228.103/api/followCheck/${userId}/${targetUserId}`,
     );
     return response.data.followStatus;
   } catch (error) {

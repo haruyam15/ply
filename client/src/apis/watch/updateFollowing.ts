@@ -10,11 +10,11 @@ const updateFollowing = async (
 
     if (type === 'follow') {
       response = await axios.post(
-        `http://localhost:8080/api/${type}/${followerUserId}/${targetUserId}`,
+        `http://15.164.228.103/api/${type}/${followerUserId}/${targetUserId}`,
       );
     } else {
       response = await axios.delete(
-        `http://localhost:8080/api/${type}/${followerUserId}/${targetUserId}`,
+        `http://15.164.228.103/api/${type}/${followerUserId}/${targetUserId}`,
       );
     }
 
