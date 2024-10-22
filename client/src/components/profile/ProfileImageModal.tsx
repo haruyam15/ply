@@ -26,7 +26,6 @@ const ProfileImageModal: React.FC<{
         handleSubmit();
       }
     };
-    console.log(uploadedImageUrl);
 
     document.addEventListener('keydown', handleKeyPress);
     return () => {
@@ -57,7 +56,7 @@ const ProfileImageModal: React.FC<{
         }
 
         const uploadData = await uploadResponse.json();
-        setUploadedImageUrl('s3://ply-img' + uploadData.imageUrl);
+        setUploadedImageUrl(uploadData.imageUrl);
       } catch (error) {
         console.error('이미지 업로드 중 오류 발생:', error);
         setError(error instanceof Error ? error.message : '이미지 업로드 중 오류가 발생했습니다.');
