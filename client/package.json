@@ -2,7 +2,7 @@
   "name": "client",
   "private": true,
   "version": "0.0.0",
-  "main": "module",
+  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b tsconfig.app.json && vite build",
