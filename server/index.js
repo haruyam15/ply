@@ -59,6 +59,8 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use('/', console.log('dd'));
+
 app.use('/uploads', express.static('uploads'));
 
 app.use('/api', loginRoute);
