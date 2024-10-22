@@ -43,10 +43,13 @@ const ProfileImageModal: React.FC<{
         const formData = new FormData();
         formData.append('image', file);
 
-        const uploadResponse = await fetch('https://plyserver.kro.kr/api/uploadImage', {
-          method: 'POST',
-          body: formData,
-        });
+        const uploadResponse = await fetch(
+          `https://plyserver.kro.kr/api/uploadImage${userInformation.userId}`,
+          {
+            method: 'POST',
+            body: formData,
+          },
+        );
         if (!uploadResponse.ok) {
           const errorData = await uploadResponse.json();
           throw new Error(errorData.message || '이미지 업로드에 실패했습니다.');

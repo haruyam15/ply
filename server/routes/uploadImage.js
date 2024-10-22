@@ -27,8 +27,12 @@ const upload = multer({
   },
 });
 
-router.post('/', (req, res) => {
+// 이미지 업로드 및 MongoDB에 profileImage URL 업데이트 라우트
+router.post('/:userId', (req, res) => {
   upload.single('image')(req, res, async (err) => {
+    const { userId } = req.params;
+    const database = req.database; // MongoDB 클라이언트의 데이터베이스 객체
+
     if (err instanceof multer.MulterError) {
       return res
         .status(400)
@@ -43,33 +47,37 @@ router.post('/', (req, res) => {
 
     // S3에 업로드할 파일 생성
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-    const fileName = req.file.fieldname + '-' + uniqueSuffix + path.extname(req.file.originalname);
+    const fileName = `profile-images/${userId}-${uniqueSuffix}${path.extname(req.file.originalname)}`;
 
     const params = {
       Bucket: process.env.AWS_S3_BUCKET_NAME, // S3 버킷 이름
-      Key: `uploads/${fileName}`, // S3에 저장될 파일 경로
+      Key: fileName, // S3에 저장될 파일 경로
       Body: req.file.buffer, // 메모리 내에 저장된 파일 버퍼
       ContentType: req.file.mimetype, // 파일 MIME 타입
       ACL: 'public-read', // 파일을 공개하려면 이 옵션 추가
     };
 
-    // S3에 파일 업로드 및 MongoDB에 이미지 URL 저장
     try {
+      // S3에 파일 업로드
       const data = await s3.upload(params).promise();
       const imageUrl = data.Location; // 업로드된 파일의 S3 URL
 
-      // MongoDB에 이미지 URL 저장 (MongoDB 데이터베이스 객체 req.database 사용)
-      const database = req.database;
-      const result = await database.collection('images').insertOne({
-        imageUrl: imageUrl,
-        uploadedAt: new Date(),
-      });
+      // MongoDB의 'users' 컬렉션에서 해당 사용자의 profileImage 필드 업데이트
+      const updateResult = await database
+        .collection('users')
+        .updateOne({ userId: userId }, { $set: { profileImage: imageUrl } });
 
-      if (result.insertedCount === 1) {
-        res.status(200).json({ success: true, imageUrl });
-      } else {
-        res.status(500).json({ success: false, message: '이미지 URL 저장 실패' });
+      if (updateResult.matchedCount === 0) {
+        return res.status(404).json({ success: false, message: '사용자 정보를 찾을 수 없습니다.' });
       }
+
+      res
+        .status(200)
+        .json({
+          success: true,
+          message: '프로필 이미지가 성공적으로 업데이트되었습니다.',
+          imageUrl,
+        });
     } catch (error) {
       return res
         .status(500)
