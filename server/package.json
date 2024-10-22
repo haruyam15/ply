@@ -3,8 +3,9 @@
   "private": true,
   "version": "0.0.0",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "server": "node server/index.js",
+    "server": "node index.js",
     "lint": "eslint . --ext .ts,.tsx --fix",
     "eslint": "eslint",
     "prettier": "prettier --write"
