@@ -43,7 +43,10 @@ const ProfileImageModal: React.FC<{
         const formData = new FormData();
         formData.append('image', file);
 
-        const uploadResponse = await fetch('/api/uploadImage', { method: 'POST', body: formData });
+        const uploadResponse = await fetch('http://15.164.228.103/uploadImage', {
+          method: 'POST',
+          body: formData,
+        });
         if (!uploadResponse.ok) {
           const errorData = await uploadResponse.json();
           throw new Error(errorData.message || '이미지 업로드에 실패했습니다.');
@@ -68,11 +71,14 @@ const ProfileImageModal: React.FC<{
     }
 
     try {
-      const updateResponse = await fetch(`/api/profileEdit/${userInformation.userId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ profileImage: uploadedImageUrl }),
-      });
+      const updateResponse = await fetch(
+        `http://15.164.228.103/api/profileEdit/${userInformation.userId}`,
+        {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ profileImage: uploadedImageUrl }),
+        },
+      );
 
       if (!updateResponse.ok) {
         const errorData = await updateResponse.json();

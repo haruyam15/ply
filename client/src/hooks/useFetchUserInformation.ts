@@ -17,7 +17,7 @@ const useFetchUserInformation = (userId: string | null | undefined) => {
     }
 
     try {
-      const response = await fetch(`/api/profile/${userId}`);
+      const response = await fetch(`http://15.164.228.103/api/profile/${userId}`);
       if (!response.ok) {
         throw new Error('사용자 정보를 가져오는 중 오류가 발생했습니다.');
       }

@@ -32,7 +32,7 @@ interface UserDetail {
 const calculatePlaylistCount = async (userId: string): Promise<number> => {
   try {
     const { playlists }: { playlists: Playlist[] } = await fetch(
-      `/api/playlistPage/${userId}`,
+      `http://15.164.228.103/api/playlistPage/${userId}`,
     ).then((response) => response.json());
     return playlists.filter((playlist) => playlist.disclosureStatus).length;
   } catch (error) {
@@ -43,9 +43,9 @@ const calculatePlaylistCount = async (userId: string): Promise<number> => {
 
 const getFollowingCount = async (userId: string): Promise<number> => {
   try {
-    const data: UserDetail[] = await fetch(`/api/followingPage/${userId}`).then((response) =>
-      response.json(),
-    );
+    const data: UserDetail[] = await fetch(
+      `http://15.164.228.103/api/followingPage/${userId}`,
+    ).then((response) => response.json());
     return data.length;
   } catch (error) {
     console.error('팔로잉 수를 가져오는 중 오류 발생:', error);
@@ -72,8 +72,8 @@ const Follow: React.FC = () => {
   const fetchUserInfo = useCallback(async () => {
     if (!userId) return;
     try {
-      const data: UserDetail = await fetch(`/api/profilePage/${userId}`).then((response) =>
-        response.json(),
+      const data: UserDetail = await fetch(`http://15.164.228.103/api/profilePage/${userId}`).then(
+        (response) => response.json(),
       );
 
       const playlistCount = await calculatePlaylistCount(userId);
@@ -92,7 +92,7 @@ const Follow: React.FC = () => {
   const checkFollowStatus = async (targetUserId: string): Promise<boolean> => {
     try {
       const { followStatus }: { followStatus: boolean } = await fetch(
-        `/api/followCheck/${loggedInUser.userId}/${targetUserId}`,
+        `http://15.164.228.103/api/followCheck/${loggedInUser.userId}/${targetUserId}`,
       ).then((response) => response.json());
       return followStatus;
     } catch (error) {
@@ -104,9 +104,9 @@ const Follow: React.FC = () => {
   const fetchFollowers = useCallback(async () => {
     if (!userId) return;
     try {
-      const data: UserDetail[] = await fetch(`/api/followerPage/${userId}`).then((response) =>
-        response.json(),
-      );
+      const data: UserDetail[] = await fetch(
+        `http://15.164.228.103/api/followerPage/${userId}`,
+      ).then((response) => response.json());
 
       const updatedFollowers = await Promise.all(
         data.map(async (follower) => ({
@@ -126,9 +126,9 @@ const Follow: React.FC = () => {
   const fetchFollowing = useCallback(async () => {
     if (!userId) return;
     try {
-      const data: UserDetail[] = await fetch(`/api/followingPage/${userId}`).then((response) =>
-        response.json(),
-      );
+      const data: UserDetail[] = await fetch(
+        `http://15.164.228.103/api/followingPage/${userId}`,
+      ).then((response) => response.json());
 
       const updatedFollowing = await Promise.all(
         data.map(async (user) => ({
@@ -148,11 +148,14 @@ const Follow: React.FC = () => {
   const handleFollowToggle = async (targetUserId: string, currentlyFollowing: boolean) => {
     try {
       if (currentlyFollowing) {
-        await fetch(`/api/followDelete/${loggedInUser.userId}/${targetUserId}`, {
-          method: 'DELETE',
-        });
+        await fetch(
+          `http://15.164.228.103/api/followDelete/${loggedInUser.userId}/${targetUserId}`,
+          {
+            method: 'DELETE',
+          },
+        );
       } else {
-        await fetch(`/api/follow/${loggedInUser.userId}/${targetUserId}`, {
+        await fetch(`http://15.164.228.103/api/follow/${loggedInUser.userId}/${targetUserId}`, {
           method: 'POST',
         });
       }

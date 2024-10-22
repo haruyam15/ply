@@ -42,9 +42,11 @@ const UserProfile: React.FC = () => {
     const fetchProfileData = async () => {
       try {
         const [profileResponse, playlistResponse, followCheckResponse] = await Promise.all([
-          axios.get<ProfileData>(`/api/profilePage/${urlUserId}`),
-          axios.get<{ playlists: ProfileData['playlists'] }>(`/api/playlistPage/${urlUserId}`),
-          axios.get(`/api/followCheck/${loggedInUser.userId}/${urlUserId}`),
+          axios.get<ProfileData>(`http://15.164.228.103/api/profilePage/${urlUserId}`),
+          axios.get<{ playlists: ProfileData['playlists'] }>(
+            `http://15.164.228.103/api/playlistPage/${urlUserId}`,
+          ),
+          axios.get(`http://15.164.228.103/api/followCheck/${loggedInUser.userId}/${urlUserId}`),
         ]);
 
         const publicPlaylists = playlistResponse.data.playlists?.filter(
@@ -69,10 +71,12 @@ const UserProfile: React.FC = () => {
   const handleFollowToggle = async () => {
     try {
       if (isFollowing) {
-        await axios.delete(`/api/followDelete/${loggedInUser.userId}/${urlUserId}`);
+        await axios.delete(
+          `http://15.164.228.103/api/followDelete/${loggedInUser.userId}/${urlUserId}`,
+        );
         setIsFollowing(false);
       } else {
-        await axios.post(`/api/follow/${loggedInUser.userId}/${urlUserId}`);
+        await axios.post(`http://15.164.228.103/api/follow/${loggedInUser.userId}/${urlUserId}`);
         setIsFollowing(true);
       }
     } catch (error) {

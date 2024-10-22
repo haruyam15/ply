@@ -30,7 +30,7 @@ const NicknameModal: React.FC<{
   const checkNicknameAvailability = async (newNickname: string) => {
     if (newNickname === nickname) return true;
     try {
-      const response = await fetch(`/api/nicknameCheck/${newNickname}`);
+      const response = await fetch(`http://15.164.228.103/api/nicknameCheck/${newNickname}`);
       if (!response.ok) throw new Error('서버 응답 오류');
       const result = await response.json();
       if (result.isDuplicate) {
@@ -62,11 +62,14 @@ const NicknameModal: React.FC<{
     }
 
     try {
-      const response = await fetch(`/api/profileEdit/${userInformation.userId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userName: tempNickname }),
-      });
+      const response = await fetch(
+        `http://15.164.228.103/api/profileEdit/${userInformation.userId}`,
+        {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userName: tempNickname }),
+        },
+      );
       const result = await response.json();
       if (response.ok && result.success) {
         setNewNickname(tempNickname);
