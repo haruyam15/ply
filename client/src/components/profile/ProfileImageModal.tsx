@@ -43,7 +43,7 @@ const ProfileImageModal: React.FC<{
         const formData = new FormData();
         formData.append('image', file);
 
-        const uploadResponse = await fetch('http://15.164.228.103/uploadImage', {
+        const uploadResponse = await fetch('https://plyserver.kro.kr/api/uploadImage', {
           method: 'POST',
           body: formData,
         });
