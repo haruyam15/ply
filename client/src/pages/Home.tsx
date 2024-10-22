@@ -92,7 +92,7 @@ const Home: React.FC = () => {
 
   const fetchExploreData = async () => {
     try {
-      const response = await fetch('https://plyserver.kro.kr/api/search');
+      const response = await fetch('/api/search');
       if (!response.ok) {
         throw new Error('탐색 데이터를 가져오는 중 오류가 발생했습니다.');
       }
