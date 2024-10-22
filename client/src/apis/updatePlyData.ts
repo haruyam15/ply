@@ -9,9 +9,12 @@ export const updatePlyData = async (
   try {
     let res;
     if (type === '추가') {
-      res = await axios.post('/api/createPlaylist', playlistData);
+      res = await axios.post('https://plyserver.kro.kr/api/createPlaylist', playlistData);
     } else if (type === '수정') {
-      res = await axios.put(`/api/playlistEdit/${playlistId}`, playlistData);
+      res = await axios.put(
+        `https://plyserver.kro.kr/api/playlistEdit/${playlistId}`,
+        playlistData,
+      );
     }
     return res?.status || null;
   } catch (error) {

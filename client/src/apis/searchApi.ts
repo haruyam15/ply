@@ -7,7 +7,7 @@ export const searchPlaylists = async (
   _filter: string,
 ): Promise<IPlaylist[]> => {
   try {
-    const response = await axios.get('/api/searchs', {
+    const response = await axios.get('https://plyserver.kro.kr/api/searchs', {
       params: { term: searchTerm },
     });
     return response.data;

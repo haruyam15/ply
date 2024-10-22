@@ -71,11 +71,14 @@ const ProfileImageModal: React.FC<{
     }
 
     try {
-      const updateResponse = await fetch(`/api/profileEdit/${userInformation.userId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ profileImage: uploadedImageUrl }),
-      });
+      const updateResponse = await fetch(
+        `https://plyserver.kro.kr/api/profileEdit/${userInformation.userId}`,
+        {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ profileImage: uploadedImageUrl }),
+        },
+      );
 
       if (!updateResponse.ok) {
         const errorData = await updateResponse.json();

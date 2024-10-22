@@ -4,7 +4,7 @@ import { IUserData } from '@/types/userTypes';
 
 const createUser = async (api: string, userData: SignupData): Promise<number | IUserData> => {
   try {
-    const res = await axios.post(`/api/${api}`, userData);
+    const res = await axios.post(`https://plyserver.kro.kr/api/${api}`, userData);
     if (api === 'login') {
       return res.data.user;
     }

@@ -36,11 +36,14 @@ const PasswordChangeModal: React.FC<{
     }
 
     try {
-      const checkResponse = await fetch(`/api/passwordCheck/${userInformation.userId}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ inputPassword: currentPassword }),
-      });
+      const checkResponse = await fetch(
+        `https://plyserver.kro.kr/api/passwordCheck/${userInformation.userId}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ inputPassword: currentPassword }),
+        },
+      );
 
       const checkResult = await checkResponse.json();
       if (!checkResponse.ok || !checkResult.isPasswordValid) {
@@ -48,11 +51,14 @@ const PasswordChangeModal: React.FC<{
         return;
       }
 
-      const changeResponse = await fetch(`/api/profileEdit/${userInformation.userId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password: newPassword }),
-      });
+      const changeResponse = await fetch(
+        `https://plyserver.kro.kr/api/profileEdit/${userInformation.userId}`,
+        {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: newPassword }),
+        },
+      );
 
       const changeResult = await changeResponse.json();
       if (changeResponse.ok && changeResult.success) {

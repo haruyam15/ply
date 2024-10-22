@@ -57,7 +57,7 @@ const PlaylistPage: React.FC = () => {
         return;
       }
       try {
-        const response = await fetch(`/api/profile/${userId}`);
+        const response = await fetch(`https://plyserver.kro.kr/api/profile/${userId}`);
         if (!response.ok) {
           throw new Error('사용자 정보를 가져오는 중 오류가 발생했습니다.');
         }
@@ -79,7 +79,7 @@ const PlaylistPage: React.FC = () => {
       }
       try {
         setLoading(true);
-        const response = await fetch(`/api/playlistPage/${userIdParams}`);
+        const response = await fetch(`https://plyserver.kro.kr/api/playlistPage/${userIdParams}`);
         if (!response.ok) {
           throw new Error('플레이리스트 데이터를 가져오는 중 오류가 발생했습니다.');
         }

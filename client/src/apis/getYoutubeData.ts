@@ -3,7 +3,7 @@ import axios from 'axios';
 
 const getYoutubeData = async (videoId: string): Promise<IYoutubeVideoResponse> => {
   try {
-    const response = await axios.get('/api/youtube/videos', {
+    const response = await axios.get('https://plyserver.kro.kr/api/youtube/videos', {
       params: {
         id: videoId,
         part: 'snippet',

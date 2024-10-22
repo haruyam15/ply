@@ -37,9 +37,9 @@ function Profile() {
         setLoading(true);
         let response;
         if (selectedTab === 'playlist') {
-          response = await fetch(`/api/playlistPage/${userId}`);
+          response = await fetch(`https://plyserver.kro.kr/api/playlistPage/${userId}`);
         } else {
-          response = await fetch(`/api/likePage/${userId}`);
+          response = await fetch(`https://plyserver.kro.kr/api/likePage/${userId}`);
         }
 
         if (!response.ok) {

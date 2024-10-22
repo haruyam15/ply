@@ -2,17 +2,17 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Signup', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('http://15.164.228.103:5173');
+    await page.goto('http://localhost:5173');
   });
   test('should be able to sign up', async ({ page }) => {
-    await page.route('http://15.164.228.103:8080/api/register', (route) => {
+    await page.route('https://plyserver.kro.kr/api/register', (route) => {
       const res = {
         status: 200,
         body: JSON.stringify({ message: '가입이 완료되었습니다.' }),
       };
       route.fulfill(res);
     });
-    await page.route('http://15.164.228.103:8080/api/login', (route) => {
+    await page.route('https://plyserver.kro.kr/api/login', (route) => {
       const res = {
         status: 200,
         body: JSON.stringify({ message: 'Login successful' }),

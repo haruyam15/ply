@@ -42,7 +42,9 @@ const Timeline: React.FC = () => {
 
       try {
         setLoading(true);
-        const response = await fetch(`/api/timeline/${userId}`);
+        const response = await fetch(
+          `https://plyserver.kro.krhttps://plyserver.kro.kr/api/timeline/${userId}`,
+        );
         if (!response.ok) {
           throw new Error('데이터를 가져오는 중 오류가 발생했습니다.');
         }

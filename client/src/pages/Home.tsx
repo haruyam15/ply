@@ -71,7 +71,7 @@ const Home: React.FC = () => {
 
   const fetchTimelineData = async (userId: string) => {
     try {
-      const response = await fetch(`/api/timeline/${userId}`);
+      const response = await fetch(`https://plyserver.kro.kr/api/timeline/${userId}`);
       if (!response.ok) {
         throw new Error('데이터를 가져오는 중 오류가 발생했습니다.');
       }
@@ -92,7 +92,7 @@ const Home: React.FC = () => {
 
   const fetchExploreData = async () => {
     try {
-      const response = await fetch('/api/search');
+      const response = await fetch('https://plyserver.kro.kr/api/search');
       if (!response.ok) {
         throw new Error('탐색 데이터를 가져오는 중 오류가 발생했습니다.');
       }
