@@ -11,7 +11,7 @@ interface IUseFdata {
 
 export const getFdata = async (userId: string, optionalKey: TabForApi): Promise<IUseFdata[]> => {
   try {
-    const response = await axios.get(`http://15.164.228.103/api/${optionalKey}Page/${userId}`);
+    const response = await axios.get(`/api/${optionalKey}Page/${userId}`);
     return response.data;
   } catch (error) {
     console.error('플레이리스트 데이터 호출을 실패했습니다.:', error);

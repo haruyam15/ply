@@ -10,7 +10,7 @@ const useDeletePlaylist = () => {
     setError(null);
 
     try {
-      const response = await fetch(`http://15.164.228.103/api/playlistDelete/${playlistId}`, {
+      const response = await fetch(`/api/playlistDelete/${playlistId}`, {
         method: 'DELETE',
       });
 

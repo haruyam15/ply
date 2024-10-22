@@ -37,9 +37,9 @@ function Profile() {
         setLoading(true);
         let response;
         if (selectedTab === 'playlist') {
-          response = await fetch(`http://15.164.228.103/api/playlistPage/${userId}`);
+          response = await fetch(`/api/playlistPage/${userId}`);
         } else {
-          response = await fetch(`http://15.164.228.103/api/likePage/${userId}`);
+          response = await fetch(`/api/likePage/${userId}`);
         }
 
         if (!response.ok) {

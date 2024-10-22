@@ -71,14 +71,11 @@ const ProfileImageModal: React.FC<{
     }
 
     try {
-      const updateResponse = await fetch(
-        `http://15.164.228.103/api/profileEdit/${userInformation.userId}`,
-        {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ profileImage: uploadedImageUrl }),
-        },
-      );
+      const updateResponse = await fetch(`/api/profileEdit/${userInformation.userId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ profileImage: uploadedImageUrl }),
+      });
 
       if (!updateResponse.ok) {
         const errorData = await updateResponse.json();

@@ -9,9 +9,9 @@ export const updatePlyData = async (
   try {
     let res;
     if (type === '추가') {
-      res = await axios.post('http://15.164.228.103/api/createPlaylist', playlistData);
+      res = await axios.post('/api/createPlaylist', playlistData);
     } else if (type === '수정') {
-      res = await axios.put(`http://15.164.228.103/api/playlistEdit/${playlistId}`, playlistData);
+      res = await axios.put(`/api/playlistEdit/${playlistId}`, playlistData);
     }
     return res?.status || null;
   } catch (error) {

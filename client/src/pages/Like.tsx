@@ -39,7 +39,7 @@ const Like: React.FC = () => {
 
       try {
         setLoading(true);
-        const response = await fetch(`http://15.164.228.103/api/likePage/${userId}`);
+        const response = await fetch(`/api/likePage/${userId}`);
         if (!response.ok) {
           throw new Error('좋아요한 플레이리스트 데이터를 가져오는 중 오류가 발생했습니다.');
         }
