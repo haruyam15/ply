@@ -1,24 +1,18 @@
 import express from 'express';
 import multer from 'multer';
 import path from 'path';
-import fs from 'fs';
+import AWS from 'aws-sdk';
 
 const router = express.Router();
-
-// uploads 폴더가 없으면 생성
-const uploadDir = 'uploads';
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir);
-}
 
 // AWS S3 설정
 const s3 = new AWS.S3({
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-  region: process.env.AWS_REGION, // 사용 중인 리전으로 변경
+  region: process.env.AWS_REGION, // AWS 리전 설정
 });
 
-// Multer 설정
+// Multer 설정 (메모리 스토리지)
 const storage = multer.memoryStorage(); // 파일을 메모리에서 처리
 
 const upload = multer({
@@ -34,7 +28,7 @@ const upload = multer({
 });
 
 router.post('/', (req, res) => {
-  upload.single('image')(req, res, (err) => {
+  upload.single('image')(req, res, async (err) => {
     if (err instanceof multer.MulterError) {
       return res
         .status(400)
@@ -59,17 +53,31 @@ router.post('/', (req, res) => {
       ACL: 'public-read', // 파일을 공개하려면 이 옵션 추가
     };
 
-    // S3에 파일 업로드
-    s3.upload(params, (err, data) => {
-      if (err) {
-        return res
-          .status(500)
-          .json({ message: 'S3에 파일 업로드 중 오류가 발생했습니다.', error: err.message });
-      }
-
+    // S3에 파일 업로드 및 MongoDB에 이미지 URL 저장
+    try {
+      const data = await s3.upload(params).promise();
       const imageUrl = data.Location; // 업로드된 파일의 S3 URL
-      res.status(200).json({ imageUrl });
-    });
+
+      // MongoDB에 이미지 URL 저장 (MongoDB 데이터베이스 객체 req.database 사용)
+      const database = req.database;
+      const result = await database.collection('images').insertOne({
+        imageUrl: imageUrl,
+        uploadedAt: new Date(),
+      });
+
+      if (result.insertedCount === 1) {
+        res.status(200).json({ success: true, imageUrl });
+      } else {
+        res.status(500).json({ success: false, message: '이미지 URL 저장 실패' });
+      }
+    } catch (error) {
+      return res
+        .status(500)
+        .json({
+          message: 'S3 또는 MongoDB와의 통신 중 오류가 발생했습니다.',
+          error: error.message,
+        });
+    }
   });
 });
 

@@ -54,7 +54,7 @@ const ProfileImageModal: React.FC<{
 
         const uploadData = await uploadResponse.json();
         console.log(uploadData);
-        setUploadedImageUrl(uploadData.imageUrl);
+        setUploadedImageUrl('s3://ply-img' + uploadData.imageUrl);
       } catch (error) {
         console.error('이미지 업로드 중 오류 발생:', error);
         setError(error instanceof Error ? error.message : '이미지 업로드 중 오류가 발생했습니다.');
