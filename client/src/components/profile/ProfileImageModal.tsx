@@ -26,6 +26,7 @@ const ProfileImageModal: React.FC<{
         handleSubmit();
       }
     };
+    console.log(uploadedImageUrl);
 
     document.addEventListener('keydown', handleKeyPress);
     return () => {
@@ -44,7 +45,7 @@ const ProfileImageModal: React.FC<{
         formData.append('image', file);
 
         const uploadResponse = await fetch(
-          `https://plyserver.kro.kr/api/uploadImage${userInformation.userId}`,
+          `https://plyserver.kro.kr/api/uploadImage/${userInformation.userId}`,
           {
             method: 'POST',
             body: formData,
@@ -56,7 +57,6 @@ const ProfileImageModal: React.FC<{
         }
 
         const uploadData = await uploadResponse.json();
-        console.log(uploadData);
         setUploadedImageUrl('s3://ply-img' + uploadData.imageUrl);
       } catch (error) {
         console.error('이미지 업로드 중 오류 발생:', error);
